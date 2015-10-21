@@ -3,6 +3,12 @@ NativeScript plugin for Google Maps SDK
 
 This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Maps API](https://developers.google.com/maps/)
 
+[![NPM version][npm-image]][npm-url] [![Dependency status][david-dm-image]][david-dm-url]
+[npm-url]: https://npmjs.org/package/nativescript-google-maps-sdk
+[npm-image]: http://img.shields.io/npm/v/nativescript-google-maps-sdk.svg
+[david-dm-url]:https://david-dm.org/dapriett/nativescript-google-maps-sdk
+[david-dm-image]:https://david-dm.org/dapriett/nativescript-google-maps-sdk.svg
+
 Installation
 ===
 
