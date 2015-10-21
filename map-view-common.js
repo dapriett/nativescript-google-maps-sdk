@@ -42,8 +42,8 @@ var MapView = (function (_super) {
         return this._getValue( property );
       },
       set: function( value ) {
-        var intValue = parseFloat( value);
-        this._setValue( property, value );
+        var parsedValue = parseFloat( value);
+        this._setValue( property, parsedValue );
       }
     });
   });
