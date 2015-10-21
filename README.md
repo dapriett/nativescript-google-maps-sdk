@@ -3,8 +3,6 @@ NativeScript plugin for Google Maps SDK
 
 This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Maps API](https://developers.google.com/maps/)
 
-With the NativeScript plugin for Google Maps SDK you can easily use the native [Google Maps API](https://developers.google.com/maps/) in a cross-platform manner for Android and iOS.
-
 Installation
 ===
 
@@ -74,19 +72,19 @@ function OnMapReady(args) {
 
 	if(mapView.android) {
 		var markerOptions = new com.google.android.gms.maps.model.MarkerOptions();
-  	markerOptions.title("Sydney");
-  	markerOptions.snippet("Australia");
-  	var latLng = new com.google.android.gms.maps.model.LatLng(-33.86, 151.20);
-  	markerOptions.position(latLng);
-  	gMap.addMarker(markerOptions);
+  		markerOptions.title("Sydney");
+  		markerOptions.snippet("Australia");
+  		var latLng = new com.google.android.gms.maps.model.LatLng(-33.86, 151.20);
+  		markerOptions.position(latLng);
+  		gMap.addMarker(markerOptions);
 	} 
 	
 	if (mapView.ios) {
-    var marker = GMSMarker.alloc().init();
-    marker.position = { latitude: -33.86, longitude: 151.20 }
-    marker.title = "Sydney";
-    marker.snippet = "Australia";
-    marker.map = gMap;
+    		var marker = GMSMarker.alloc().init();
+		marker.position = { latitude: -33.86, longitude: 151.20 }
+    		marker.title = "Sydney";
+    		marker.snippet = "Australia";
+    		marker.map = gMap;
 	}
 }
 exports.OnMapReady = OnMapReady;
