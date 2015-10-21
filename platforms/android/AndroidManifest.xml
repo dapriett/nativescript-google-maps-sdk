@@ -6,7 +6,7 @@
     <application>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_api_key" />
+            android:value="@string/nativescript_google_maps_api_key" />
         <meta-data android:name="com.google.android.gms.version"
                    android:value="7895000" />
     </application>

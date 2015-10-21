@@ -79,7 +79,7 @@ var MapView = (function (_super) {
     var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
       onMapReady: function (gMap) {
         that.get()._gMap = gMap;
-        that.get()._emit(MapView.mapReadyEvent);
+        that.get().notifyMapReady();
       }
     });
 

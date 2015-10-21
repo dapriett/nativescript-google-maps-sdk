@@ -10,7 +10,17 @@ var MapView = (function (_super) {
 
   MapView.prototype.updateCamera = function() {
 
-  }
+  };
+
+  MapView.prototype.notifyMapReady = function() {
+    this.notify({
+      eventName: MapView.mapReadyEvent,
+      object: this,
+      gMap: this.gMap
+    });
+  };
+
+  MapView.mapReadyEvent = "mapReady";
 
   var properties = [ "latitude", "longitude", "bearing", "zoom", "tilt" ];
   properties.forEach(function( name ) {
@@ -37,8 +47,6 @@ var MapView = (function (_super) {
       }
     });
   });
-
-  MapView.mapReadyEvent = "mapReady";
 
   return MapView;
 })(view.View);
