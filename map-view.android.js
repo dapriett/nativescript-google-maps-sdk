@@ -78,8 +78,12 @@ var MapView = (function (_super) {
 
     var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
       onMapReady: function (gMap) {
-        that.get()._gMap = gMap;
-        that.get().notifyMapReady();
+        var mView = that.get();
+        mView._gMap = gMap;
+        if(mView._pendingCameraUpdate) {
+          mView.updateCamera();
+        }
+        mView._emit(MapView.mapReadyEvent);
       }
     });
 
@@ -115,7 +119,14 @@ var MapView = (function (_super) {
 
   MapView.prototype.updateCamera = function() {
     var cameraPosition = this._createCameraPosition();
-    if(!this._gMap || !cameraPosition) return;
+    if(!cameraPosition) return;
+
+    if(!this._gMap) {
+      this._pendingCameraUpdate = true
+      return;
+    }
+
+    this._pendingCameraUpdate = false;
 
     var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
     this.gMap.moveCamera(cameraUpdate);

@@ -7,6 +7,10 @@ var MapView = (function (_super) {
   function MapView() {
     _super.apply(this, arguments);
     this._ios = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
+  }
+
+  MapView.prototype.onLoaded = function () {
+    _super.prototype.onLoaded.apply(this, arguments);
     this.notifyMapReady();
   }
 
