@@ -68,31 +68,28 @@ You can also use the `mapReady` event to listen for when the google map is ready
 The property `gMap` gives you access to the raw platform Map Object - see their SDK references for how to use them ( [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap) )
 
 ```
-// /app/main-page.js
-
 function OnMapReady(args) {
   var mapView = args.object;
   var gMap = mapView.gMap;
-  
+
   console.log("Setting a marker...");
 
-	if(mapView.android) {
+    if(mapView.android) {
 		var markerOptions = new com.google.android.gms.maps.model.MarkerOptions();
-  		markerOptions.title("Sydney");
-  		markerOptions.snippet("Australia");
-  		var latLng = new com.google.android.gms.maps.model.LatLng(-33.86, 151.20);
-  		markerOptions.position(latLng);
-  		gMap.addMarker(markerOptions);
-	} 
-	
-	if (mapView.ios) {
-    		var marker = GMSMarker.alloc().init();
-		marker.position = { latitude: -33.86, longitude: 151.20 }
-    		marker.title = "Sydney";
-    		marker.snippet = "Australia";
-    		marker.map = gMap;
-	}
+		markerOptions.title("Sydney");
+		markerOptions.snippet("Australia");
+		var latLng = new com.google.android.gms.maps.model.LatLng(-33.86, 151.20);
+		markerOptions.position(latLng);
+		gMap.addMarker(markerOptions);
+    } 
+
+    if (mapView.ios) {
+		var position = CLLocationCoordinate2DMake(-33.86, 151.20);
+		var marker = GMSMarker.markerWithPosition(CLLocationCoordinate2DMake(-33.86, 151.20))
+		marker.title = "Sydney";
+		marker.snippet = "Australia";
+		marker.map = gMap;
+    }
 }
 exports.OnMapReady = OnMapReady;
-
 ```
