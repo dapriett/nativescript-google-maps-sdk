@@ -68,6 +68,8 @@ You can also use the `mapReady` event to listen for when the google map is ready
 The property `gMap` gives you access to the raw platform Map Object - see their SDK references for how to use them ( [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap) )
 
 ```
+//  /app/main-page.js
+
 function OnMapReady(args) {
   var mapView = args.object;
   var gMap = mapView.gMap;
