@@ -85,7 +85,7 @@ function OnMapReady(args) {
 
     if (mapView.ios) {
 		var position = CLLocationCoordinate2DMake(-33.86, 151.20);
-		var marker = GMSMarker.markerWithPosition(CLLocationCoordinate2DMake(-33.86, 151.20))
+		var marker = GMSMarker.markerWithPosition(position)
 		marker.title = "Sydney";
 		marker.snippet = "Australia";
 		marker.map = gMap;
