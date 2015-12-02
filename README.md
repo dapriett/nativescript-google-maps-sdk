@@ -11,11 +11,11 @@ This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Map
 
 Prerequisites
 ===
-`iOS` - Cocoapods is [installed](https://guides.cocoapods.org/using/getting-started.html#getting-started)
+*iOS* - Cocoapods is [installed](https://guides.cocoapods.org/using/getting-started.html#getting-started)
 
-`Android` - Latest Google Play services SDK [installed](https://developer.android.com/sdk/installing/adding-packages.html)
+*Android* - Latest Google Play services SDK [installed](https://developer.android.com/sdk/installing/adding-packages.html)
 
-`Google Maps API Key` - Go to the [Google Developers Console](https://console.developers.google.com), create a project, and enable the `Google Maps Android API` and `Google Maps SDK for iOS` APIs.  Then under credentials, create an API key.
+*Google Maps API Key* - Go to the [Google Developers Console](https://console.developers.google.com), create a project, and enable the `Google Maps Android API` and `Google Maps SDK for iOS` APIs.  Then under credentials, create an API key.
 
 Installation
 ===
