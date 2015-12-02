@@ -1,12 +1,12 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view.js",
   "nativescript": {
     "platforms": {
-      "android": "1.4.0",
-      "ios": "1.4.0"
+      "android": "1.5.0",
+      "ios": "1.5.0"
     }
   },
   "scripts": {
@@ -30,6 +30,6 @@
   },
   "homepage": "https://github.com/dapriett/nativescript-google-maps-sdk#readme",
   "dependencies": {
-    "nativescript-plugin-google-play-services": "^26.0.2"
+
   }
 }
