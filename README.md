@@ -9,6 +9,14 @@ This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Map
 [david-dm-url]:https://david-dm.org/dapriett/nativescript-google-maps-sdk
 [david-dm-image]:https://david-dm.org/dapriett/nativescript-google-maps-sdk.svg
 
+Prerequisites
+===
+`iOS` - Cocoapods is [installed](https://guides.cocoapods.org/using/getting-started.html#getting-started)
+
+`Android` - Latest Google Play services SDK [installed](https://developer.android.com/sdk/installing/adding-packages.html)
+
+`Google Maps API Key` - Go to the [Google Developers Console](https://console.developers.google.com), create a project, and enable the `Google Maps Android API` and `Google Maps SDK for iOS` APIs.  Then under credentials, create an API key.
+
 Installation
 ===
 
@@ -20,9 +28,9 @@ tns plugin add nativescript-google-maps-sdk
 
 Setup Google Maps API
 ===
- 
-If you haven't already, go to the [Google Developers Console](https://console.developers.google.com), create a project, and enable the `Google Maps Android API` and `Google Maps SDK for iOS` APIs.  Then under credentials, create an API key.
 
+See demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/demo)
+ 
 ## Setup Android API Key
 
 First copy over the template string resource files for Android
@@ -31,7 +39,7 @@ First copy over the template string resource files for Android
 cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/
 ```
 
-Next modify the file at `app/App_Resources/Android/values/nativescript_google_maps_api.xml`, replace `PUT_API_KEY_HERE` with your api key.
+Next modify the file at `app/App_Resources/Android/values/nativescript_google_maps_api.xml`, uncomment `nativescript_google_maps_api_key` string and replace `PUT_API_KEY_HERE` with your api key.
 
 ## Setup iOS API Key
 
@@ -54,7 +62,7 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
 	xmlns:maps="nativescript-google-maps-sdk"
 	>
   <GridLayout>
-    <maps:mapView latitude="{{ latitude }}" longitude="{{ latitude }}" 
+    <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" 
     								zoom="{{ zoom }}" bearing="{{ bearing }}" 
     								tilt="{{ tilt }}" mapReady="OnMapReady" />
   </GridLayout>
