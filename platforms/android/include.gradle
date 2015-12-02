@@ -1,0 +1,11 @@
+android { 
+	productFlavors {
+		"nativescript-google-maps-sdk" {
+			dimension "nativescriptgooglemapssdk"
+		}
+	}
+}
+
+dependencies {
+	compile 'com.google.android.gms:play-services-maps:+'
+}
