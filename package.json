@@ -29,7 +29,8 @@
     "url": "https://github.com/dapriett/nativescript-google-maps-sdk/issues"
   },
   "homepage": "https://github.com/dapriett/nativescript-google-maps-sdk#readme",
-  "dependencies": {
-
+  "dependencies": {},
+  "devDependencies": {
+    "tns-core-modules": "^1.5.1"
   }
 }

@@ -6,8 +6,8 @@ var HelloWorldModel = (function (_super) {
         this.set("latitude", -33.86);
         this.set("longitude", 151.20);
         this.set("zoom", 8);
-        this.set("bearing", 90);
-        this.set("tilt", 45);
+        this.set("bearing", 0);
+        this.set("tilt", 0);
     }
 
     return HelloWorldModel;

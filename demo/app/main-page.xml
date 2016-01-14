@@ -2,6 +2,6 @@
     <GridLayout>
         <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}"
                       zoom="{{ zoom }}" bearing="{{ bearing }}"
-                      tilt="{{ tilt }}" mapReady="onMapReady"/>
+                      tilt="{{ tilt }}" mapReady="onMapReady" markerSelect="onMarkerSelect" />
     </GridLayout>
 </Page>
