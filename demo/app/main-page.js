@@ -39,27 +39,33 @@ function onMapReady(args) {
         marker.userData = { index : 1};
         mapView.addMarker(marker);
         
-        mapView.on(observableModule.Observable.propertyChangeEvent, function(args) {
-           if (args.propertyName == mapsModule.MapView.latitudeProperty.name) {
-               console.log("On change "+args.object.latitude);
-           }
-        });
+        var m1 = new mapsModule.Marker();
+        m1.position = mapsModule.Position.positionFromLatLng(-35.86, 141.20);
+        m1.title = "Canberra";
+        m1.snippet = "Australia";
+        m1.userData = { index : 2};
+        mapView.addMarker(m1);
     }
-    /*
+
     wait(1000).then(function() {
         var marker1 = mapView.findMarker(function(marker) { return marker.userData.index == 1; });
-        marker1.position = mapsModule.Position.positionFromLatLng(-33.86, 150.20);
+        marker1.position = mapsModule.Position.positionFromLatLng(-34.86, 151.20);
     }).then(function(){
         return wait(1000);
     }).then(function() {
-        mapView.removeAllMarkers();
+        var marker1 = mapView.findMarker(function(marker) { return marker.userData.index == 1; });
+        mapView.removeMarker(marker1);
     });
-    */
 }
 
 function onMarkerSelect(args) {
    console.log("Clicked on "+args.marker.title);  
 }
 
+function onCameraChanged(args) {
+    console.log("Camera changed: "+JSON.stringify(args.camera));
+}
+
 exports.onMapReady = onMapReady;
 exports.onMarkerSelect = onMarkerSelect;
+exports.onCameraChanged = onCameraChanged;

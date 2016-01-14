@@ -16,21 +16,30 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     public mapViewIdleAtCameraPosition(mapView: GMSMapView, cameraPosition : GMSCameraPosition) : void {
         let owner = this._owner.get();
         if (owner) {
+            
+            let cameraChanged : boolean = false;
             if (owner.latitude != cameraPosition.target.latitude) {
+                cameraChanged = true;
                 owner._onPropertyChangedFromNative(MapViewCommon.latitudeProperty, cameraPosition.target.latitude);    
             } 
             if (owner.longitude != cameraPosition.target.longitude) {
+                cameraChanged = true;
                 owner._onPropertyChangedFromNative(MapViewCommon.longitudeProperty, cameraPosition.target.longitude);    
             }
             if (owner.bearing != cameraPosition.bearing) {
+                cameraChanged = true;
                 owner._onPropertyChangedFromNative(MapViewCommon.bearingProperty, cameraPosition.bearing);    
             }
             if (owner.zoom != cameraPosition.zoom) {
+                cameraChanged = true;
                 owner._onPropertyChangedFromNative(MapViewCommon.zoomProperty, cameraPosition.zoom);    
             }
             if (owner.tilt != cameraPosition.viewingAngle) {
+                cameraChanged = true;
                 owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.viewingAngle);    
             }
+            owner.notifyCameraEvent(MapViewCommon.cameraChangedEvent, {latitude: cameraPosition.target.latitude, longitude: cameraPosition.target.longitude
+                , zoom: cameraPosition.zoom, bearing: cameraPosition.bearing, tilt: cameraPosition.viewingAngle});
         }
     }
     

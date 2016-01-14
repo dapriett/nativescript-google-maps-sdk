@@ -80,3 +80,5 @@ crashlytics.properties
 crashlytics-build.properties
 
 
+map-view-common.js
+map-view.ios.js

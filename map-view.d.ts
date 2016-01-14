@@ -4,6 +4,14 @@ declare module "nativescript-google-maps-sdk" {
     import { Image } from "ui/image";
     import { EventData } from "data/observable";
     
+    export class Camera {
+        public latitude : number;
+        public longitude : number;
+        public zoom : number;
+        public bearing : number;
+        public tilt : number;
+    }
+    
     export class MapView extends View {
         
         public static latitudeProperty : Property;
@@ -23,6 +31,9 @@ declare module "nativescript-google-maps-sdk" {
         public updateCamera() : void;
         
         public static mapReadyEvent : string;
+        public static markerSelectEvent : string;
+        public static coordinateTappedEvent : string;
+        public static cameraChangedEvent : string;
         
         public ios : any; /* GMSMapView */
         
@@ -62,5 +73,13 @@ declare module "nativescript-google-maps-sdk" {
     
     export interface MarkerEventData extends EventData {
         marker : Marker;
+    }
+    
+    export interface CameraEventData extends EventData {
+        camera : Camera;
+    }
+    
+    export interface PositionEventData extends EventData {
+        position : Position;
     }
 }

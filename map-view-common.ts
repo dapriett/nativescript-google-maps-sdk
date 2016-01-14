@@ -1,4 +1,4 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, MarkerEventData } from "nativescript-google-maps-sdk";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
 import { View } from "ui/core/view";
 import { Image } from "ui/image";
 
@@ -13,13 +13,15 @@ function onMapPropertyChanged(data: PropertyChangeData) {
     mapView.updateCamera();
 }
 
-export class MapView extends View implements IMapView {
+export abstract class MapView extends View implements IMapView {
     
     public gMap : any;
     
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
-    
+    public static coordinateTappedEvent : string = "coordinateTapped";
+    public static cameraChangedEvent : string = "cameraChanged";
+        
     public static latitudeProperty = new Property("latitude", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
     public static longitudeProperty = new Property("longitude", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
     public static bearingProperty = new Property("bearing", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
@@ -66,19 +68,15 @@ export class MapView extends View implements IMapView {
         this._setValue(MapView.tiltProperty, parseFloat(value));
     }
     
-    public updateCamera() : void {
-        //Leave it upto the child classes.
-    }
+    public abstract updateCamera() : void;
     
     notifyMapReady() {
         this.notify({ eventName: MapView.mapReadyEvent, object: this, gMap: this.gMap});
     }
     
-    addMarker(marker: IMarker) {
-    }
+    public abstract addMarker(marker: IMarker): void;
     
-    removeMarker(marker: IMarker) {
-    }
+    public abstract removeMarker(marker: IMarker): void;
     
     removeAllMarkers() {
         this.gMap.clear();
@@ -86,6 +84,16 @@ export class MapView extends View implements IMapView {
     
     notifyMarkerEvent(eventName : string, marker: IMarker) {
         let args : MarkerEventData = {eventName : eventName, object: this, marker: marker };
+        this.notify(args);
+    }
+    
+    notifyPositionEvent(eventName: string, position: IPosition) {
+        let args : PositionEventData = {eventName: eventName, object: this, position: position};
+        this.notify(args);
+    }
+    
+    notifyCameraEvent(eventName: string, camera: Camera) {
+        let args : CameraEventData = {eventName: eventName, object: this, camera: camera};
         this.notify(args);
     }
 }
