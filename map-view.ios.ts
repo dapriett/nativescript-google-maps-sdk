@@ -16,6 +16,8 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     public mapViewIdleAtCameraPosition(mapView: GMSMapView, cameraPosition : GMSCameraPosition) : void {
         let owner = this._owner.get();
         if (owner) {
+
+            owner._processingCameraEvent = true;
             
             let cameraChanged : boolean = false;
             if (owner.latitude != cameraPosition.target.latitude) {
@@ -38,8 +40,18 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
                 cameraChanged = true;
                 owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.viewingAngle);    
             }
-            owner.notifyCameraEvent(MapViewCommon.cameraChangedEvent, {latitude: cameraPosition.target.latitude, longitude: cameraPosition.target.longitude
-                , zoom: cameraPosition.zoom, bearing: cameraPosition.bearing, tilt: cameraPosition.viewingAngle});
+
+            if (cameraChanged) {
+                owner.notifyCameraEvent(MapViewCommon.cameraChangedEvent, {
+                    latitude: cameraPosition.target.latitude,
+                    longitude: cameraPosition.target.longitude,
+                    zoom: cameraPosition.zoom,
+                    bearing: cameraPosition.bearing,
+                    tilt: cameraPosition.viewingAngle
+                });
+            }
+
+            owner._processingCameraEvent = false;
         }
     }
     
@@ -197,7 +209,7 @@ export class Marker extends MarkerBase {
     
     set icon(icon : Image) {
         this._icon = icon;
-        this._ios.icon = icon.ios;
+        this._ios.icon = icon.ios.image;
     }
     
     get ios() {

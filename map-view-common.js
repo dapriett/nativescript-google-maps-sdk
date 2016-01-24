@@ -8,7 +8,8 @@ var dependency_observable_1 = require("ui/core/dependency-observable");
 var MAP_VIEW = "MapView";
 function onMapPropertyChanged(data) {
     var mapView = data.object;
-    mapView.updateCamera();
+    if (!mapView._processingCameraEvent)
+        mapView.updateCamera();
 }
 var MapView = (function (_super) {
     __extends(MapView, _super);

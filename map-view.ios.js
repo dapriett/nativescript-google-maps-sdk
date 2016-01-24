@@ -17,6 +17,7 @@ var MapViewDelegateImpl = (function (_super) {
     MapViewDelegateImpl.prototype.mapViewIdleAtCameraPosition = function (mapView, cameraPosition) {
         var owner = this._owner.get();
         if (owner) {
+            owner._processingCameraEvent = true;
             var cameraChanged = false;
             if (owner.latitude != cameraPosition.target.latitude) {
                 cameraChanged = true;
@@ -38,8 +39,16 @@ var MapViewDelegateImpl = (function (_super) {
                 cameraChanged = true;
                 owner._onPropertyChangedFromNative(map_view_common_1.MapView.tiltProperty, cameraPosition.viewingAngle);
             }
-            owner.notifyCameraEvent(map_view_common_1.MapView.cameraChangedEvent, { latitude: cameraPosition.target.latitude, longitude: cameraPosition.target.longitude,
-                zoom: cameraPosition.zoom, bearing: cameraPosition.bearing, tilt: cameraPosition.viewingAngle });
+            if (cameraChanged) {
+                owner.notifyCameraEvent(map_view_common_1.MapView.cameraChangedEvent, {
+                    latitude: cameraPosition.target.latitude,
+                    longitude: cameraPosition.target.longitude,
+                    zoom: cameraPosition.zoom,
+                    bearing: cameraPosition.bearing,
+                    tilt: cameraPosition.viewingAngle
+                });
+            }
+            owner._processingCameraEvent = false;
         }
     };
     MapViewDelegateImpl.prototype.mapViewDidTapMarker = function (mapView, gmsMarker) {
@@ -193,7 +202,7 @@ var Marker = (function (_super) {
         },
         set: function (icon) {
             this._icon = icon;
-            this._ios.icon = icon.ios;
+            this._ios.icon = icon.ios.image;
         },
         enumerable: true,
         configurable: true

@@ -10,7 +10,7 @@ let MAP_VIEW : string = "MapView";
 
 function onMapPropertyChanged(data: PropertyChangeData) {
     let mapView = <MapView>data.object;
-    mapView.updateCamera();
+    if (!mapView._processingCameraEvent) mapView.updateCamera();
 }
 
 export abstract class MapView extends View implements IMapView {

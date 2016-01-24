@@ -75,8 +75,10 @@ function onMarkerSelect(args) {
    console.log("Clicked on "+args.marker.title);
 }
 
+var lastCamera = null;
 function onCameraChanged(args) {
-    console.log("Camera changed: "+JSON.stringify(args.camera));
+    console.log("Camera changed: "+JSON.stringify(args.camera), JSON.stringify(args.camera) === lastCamera);
+    lastCamera = JSON.stringify(args.camera); 
 }
 
 exports.onMapReady = onMapReady;

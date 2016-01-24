@@ -5,8 +5,8 @@
   "main": "map-view.js",
   "nativescript": {
     "platforms": {
-      "android": "1.5.0",
-      "ios": "1.5.0"
+      "android": "1.5.1",
+      "ios": "1.5.1"
     }
   },
   "scripts": {

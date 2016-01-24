@@ -61,10 +61,6 @@ export class MapView extends MapViewCommon {
       return (update) ? cpBuilder.build() : null;
     }
 
-    // updateCamera() {
-    //     this.android.animateToCameraPosition(this._createCameraPosition());
-    // }
-
     updateCamera() {
       var cameraPosition = this._createCameraPosition();
       if(!cameraPosition) return;
@@ -151,12 +147,65 @@ export class MapView extends MapViewCommon {
 
       var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
         onMapReady: function (gMap) {
-          var mView = that.get();
-          mView._gMap = gMap;
-          if(mView._pendingCameraUpdate) {
-            mView.updateCamera();
+          var owner = that.get();
+          owner._gMap = gMap;
+          if (owner._pendingCameraUpdate) {
+            owner.updateCamera();
           }
-          mView.notifyMapReady();
+
+          gMap.setOnMarkerClickListener(new com.google.android.gms.maps.GoogleMap.OnMarkerClickListener({
+            onMarkerClick: function(gmsMarker) {
+
+              let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+              owner.notifyMarkerTapped(marker);
+
+              return false;
+            }
+          }));
+
+          gMap.setOnCameraChangeListener(new com.google.android.gms.maps.GoogleMap.OnCameraChangeListener({
+            onCameraChange: function(cameraPosition) {
+
+              owner._processingCameraEvent = true;
+
+              let cameraChanged : boolean = false;
+              if (owner.latitude != cameraPosition.target.latitude) {
+                cameraChanged = true;
+                owner._onPropertyChangedFromNative(MapViewCommon.latitudeProperty, cameraPosition.target.latitude);
+              }
+              if (owner.longitude != cameraPosition.target.longitude) {
+                cameraChanged = true;
+                owner._onPropertyChangedFromNative(MapViewCommon.longitudeProperty, cameraPosition.target.longitude);
+              }
+              if (owner.bearing != cameraPosition.bearing) {
+                cameraChanged = true;
+                owner._onPropertyChangedFromNative(MapViewCommon.bearingProperty, cameraPosition.bearing);
+              }
+              if (owner.zoom != cameraPosition.zoom) {
+                cameraChanged = true;
+                owner._onPropertyChangedFromNative(MapViewCommon.zoomProperty, cameraPosition.zoom);
+              }
+              if (owner.tilt != cameraPosition.tilt) {
+                cameraChanged = true;
+                owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.tilt);
+              }
+
+              if (cameraChanged) {
+                owner.notifyCameraEvent(MapViewCommon.cameraChangedEvent, {
+                  latitude: cameraPosition.target.latitude,
+                  longitude: cameraPosition.target.longitude,
+                  zoom: cameraPosition.zoom,
+                  bearing: cameraPosition.bearing,
+                  tilt: cameraPosition.tilt
+                });
+              }
+
+              owner._processingCameraEvent = false;
+
+            }
+          }));
+
+          owner.notifyMapReady();
         }
       });
 
