@@ -1,8 +1,11 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view.js",
+  "scripts": {
+    "prepublish": "tsc"
+  },
   "nativescript": {
     "platforms": {
       "android": "1.5.1",
@@ -24,7 +27,7 @@
     "SDK"
   ],
   "author": "Dan Prietti <dprietti@gmail.com> (https://github.com/dapriett)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dapriett/nativescript-google-maps-sdk/issues"
   },
