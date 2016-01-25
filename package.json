@@ -1,11 +1,8 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view.js",
-  "scripts": {
-    "prepublish": "tsc"
-  },
   "nativescript": {
     "platforms": {
       "android": "1.5.1",
@@ -13,6 +10,7 @@
     }
   },
   "scripts": {
+    "prepublish": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
