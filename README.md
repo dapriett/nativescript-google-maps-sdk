@@ -100,5 +100,16 @@ function OnMapReady(args) {
   marker.userData = { index : 1};
   mapView.addMarker(marker);
 }
-exports.OnMapReady = OnMapReady;
+
+function onMarkerSelect(args) {
+   console.log("Clicked on " +args.marker.title);
+}
+
+function onCameraChanged(args) {
+    console.log("Camera changed: " + JSON.stringify(args.camera)); 
+}
+
+exports.onMapReady = onMapReady;
+exports.onMarkerSelect = onMarkerSelect;
+exports.onCameraChanged = onCameraChanged;
 ```
