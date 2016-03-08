@@ -64,42 +64,52 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
   <GridLayout>
     <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" 
     								zoom="{{ zoom }}" bearing="{{ bearing }}" 
-    								tilt="{{ tilt }}" mapReady="OnMapReady" />
+    								tilt="{{ tilt }}" mapReady="OnMapReady"  
+   								markerSelect="onMarkerSelect" 
+   								cameraChanged="onCameraChanged" />
   </GridLayout>
 </Page>
 ```
 
 The following properties `latitude`, `latitude`, `zoom`, `bearing`, and `tilt` are available to you for adjusting camera view.
 
-You can also use the `mapReady` event to listen for when the google map is ready, then add custom code to modify the maps for adding markers, etc.
+The following events are available:
+
+Event          | Description
+-------------- |:---------------------------------
+`mapReady`     | Called when Google Map is ready for use
+`markerSelect` | Fires whenever a marker is selected
+`cameraChanged`| Fired on each camera change
+
 
 The property `gMap` gives you access to the raw platform Map Object - see their SDK references for how to use them ( [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap) )
 
 ```
 //  /app/main-page.js
 
+var mapsModule = require("nativescript-google-maps-sdk");
+
 function OnMapReady(args) {
   var mapView = args.object;
-  var gMap = mapView.gMap;
 
   console.log("Setting a marker...");
-
-    if(mapView.android) {
-		var markerOptions = new com.google.android.gms.maps.model.MarkerOptions();
-		markerOptions.title("Sydney");
-		markerOptions.snippet("Australia");
-		var latLng = new com.google.android.gms.maps.model.LatLng(-33.86, 151.20);
-		markerOptions.position(latLng);
-		gMap.addMarker(markerOptions);
-    } 
-
-    if (mapView.ios) {
-		var position = CLLocationCoordinate2DMake(-33.86, 151.20);
-		var marker = GMSMarker.markerWithPosition(position)
-		marker.title = "Sydney";
-		marker.snippet = "Australia";
-		marker.map = gMap;
-    }
+  var marker = new mapsModule.Marker();
+  marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
+  marker.title = "Sydney";
+  marker.snippet = "Australia";
+  marker.userData = { index : 1};
+  mapView.addMarker(marker);
 }
-exports.OnMapReady = OnMapReady;
+
+function onMarkerSelect(args) {
+   console.log("Clicked on " +args.marker.title);
+}
+
+function onCameraChanged(args) {
+    console.log("Camera changed: " + JSON.stringify(args.camera)); 
+}
+
+exports.onMapReady = onMapReady;
+exports.onMarkerSelect = onMarkerSelect;
+exports.onCameraChanged = onCameraChanged;
 ```
