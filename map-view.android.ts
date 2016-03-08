@@ -100,7 +100,7 @@ export class MapView extends MapViewCommon {
 
     removeAllMarkers() {
         this._markers = [];
-        this.android.clear();
+        this.gMap.clear();
     }
 
     public findMarker(callback : (marker: Marker) => boolean) : Marker {
