@@ -47,6 +47,8 @@ declare module "nativescript-google-maps-sdk" {
 
         public removeAllMarkers() : void;
 
+        public clear() : void;
+
         public findMarker(callback : (marker: Marker) => boolean) : Marker;
 
         public notifyMarkerEvent(eventName: string, marker: Marker);

@@ -99,6 +99,13 @@ export class MapView extends MapViewCommon {
     }
 
     removeAllMarkers() {
+        this._markers.forEach(marker => {
+            marker.android.remove();
+        });
+        this._markers = [];
+    }
+
+    clear() {
         this._markers = [];
         this.gMap.clear();
     }

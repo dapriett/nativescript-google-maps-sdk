@@ -120,6 +120,13 @@ export class MapView extends MapViewCommon {
     }
     
     removeAllMarkers() {
+        this._markers.forEach(marker => {
+            marker.ios.map = null;
+        });
+        this._markers = [];
+    }
+
+    clear() {
         this._markers = [];
         this.ios.clear();
     }

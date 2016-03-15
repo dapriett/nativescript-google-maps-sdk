@@ -49,7 +49,7 @@ function onMapReady(args) {
 
     wait(3000).then(function() {
         var marker2 = mapView.findMarker(function(marker) { return marker.userData.index === 2; });
-        console.log("Moving marker...", marker2.userData, marker2.android);
+        console.log("Moving marker...", marker2.userData);
         marker2.position = mapsModule.Position.positionFromLatLng(-33.33,151.08);
         marker2.rotation = 45;
         return wait(3000);
@@ -65,6 +65,10 @@ function onMapReady(args) {
         var marker1 = mapView.findMarker(function(marker) { return marker.userData.index === 1; });
         console.log("Removing marker...", marker1.userData);
         mapView.removeMarker(marker1);
+        return wait(3000);
+    }).then(function() {
+        console.log("Removing all markers...");
+        mapView.removeAllMarkers();
     }).catch(function(error){
       console.log(error);
     });
