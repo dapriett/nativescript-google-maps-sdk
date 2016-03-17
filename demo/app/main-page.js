@@ -54,6 +54,10 @@ function onMapReady(args) {
         marker2.rotation = 45;
         return wait(3000);
     }).then(function() {
+        vmModule.mainViewModel.set("zoom", 10);
+        console.log("Zooming in...", vmModule.mainViewModel);
+        return wait(3000);
+    }).then(function() {
         var marker2 = mapView.findMarker(function(marker) { return marker.userData.index === 2; });
         marker2.visible = true;
         return wait(3000);
