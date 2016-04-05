@@ -325,8 +325,9 @@ export class Marker extends MarkerBase {
 
     set icon(icon : Image) {
         if(typeof icon === 'string') {
-          icon = new Image();
-          icon.imageSource = imageSource.fromResource(String(icon));
+          var tempIcon = new Image();
+          tempIcon.imageSource = imageSource.fromResource(String(icon));
+          icon = tempIcon;
         }
         this._icon = icon;
         var androidIcon = com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(icon.imageSource.android);
