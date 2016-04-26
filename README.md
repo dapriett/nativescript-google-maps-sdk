@@ -9,6 +9,8 @@ This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Map
 [david-dm-url]:https://david-dm.org/dapriett/nativescript-google-maps-sdk
 [david-dm-image]:https://david-dm.org/dapriett/nativescript-google-maps-sdk.svg
 
+[![NPM](https://nodei.co/npm/nativescript-google-maps-sdk.png?downloads=true&downloadRank=true&stars=true)](https://npmjs.org/package/nativescript-google-maps-sdk)
+
 Prerequisites
 ===
 *iOS* - Cocoapods is [installed](https://guides.cocoapods.org/using/getting-started.html#getting-started)

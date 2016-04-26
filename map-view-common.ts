@@ -77,10 +77,10 @@ export abstract class MapView extends View implements IMapView {
     public abstract addMarker(marker: IMarker): void;
     
     public abstract removeMarker(marker: IMarker): void;
-    
-    removeAllMarkers() {
-        this.gMap.clear();
-    }
+
+    public abstract removeAllMarkers(): void;
+
+    public abstract clear(): void;
     
     notifyMarkerEvent(eventName : string, marker: IMarker) {
         let args : MarkerEventData = {eventName : eventName, object: this, marker: marker };
