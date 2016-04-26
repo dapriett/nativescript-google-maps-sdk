@@ -1,5 +1,6 @@
-import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase } from "./map-view-common";
+import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
+import { Color } from "color";
 
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
@@ -70,10 +71,12 @@ export class MapView extends MapViewCommon {
     private _ios: any;
     private _delegate : any;
     private _markers : Array<Marker>;
+    private _shapes: Array<Shape>;
     
     constructor() {
         super();
         this._markers = [];
+        this._shapes = [];
         this._ios = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
     }
     
@@ -124,6 +127,24 @@ export class MapView extends MapViewCommon {
             marker.ios.map = null;
         });
         this._markers = [];
+    }
+
+
+    addCircle(shape: Circle) {
+        shape.ios.map = this.gMap;
+        this._shapes.push(shape);
+    }
+
+    removeShape(shape: Shape) {
+        shape.ios.map = null;
+        this._shapes.splice(this._shapes.indexOf(shape), 1);
+    }
+
+    removeAllShapes() {
+        this._shapes.forEach(shape => {
+            shape.ios.map = null;
+        });
+        this._shapes = [];
     }
 
     clear() {
@@ -219,6 +240,74 @@ export class Marker extends MarkerBase {
         this._ios.icon = icon.ios.image;
     }
     
+    get ios() {
+        return this._ios;
+    }
+}
+
+
+export class Circle extends CircleBase {
+    private _ios: any;
+    private _center: Position;
+    private _strokeColor: Color;
+    private _fillColor: Color;
+
+    constructor() {
+        super();
+        this._ios = GMSCircle.new();
+    }
+
+    get center() {
+        return this._center;
+    }
+
+    set center(value: Position) {
+        this._center = value;
+        this._ios.position = value.ios;
+    }
+
+    get radius() {
+        return this._ios.radius;
+    }
+
+    set radius(value: number) {
+        this._ios.radius = value;
+    }
+
+    get strokeWidth() {
+        return this._ios.strokeWidth;
+    }
+
+    set strokeWidth(value: number) {
+        this._ios.strokeWidth = value;
+    }
+
+    get strokeColor() {
+        return this._strokeColor;
+    }
+
+    set strokeColor(value: Color) {
+        this._strokeColor = value;
+        this._ios.strokeColor = value.ios;
+    }
+
+    get fillColor() {
+        return this._fillColor;
+    }
+
+    set fillColor(value: Color) {
+        this._fillColor = value;
+        this._ios.fillColor = value.ios;
+    }
+
+    get zIndex() {
+        return this._ios.zIndex;
+    }
+
+    set zIndex(value: number) {
+        this._ios.zIndex = value;
+    }
+
     get ios() {
         return this._ios;
     }
