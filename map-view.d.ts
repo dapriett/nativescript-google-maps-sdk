@@ -110,8 +110,6 @@ declare module "nativescript-google-maps-sdk" {
         public addPoint(shape: Position): void;
         public removePoint(shape: Position): void;
         public removeAllPoints(): void;
-        private loadPoints(): void;
-        private reloadPoints(): void;
         public getPoints(): Array<Position>;
     };
 

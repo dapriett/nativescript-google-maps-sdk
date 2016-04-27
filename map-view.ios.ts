@@ -139,6 +139,7 @@ export class MapView extends MapViewCommon {
     }
 
     addPolyline(shape: Polyline) {
+        shape.loadPoints();
         shape.ios.map = this.gMap;
         this._shapes.push(shape);
     }
@@ -260,6 +261,84 @@ export class Marker extends MarkerBase {
     }
 }
 
+export class Polyline extends PolylineBase {
+    private _ios: any;
+    private _center: Position;
+    private _color: Color;
+    private _fillColor: Color;
+
+    constructor() {
+        super();
+        this._ios = GMSPolyline.new();
+    }
+
+    get zIndex() {
+        return this._ios.zIndex;
+    }
+
+    set zIndex(value: number) {
+        this._ios.zIndex = value;
+    }
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+    }
+
+    removePoint(point: Position, reload: boolean): void {
+        var index = this._points.indexOf(point);
+        if (index > -1) {
+            this._points.splice(index, 1);
+            this.loadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.loadPoints();
+    }
+
+    loadPoints(): void {
+        var points = GMSMutablePath.new();
+        this._points.forEach(function(point) {
+            points.addCoordinate(point.ios);
+        }.bind(this));
+        this.path = points;
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    get width() {
+        return this._ios.strokeWidth;
+    }
+
+    set width(value: number) {
+        this._ios.strokeWidth = value;
+    }
+
+    get color() {
+        return this._color;
+    }
+
+    set color(value: Color) {
+        this._color = value;
+        this._ios.strokeColor = value.ios;
+    }
+
+    get geodesic() {
+        return this._ios.geodesic;
+    }
+
+    set geodesic(value: boolean) {
+        this._ios.geodesic = value;
+    }
+
+    get ios() {
+        return this._ios;
+    }
+}
+
 export class Circle extends CircleBase {
     private _ios: any;
     private _center: Position;
@@ -269,6 +348,14 @@ export class Circle extends CircleBase {
     constructor() {
         super();
         this._ios = GMSCircle.new();
+    }
+
+    get zIndex() {
+        return this._ios.zIndex;
+    }
+
+    set zIndex(value: number) {
+        this._ios.zIndex = value;
     }
 
     get center() {
@@ -312,14 +399,6 @@ export class Circle extends CircleBase {
     set fillColor(value: Color) {
         this._fillColor = value;
         this._ios.fillColor = value.ios;
-    }
-
-    get zIndex() {
-        return this._ios.zIndex;
-    }
-
-    set zIndex(value: number) {
-        this._ios.zIndex = value;
     }
 
     get ios() {

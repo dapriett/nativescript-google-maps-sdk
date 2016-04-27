@@ -505,11 +505,11 @@ export class Polyline extends PolylineBase {
 
     reloadPoints(): void {
         if (this._isReal) {
-            var list = new java.util.ArrayList();
+            var points = new java.util.ArrayList();
             this._points.forEach(function(point) {
-                list.add(point.android);
+                points.add(point.android);
             }.bind(this));
-            this._android.setPoints(list);
+            this._android.setPoints(points);
         }
     }
 
