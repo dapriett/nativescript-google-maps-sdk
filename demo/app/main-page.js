@@ -3,6 +3,7 @@ var observableModule = require("data/observable");
 var mapsModule = require("nativescript-google-maps-sdk");
 var Image = require("ui/image").Image;
 var imageSource = require("image-source");
+var Color = require("color").Color;
 
 function wait(milliSeconds) {
     return new Promise(function(resolve, reject) {
@@ -31,6 +32,15 @@ function onMapReady(args) {
     marker.snippet = "Australia";
     marker.userData = { index : 1};
     mapView.addMarker(marker);
+
+    var circle = new mapsModule.Circle();
+    circle.center = mapsModule.Position.positionFromLatLng(-33.42, 151.32);
+    circle.visible = true;
+    circle.radius = 5000;
+    circle.fillColor = new Color('#f80');
+    circle.strokeColor = new Color('#f00');
+    circle.strokeWidth = 2;
+    mapView.addCircle(circle);
 
     marker = new mapsModule.Marker();
     marker.position = mapsModule.Position.positionFromLatLng(-33.42, 151.32);

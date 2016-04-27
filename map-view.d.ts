@@ -2,6 +2,7 @@ declare module "nativescript-google-maps-sdk" {
     import { View } from "ui/core/view";
     import { Property } from "ui/core/dependency-observable";
     import { Image } from "ui/image";
+    import { Color } from "color";
     import { EventData } from "data/observable";
 
     export class Camera {
@@ -47,6 +48,14 @@ declare module "nativescript-google-maps-sdk" {
 
         public removeAllMarkers() : void;
 
+        // public addCircle(shape: Shape): void;
+
+        public addCircle(shape: Circle): void;
+
+        public removeShape(shape: Shape): void;
+
+        public removeAllShapes(): void;
+
         public clear() : void;
 
         public findMarker(callback : (marker: Marker) => boolean) : Marker;
@@ -77,6 +86,23 @@ declare module "nativescript-google-maps-sdk" {
         public _map : any;
         public ios: any;
         public android: any;
+    }
+
+    export class Shape {
+        public visible: boolean;
+        public userData: any;
+        public _map: any;
+        public ios: any;
+        public android: any;
+    }
+
+    export class Circle extends Shape {
+        public center: Position;
+        public radius: number;
+        public strokeWidth: number;
+        public strokeColor: Color;
+        public fillColor: Color;
+        public zIndex: number;
     }
 
     export interface MarkerEventData extends EventData {

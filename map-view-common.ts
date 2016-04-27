@@ -1,4 +1,4 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
 import { View } from "ui/core/view";
 import { Image } from "ui/image";
 
@@ -80,6 +80,12 @@ export abstract class MapView extends View implements IMapView {
 
     public abstract removeAllMarkers(): void;
 
+    public abstract addCircle(shape: Circle): void;
+
+    public abstract removeShape(shape: Shape): void;
+
+    public abstract removeAllShapes(): void;
+
     public abstract clear(): void;
     
     notifyMarkerEvent(eventName : string, marker: IMarker) {
@@ -110,4 +116,13 @@ export class Marker implements IMarker {
 export class Position implements IPosition {
     public latitude: number;
     public longitude: number;
+}
+
+export class Shape implements IShape {
+}
+
+export class Circle implements ICircle {
+    public center: IPosition;
+    public userData: any;
+    public _map: any;
 }
