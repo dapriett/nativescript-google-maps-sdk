@@ -1,3 +1,4 @@
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
 import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
@@ -129,6 +130,23 @@ export class MapView extends MapViewCommon {
         this._markers = [];
     }
 
+    findMarker(callback: (marker: Marker) => boolean): Marker {
+        return this._markers.find(callback);
+    }
+
+    notifyMarkerTapped(marker: Marker) {
+        this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
+    }
+
+    addPolyline(shape: Polyline) {
+        shape.ios.map = this.gMap;
+        this._shapes.push(shape);
+    }
+
+    addPolygon(shape: Polygon) {
+        shape.ios.map = this.gMap;
+        this._shapes.push(shape);
+    }
 
     addCircle(shape: Circle) {
         shape.ios.map = this.gMap;
@@ -146,19 +164,16 @@ export class MapView extends MapViewCommon {
         });
         this._shapes = [];
     }
+    
+    findShape(callback: (shape: Shape) => boolean): Shape {
+        return this._markers.find(callback);
+    }
 
     clear() {
         this._markers = [];
         this.ios.clear();
     }
     
-    public findMarker(callback : (marker: Marker) => boolean) : Marker {
-        return this._markers.find(callback);
-    }
-    
-    public notifyMarkerTapped(marker : Marker) {
-        this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
-    }
 }
 
 export class Position extends PositionBase {
@@ -244,7 +259,6 @@ export class Marker extends MarkerBase {
         return this._ios;
     }
 }
-
 
 export class Circle extends CircleBase {
     private _ios: any;

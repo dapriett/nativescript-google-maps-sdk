@@ -2,7 +2,8 @@ import application = require("application");
 
 import common = require("./map-view-common");
 
-import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Circle as CircleBase } from "./map-view-common";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
+import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
 import imageSource = require("image-source");
@@ -108,6 +109,25 @@ export class MapView extends MapViewCommon {
         this._markers = [];
     }
 
+    findMarker(callback: (marker: Marker) => boolean): Marker {
+      return this._markers.find(callback);
+    }
+
+    notifyMarkerTapped(marker: Marker) {
+      this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
+    }
+
+    addPolyline(shape: Polyline) {
+        shape.loadPoints();
+        shape.android = this.gMap.addPolyline(shape.android);
+        this._shapes.push(shape);
+    }
+    
+    addPolygon(shape: Polygon) {
+        shape.android = this.gMap.addPolygon(shape.android);
+        this._shapes.push(shape);
+    }
+
     addCircle(shape: Circle) {
         shape.android = this.gMap.addCircle(shape.android);
         this._shapes.push(shape);
@@ -131,14 +151,9 @@ export class MapView extends MapViewCommon {
         this.gMap.clear();
     }
 
-    public findMarker(callback : (marker: Marker) => boolean) : Marker {
-        return this._markers.find(callback);
+    findShape(callback: (shape: Shape) => boolean): Shape {
+      return this._shapes.find(callback);
     }
-
-    public notifyMarkerTapped(marker : Marker) {
-        this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
-    }
-
 
     private onActivityPaused(args) {
       if(!this.android || this._context != args.activity) return;
@@ -283,7 +298,7 @@ export class Marker extends MarkerBase {
     private _icon: Image;
     private _isMarker : boolean = false;
 
-    static MARKER_CLASS = 'com.google.android.gms.maps.model.Marker';
+    static CLASS = 'com.google.android.gms.maps.model.Marker';
 
     constructor() {
         super();
@@ -344,14 +359,14 @@ export class Marker extends MarkerBase {
         return this._icon;
     }
 
-    set icon(icon : Image) {
-        if(typeof icon === 'string') {
+    set icon(value: Image) {
+        if (typeof value === 'string') {
           var tempIcon = new Image();
-          tempIcon.imageSource = imageSource.fromResource(String(icon));
-          icon = tempIcon;
+          tempIcon.imageSource = imageSource.fromResource(String(value));
+          value = tempIcon;
         }
-        this._icon = icon;
-        var androidIcon = com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(icon.imageSource.android);
+        this._icon = value;
+        var androidIcon = com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(value.imageSource.android);
         if(this._isMarker) {
           this._android.setIcon(androidIcon);
         } else {
@@ -359,15 +374,21 @@ export class Marker extends MarkerBase {
         }
     }
 
+    set icon(value: string) {
+        var tempIcon = new Image();
+        tempIcon.imageSource = imageSource.fromResource(String(value));
+        this.icon = tempIcon;
+    }
+
     get alpha() {
         return this._android.getAlpha();
     }
 
-    set alpha(alpha : number) {
+    set alpha(value : number) {
         if(this._isMarker) {
-          this._android.setAlpha(alpha);
+          this._android.setAlpha(value);
         } else {
-          this._android.alpha(alpha);
+          this._android.alpha(value);
         }
     }
 
@@ -375,23 +396,11 @@ export class Marker extends MarkerBase {
         return this._android.isFlat();
     }
 
-    set flat(flat : boolean) {
+    set flat(value : boolean) {
         if(this._isMarker) {
-          this._android.setFlat(flat);
+          this._android.setFlat(value);
         } else {
-          this._android.flat(flat);
-        }
-    }
-
-    get flat() {
-        return this._android.isFlat();
-    }
-
-    set flat(flat : boolean) {
-        if(this._isMarker) {
-          this._android.setFlat(flat);
-        } else {
-          this._android.flat(flat);
+          this._android.flat(value);
         }
     }
 
@@ -399,11 +408,11 @@ export class Marker extends MarkerBase {
         return this._android.isDraggable();
     }
 
-    set draggable(draggable : boolean) {
+    set draggable(value : boolean) {
         if(this._isMarker) {
-          this._android.setDraggable(draggable);
+          this._android.setDraggable(value);
         } else {
-          this._android.draggable(draggable);
+          this._android.draggable(value);
         }
     }
 
@@ -411,16 +420,12 @@ export class Marker extends MarkerBase {
         return this._android.isVisible();
     }
 
-    set visible(visible : boolean) {
+    set visible(value : boolean) {
         if(this._isMarker) {
-          this._android.setVisible(visible);
+          this._android.setVisible(value);
         } else {
-          this._android.visible(visible);
+          this._android.visible(value);
         }
-    }
-
-    set icon(icon : string) {
-        var markerBitmap = imageSource.fromResource(string);
     }
 
     get android() {
@@ -429,7 +434,133 @@ export class Marker extends MarkerBase {
 
     set android(android) {
         this._android = android;
-        this._isMarker = android.getClass().getName() === Marker.MARKER_CLASS;
+        this._isMarker = android.getClass().getName() === Marker.CLASS;
+    }
+}
+
+
+export class Polyline extends PolylineBase {
+    private _android: any;
+    private _points: Array<Position>;
+    private _color: Color;
+    private _isReal: boolean = false;
+
+    static CLASS = 'com.google.android.gms.maps.model.Polyline';
+
+    constructor() {
+        super();
+        this.android = new com.google.android.gms.maps.model.PolylineOptions();
+        this._points = [];
+    }
+
+    get zIndex() {
+        return this._android.getZIndex();
+    }
+
+    set zIndex(value: number) {
+        if (this._isReal) {
+            this._android.setZIndex(value);
+        } else {
+            this._android.zIndex(value);
+        }
+    }
+
+    get visible() {
+        return this._android.isVisible();
+    }
+
+    set visible(value: boolean) {
+        if (this._isReal) {
+            this._android.setVisible(value);
+        } else {
+            this._android.visible(value);
+        }
+    }
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+        this.reloadPoints();
+    }
+    
+    removePoint(point: Position, reload: boolean): void {
+        var index = this._points.indexOf(point);
+        if(index > -1) {
+            this._points.splice(index, 1);
+            this.reloadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.reloadPoints();
+    }
+
+    loadPoints(): void {
+        if (!this._isReal) {
+            this._points.forEach(function(point){
+                this._android.add(point.android);
+            }.bind(this));
+        }
+    }
+
+    reloadPoints(): void {
+        if (this._isReal) {
+            var list = new java.util.ArrayList();
+            this._points.forEach(function(point) {
+                list.add(point.android);
+            }.bind(this));
+            this._android.setPoints(list);
+        }
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    get width() {
+        return this._android.getStrokeWidth();
+    }
+
+    set width(value: number) {
+        if (this._isReal) {
+            this._android.setWidth(value);
+        } else {
+            this._android.width(value);
+        }
+    }
+
+    get color() {
+        return this._color;
+    }
+
+    set color(value: Color) {
+        this._color = value;
+        if (this._isReal) {
+            this._android.setStrokeColor(value.android);
+        } else {
+            this._android.color(value.android);
+        }
+    }
+
+    get geodesic() {
+        return this._android.isGeodesic();
+    }
+
+    set geodesic(value: boolean) {
+        if (this._isReal) {
+            this._android.setGeodesic(value);
+        } else {
+            this._android.geodesic(value);
+        }
+    }
+
+    get android() {
+        return this._android;
+    }
+
+    set android(android) {
+        this._android = android;
+        this._isReal = android.getClass().getName() === Polyline.CLASS;
     }
 }
 
@@ -438,13 +569,37 @@ export class Circle extends CircleBase {
     private _center: Position;
     private _strokeColor: Color;
     private _fillColor: Color;
-    private _isCircle: boolean = false;
+    private _isReal: boolean = false;
 
-    static CIRCLE_CLASS = 'com.google.android.gms.maps.model.Circle';
+    static CLASS = 'com.google.android.gms.maps.model.Circle';
 
     constructor() {
         super();
         this.android = new com.google.android.gms.maps.model.CircleOptions();
+    }
+
+    get zIndex() {
+        return this._android.getZIndex();
+    }
+
+    set zIndex(value: number) {
+        if (this._isReal) {
+            this._android.setZIndex(value);
+        } else {
+            this._android.zIndex(value);
+        }
+    }
+
+    get visible() {
+        return this._android.isVisible();
+    }
+
+    set visible(value: boolean) {
+        if (this._isReal) {
+            this._android.setVisible(value);
+        } else {
+            this._android.visible(value);
+        }
     }
 
     get center() {
@@ -453,7 +608,7 @@ export class Circle extends CircleBase {
 
     set center(value: Position) {
         this._center = value;
-        if (this._isCircle) {
+        if (this._isReal) {
             this._android.setCenter(value.android);
         } else {
             this._android.center(value.android);
@@ -465,7 +620,7 @@ export class Circle extends CircleBase {
     }
 
     set radius(value: number) {
-        if (this._isCircle) {
+        if (this._isReal) {
             this._android.setRadius(value);
         } else {
             this._android.radius(value);
@@ -477,7 +632,7 @@ export class Circle extends CircleBase {
     }
 
     set strokeWidth(value: number) {
-        if (this._isCircle) {
+        if (this._isReal) {
             this._android.setStrokeWidth(value);
         } else {
             this._android.strokeWidth(value);
@@ -490,7 +645,7 @@ export class Circle extends CircleBase {
 
     set strokeColor(value: Color) {
         this._strokeColor = value;
-        if (this._isCircle) {
+        if (this._isReal) {
             this._android.setStrokeColor(value.android);
         } else {
             this._android.strokeColor(value.android);
@@ -503,34 +658,10 @@ export class Circle extends CircleBase {
 
     set fillColor(value: Color) {
         this._fillColor = value;
-        if (this._isCircle) {
+        if (this._isReal) {
             this._android.setFillColor(value.android);
         } else {
             this._android.fillColor(value.android);
-        }
-    }
-
-    get zIndex() {
-        return this._android.getZIndex();
-    }
-
-    set zIndex(value: number) {
-        if (this._isCircle) {
-            this._android.setZIndex(value);
-        } else {
-            this._android.zIndex(value);
-        }
-    }
-
-    get visible() {
-        return this._android.isVisible();
-    }
-
-    set visible(value: boolean) {
-        if (this._isCircle) {
-            this._android.setVisible(value);
-        } else {
-            this._android.visible(value);
         }
     }
 
@@ -540,6 +671,6 @@ export class Circle extends CircleBase {
 
     set android(android) {
         this._android = android;
-        this._isCircle = android.getClass().getName() === Circle.CIRCLE_CLASS;
+        this._isReal = android.getClass().getName() === Circle.CLASS;
     }
 }

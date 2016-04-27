@@ -37,19 +37,30 @@ function onMapReady(args) {
     circle.center = mapsModule.Position.positionFromLatLng(-33.42, 151.32);
     circle.visible = true;
     circle.radius = 5000;
-    circle.fillColor = new Color('#f80');
-    circle.strokeColor = new Color('#f00');
+    circle.fillColor = new Color('#99ff8800');
+    circle.strokeColor = new Color('#99ff0000');
     circle.strokeWidth = 2;
     mapView.addCircle(circle);
+
+    var polyline = new mapsModule.Polyline();
+    polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.86, 151.20));
+    var point = mapsModule.Position.positionFromLatLng(-32.89,151.44);
+    polyline.addPoint(point);
+    polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.42, 151.32));
+    polyline.visible = true;
+    polyline.width = 8;
+    polyline.color = new Color('#DD00b3fd');
+    polyline.geodesic = true;
+    mapView.addPolyline(polyline);
 
     marker = new mapsModule.Marker();
     marker.position = mapsModule.Position.positionFromLatLng(-33.42, 151.32);
     marker.title = "Gosford";
     marker.snippet = "Australia";
-    var icon = new Image();
-    icon.imageSource = imageSource.fromResource('icon');
-    marker.icon = icon;
-    // marker.icon = 'icon';
+    // var icon = new Image();
+    // icon.imageSource = imageSource.fromResource('icon');
+    // marker.icon = icon;
+    marker.icon = 'icon';
     marker.alpha = 0.8;
     marker.flat = true;
     marker.draggable = true;
@@ -62,10 +73,12 @@ function onMapReady(args) {
         console.log("Moving marker...", marker2.userData);
         marker2.position = mapsModule.Position.positionFromLatLng(-33.33,151.08);
         marker2.rotation = 45;
+        polyline.removePoint(point);
         return wait(3000);
     }).then(function() {
         vmModule.mainViewModel.set("zoom", 10);
         console.log("Zooming in...", vmModule.mainViewModel);
+        polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.33,151.08));
         return wait(3000);
     }).then(function() {
         var marker2 = mapView.findMarker(function(marker) { return marker.userData.index === 2; });
