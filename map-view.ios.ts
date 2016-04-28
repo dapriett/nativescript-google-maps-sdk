@@ -1,7 +1,8 @@
 import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
-import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Circle as CircleBase } from "./map-view-common";
+import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
+import imageSource = require("image-source");
 
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
@@ -251,9 +252,14 @@ export class Marker extends MarkerBase {
         return this._icon;
     }
     
-    set icon(icon : Image) {
-        this._icon = icon;
-        this._ios.icon = icon.ios.image;
+    set icon(value : Image) {
+        if (typeof value === 'string') {
+            var tempIcon = new Image();
+            tempIcon.imageSource = imageSource.fromResource(String(value));
+            value = tempIcon;
+        }
+        this._icon = value;
+        this._ios.icon = this._icon.ios.image;
     }
     
     get ios() {
@@ -263,13 +269,13 @@ export class Marker extends MarkerBase {
 
 export class Polyline extends PolylineBase {
     private _ios: any;
-    private _center: Position;
+    private _points: Array<Position>;
     private _color: Color;
-    private _fillColor: Color;
 
     constructor() {
         super();
         this._ios = GMSPolyline.new();
+        this._points = [];
     }
 
     get zIndex() {
@@ -282,6 +288,7 @@ export class Polyline extends PolylineBase {
 
     addPoint(point: Position): void {
         this._points.push(point);
+        this.loadPoints();
     }
 
     removePoint(point: Position, reload: boolean): void {
@@ -302,7 +309,7 @@ export class Polyline extends PolylineBase {
         this._points.forEach(function(point) {
             points.addCoordinate(point.ios);
         }.bind(this));
-        this.path = points;
+        this._ios.path = points;
     }
 
     getPoints(): Array<Position> {

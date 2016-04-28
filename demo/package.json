@@ -2,14 +2,14 @@
 	"nativescript": {
 		"id": "org.nativescript.demo",
 		"tns-ios": {
-			"version": "1.5.1"
+			"version": "2.0.0"
 		},
 		"tns-android": {
-			"version": "1.5.1"
+			"version": "1.7.1"
 		}
 	},
 	"dependencies": {
 		"nativescript-google-maps-sdk": "file:../",
-		"tns-core-modules": "1.5.1"
+		"tns-core-modules": "^2.0.0"
 	}
 }
