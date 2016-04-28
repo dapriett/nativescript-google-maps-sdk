@@ -78,7 +78,10 @@ function onMapReady(args) {
     }).then(function() {
         vmModule.mainViewModel.set("zoom", 10);
         console.log("Zooming in...", vmModule.mainViewModel);
+        return wait(3000);
+    }).then(function() {
         polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.33,151.08));
+        console.log("Adding point to Polyline...", polyline);
         return wait(3000);
     }).then(function() {
         var marker2 = mapView.findMarker(function(marker) { return marker.userData.index === 2; });
