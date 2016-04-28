@@ -6,45 +6,47 @@ declare module "nativescript-google-maps-sdk" {
     import { EventData } from "data/observable";
 
     export class Camera {
-        public latitude : number;
-        public longitude : number;
-        public zoom : number;
-        public bearing : number;
-        public tilt : number;
+        public latitude: number;
+        public longitude: number;
+        public zoom: number;
+        public bearing: number;
+        public tilt: number;
     }
 
     export class MapView extends View {
 
-        public static latitudeProperty : Property;
-        public static longitudeProperty : Property;
-        public static bearingProperty : Property;
-        public static zoomProperty : Property;
-        public static tiltProperty : Property;
+        public static latitudeProperty: Property;
+        public static longitudeProperty: Property;
+        public static bearingProperty: Property;
+        public static zoomProperty: Property;
+        public static tiltProperty: Property;
 
-        public latitude : number;
-        public longitude : number;
-        public zoom : number;
-        public bearing : number;
-        public tilt : number;
+        public latitude: number;
+        public longitude: number;
+        public zoom: number;
+        public bearing: number;
+        public tilt: number;
 
-        public notifyMapReady() : void;
+        public notifyMapReady(): void;
 
-        public updateCamera() : void;
+        public updateCamera(): void;
 
-        public static mapReadyEvent : string;
-        public static markerSelectEvent : string;
-        public static coordinateTappedEvent : string;
-        public static cameraChangedEvent : string;
+        public updatePadding(): void;
 
-        public ios : any; /* GMSMapView */
+        public static mapReadyEvent: string;
+        public static markerSelectEvent: string;
+        public static coordinateTappedEvent: string;
+        public static cameraChangedEvent: string;
 
-        public android : any; /* com.google.android.gms.maps.MapView */
+        public ios: any; /* GMSMapView */
 
-        public gMap : any;
+        public android: any; /* com.google.android.gms.maps.MapView */
 
-        public addMarker(marker : Marker) : void;
+        public gMap: any;
 
-        public removeMarker(marker : Marker) : void;
+        public addMarker(marker: Marker): void;
+
+        public removeMarker(marker: Marker): void;
 
         public removeAllMarkers(): void;
 
@@ -53,7 +55,7 @@ declare module "nativescript-google-maps-sdk" {
         public notifyMarkerEvent(eventName: string, marker: Marker);
 
         public addPolyline(shape: Polyline): void;
-        
+
         public addPolygon(shape: Polygon): void;
 
         public addCircle(shape: Circle): void;
@@ -64,30 +66,30 @@ declare module "nativescript-google-maps-sdk" {
 
         public findShape(callback: (shape: Shape) => boolean): Shape;
 
-        public clear() : void;
+        public clear(): void;
 
     }
 
     export class Position {
-        public latitude : number;
-        public longitude : number;
-        public static positionFromLatLng(latitude: number, longitude: number) : Position;
-        public ios : any; /* CLLocationCoordinate2D */
-        public android : any;
+        public latitude: number;
+        public longitude: number;
+        public static positionFromLatLng(latitude: number, longitude: number): Position;
+        public ios: any; /* CLLocationCoordinate2D */
+        public android: any;
     }
 
     export class Marker {
-        public position : Position;
-        public rotation : number;
-        public title : string;
-        public snippet : string;
-        public icon : Image;
-        public alpha : number;
-        public flat : boolean;
-        public draggable : boolean;
-        public visible : boolean;
-        public userData : any;
-        public _map : any;
+        public position: Position;
+        public rotation: number;
+        public title: string;
+        public snippet: string;
+        public icon: Image;
+        public alpha: number;
+        public flat: boolean;
+        public draggable: boolean;
+        public visible: boolean;
+        public userData: any;
+        public _map: any;
         public ios: any;
         public android: any;
     }
@@ -126,14 +128,14 @@ declare module "nativescript-google-maps-sdk" {
     }
 
     export interface MarkerEventData extends EventData {
-        marker : Marker;
+        marker: Marker;
     }
 
     export interface CameraEventData extends EventData {
-        camera : Camera;
+        camera: Camera;
     }
 
     export interface PositionEventData extends EventData {
-        position : Position;
+        position: Position;
     }
 }

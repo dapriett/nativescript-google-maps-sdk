@@ -39,45 +39,51 @@ export class MapView extends MapViewCommon {
     }
 
     private _createCameraPosition() {
-      var cpBuilder = new com.google.android.gms.maps.model.CameraPosition.Builder();
-      var update = false;
+        var cpBuilder = new com.google.android.gms.maps.model.CameraPosition.Builder();
+        var update = false;
 
-      if(!isNaN(this.latitude) && !isNaN(this.longitude)) {
-        update = true;
-        cpBuilder.target(new com.google.android.gms.maps.model.LatLng(this.latitude, this.longitude));
-      }
+        if (!isNaN(this.latitude) && !isNaN(this.longitude)) {
+            update = true;
+            cpBuilder.target(new com.google.android.gms.maps.model.LatLng(this.latitude, this.longitude));
+        }
 
-      if(!isNaN(this.bearing)) {
-        update = true;
-        cpBuilder.bearing(this.bearing);
-      }
+        if (!isNaN(this.bearing)) {
+            update = true;
+            cpBuilder.bearing(this.bearing);
+        }
 
-      if(!isNaN(this.zoom)) {
-        update = true;
-        cpBuilder.zoom(this.zoom);
-      }
+        if (!isNaN(this.zoom)) {
+            update = true;
+            cpBuilder.zoom(this.zoom);
+        }
 
-      if(!isNaN(this.tilt)) {
-        update = true;
-        cpBuilder.tilt(this.tilt);
-      }
+        if (!isNaN(this.tilt)) {
+            update = true;
+            cpBuilder.tilt(this.tilt);
+        }
 
-      return (update) ? cpBuilder.build() : null;
+        return (update) ? cpBuilder.build() : null;
     }
 
     updateCamera() {
-      var cameraPosition = this._createCameraPosition();
-      if(!cameraPosition) return;
+        var cameraPosition = this._createCameraPosition();
+        if (!cameraPosition) return;
 
-      if(!this.gMap) {
-        this._pendingCameraUpdate = true
-        return;
-      }
+        if (!this.gMap) {
+            this._pendingCameraUpdate = true
+            return;
+        }
 
-      this._pendingCameraUpdate = false;
+        this._pendingCameraUpdate = false;
 
-      var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
-      this.gMap.moveCamera(cameraUpdate);
+        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
+        this.gMap.moveCamera(cameraUpdate);
+    }
+
+    updatePadding() {
+        if (this.padding && this.gMap) {
+            this.gMap.setPadding(this.padding[0] || 0, this.padding[1] || 0, this.padding[2] || 0, this.padding[3] || 0);
+        }
     }
 
     get android() {
@@ -88,7 +94,7 @@ export class MapView extends MapViewCommon {
         return this._gMap;
     }
 
-    set android(value : any) {
+    set android(value: any) {
         console.warn('Cannot set value from outside this class');
     }
 
@@ -110,11 +116,11 @@ export class MapView extends MapViewCommon {
     }
 
     findMarker(callback: (marker: Marker) => boolean): Marker {
-      return this._markers.find(callback);
+        return this._markers.find(callback);
     }
 
     notifyMarkerTapped(marker: Marker) {
-      this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
+        this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
     }
 
     addPolyline(shape: Polyline) {
@@ -122,7 +128,7 @@ export class MapView extends MapViewCommon {
         shape.android = this.gMap.addPolyline(shape.android);
         this._shapes.push(shape);
     }
-    
+
     addPolygon(shape: Polygon) {
         shape.android = this.gMap.addPolygon(shape.android);
         this._shapes.push(shape);
@@ -140,7 +146,7 @@ export class MapView extends MapViewCommon {
 
     removeAllShapes() {
         this._shapes.forEach(shape => {
-          shape.android.remove();
+            shape.android.remove();
         });
         this._shapes = [];
     }
@@ -152,107 +158,108 @@ export class MapView extends MapViewCommon {
     }
 
     findShape(callback: (shape: Shape) => boolean): Shape {
-      return this._shapes.find(callback);
+        return this._shapes.find(callback);
     }
 
     private onActivityPaused(args) {
-      if(!this.android || this._context != args.activity) return;
-      this.android.onPause();
+        if (!this.android || this._context != args.activity) return;
+        this.android.onPause();
     }
 
     private onActivityResumed(args) {
-      if(!this.android || this._context != args.activity) return;
-      this.android.onResume();
+        if (!this.android || this._context != args.activity) return;
+        this.android.onResume();
     }
 
     private onActivitySaveInstanceState(args) {
-      if(!this.android || this._context != args.activity) return;
-      this.android.onSaveInstanceState(args.bundle);
+        if (!this.android || this._context != args.activity) return;
+        this.android.onSaveInstanceState(args.bundle);
     }
 
     private onActivityDestroyed(args) {
-      if(!this.android || this._context != args.activity) return;
-      this.android.onDestroy();
+        if (!this.android || this._context != args.activity) return;
+        this.android.onDestroy();
     }
 
     private _createUI() {
-      var that = new WeakRef(this);
+        var that = new WeakRef(this);
 
-      var cameraPosition = this._createCameraPosition();
+        var cameraPosition = this._createCameraPosition();
 
-      var options = new com.google.android.gms.maps.GoogleMapOptions();
-      if(cameraPosition) options = options.camera(cameraPosition);
+        var options = new com.google.android.gms.maps.GoogleMapOptions();
+        if (cameraPosition) options = options.camera(cameraPosition);
 
-      this._android = new com.google.android.gms.maps.MapView(this._context, options);
+        this._android = new com.google.android.gms.maps.MapView(this._context, options);
 
-      this._android.onCreate(null);
-      this._android.onResume();
+        this._android.onCreate(null);
+        this._android.onResume();
 
-      var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
-        onMapReady: function (gMap) {
-          var owner = that.get();
-          owner._gMap = gMap;
-          if (owner._pendingCameraUpdate) {
-            owner.updateCamera();
-          }
+        var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
+            onMapReady: function(gMap) {
+                var owner = that.get();
+                owner._gMap = gMap;
+                owner.updatePadding();
+                if (owner._pendingCameraUpdate) {
+                    owner.updateCamera();
+                }
 
-          gMap.setOnMarkerClickListener(new com.google.android.gms.maps.GoogleMap.OnMarkerClickListener({
-            onMarkerClick: function(gmsMarker) {
+                gMap.setOnMarkerClickListener(new com.google.android.gms.maps.GoogleMap.OnMarkerClickListener({
+                    onMarkerClick: function(gmsMarker) {
 
-              let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
-              owner.notifyMarkerTapped(marker);
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerTapped(marker);
 
-              return false;
+                        return false;
+                    }
+                }));
+
+                gMap.setOnCameraChangeListener(new com.google.android.gms.maps.GoogleMap.OnCameraChangeListener({
+                    onCameraChange: function(cameraPosition) {
+
+                        owner._processingCameraEvent = true;
+
+                        let cameraChanged: boolean = false;
+                        if (owner.latitude != cameraPosition.target.latitude) {
+                            cameraChanged = true;
+                            owner._onPropertyChangedFromNative(MapViewCommon.latitudeProperty, cameraPosition.target.latitude);
+                        }
+                        if (owner.longitude != cameraPosition.target.longitude) {
+                            cameraChanged = true;
+                            owner._onPropertyChangedFromNative(MapViewCommon.longitudeProperty, cameraPosition.target.longitude);
+                        }
+                        if (owner.bearing != cameraPosition.bearing) {
+                            cameraChanged = true;
+                            owner._onPropertyChangedFromNative(MapViewCommon.bearingProperty, cameraPosition.bearing);
+                        }
+                        if (owner.zoom != cameraPosition.zoom) {
+                            cameraChanged = true;
+                            owner._onPropertyChangedFromNative(MapViewCommon.zoomProperty, cameraPosition.zoom);
+                        }
+                        if (owner.tilt != cameraPosition.tilt) {
+                            cameraChanged = true;
+                            owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.tilt);
+                        }
+
+                        if (cameraChanged) {
+                            owner.notifyCameraEvent(MapViewCommon.cameraChangedEvent, {
+                                latitude: cameraPosition.target.latitude,
+                                longitude: cameraPosition.target.longitude,
+                                zoom: cameraPosition.zoom,
+                                bearing: cameraPosition.bearing,
+                                tilt: cameraPosition.tilt
+                            });
+                        }
+
+                        owner._processingCameraEvent = false;
+
+                    }
+                }));
+
+                owner.notifyMapReady();
             }
-          }));
+        });
 
-          gMap.setOnCameraChangeListener(new com.google.android.gms.maps.GoogleMap.OnCameraChangeListener({
-            onCameraChange: function(cameraPosition) {
-
-              owner._processingCameraEvent = true;
-
-              let cameraChanged : boolean = false;
-              if (owner.latitude != cameraPosition.target.latitude) {
-                cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.latitudeProperty, cameraPosition.target.latitude);
-              }
-              if (owner.longitude != cameraPosition.target.longitude) {
-                cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.longitudeProperty, cameraPosition.target.longitude);
-              }
-              if (owner.bearing != cameraPosition.bearing) {
-                cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.bearingProperty, cameraPosition.bearing);
-              }
-              if (owner.zoom != cameraPosition.zoom) {
-                cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.zoomProperty, cameraPosition.zoom);
-              }
-              if (owner.tilt != cameraPosition.tilt) {
-                cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.tilt);
-              }
-
-              if (cameraChanged) {
-                owner.notifyCameraEvent(MapViewCommon.cameraChangedEvent, {
-                  latitude: cameraPosition.target.latitude,
-                  longitude: cameraPosition.target.longitude,
-                  zoom: cameraPosition.zoom,
-                  bearing: cameraPosition.bearing,
-                  tilt: cameraPosition.tilt
-                });
-              }
-
-              owner._processingCameraEvent = false;
-
-            }
-          }));
-
-          owner.notifyMapReady();
-        }
-      });
-
-      this._android.getMapAsync(mapReadyCallback);
+        this._android.getMapAsync(mapReadyCallback);
     }
 
 }
@@ -284,7 +291,7 @@ export class Position extends PositionBase {
         this._android = new com.google.android.gms.maps.model.LatLng(0, 0);
     }
 
-    public static positionFromLatLng(latitude: number, longitude: number) : Position {
+    public static positionFromLatLng(latitude: number, longitude: number): Position {
         let position: Position = new Position();
         position.latitude = latitude;
         position.longitude = longitude;
@@ -293,10 +300,10 @@ export class Position extends PositionBase {
 }
 
 export class Marker extends MarkerBase {
-    private _android : any;
+    private _android: any;
     private _position: Position;
     private _icon: Image;
-    private _isMarker : boolean = false;
+    private _isMarker: boolean = false;
 
     static CLASS = 'com.google.android.gms.maps.model.Marker';
 
@@ -312,10 +319,10 @@ export class Marker extends MarkerBase {
 
     set position(position: Position) {
         this._position = position;
-        if(this._isMarker) {
-          this._android.setPosition(position.android);
+        if (this._isMarker) {
+            this._android.setPosition(position.android);
         } else {
-          this._android.position(position.android);
+            this._android.position(position.android);
         }
     }
 
@@ -324,10 +331,10 @@ export class Marker extends MarkerBase {
     }
 
     set rotation(rotation: number) {
-        if(this._isMarker) {
-          this._android.setRotation(rotation);
+        if (this._isMarker) {
+            this._android.setRotation(rotation);
         } else {
-          this._android.rotation(rotation);
+            this._android.rotation(rotation);
         }
     }
 
@@ -335,11 +342,11 @@ export class Marker extends MarkerBase {
         return this._android.getTitle();
     }
 
-    set title(title : string) {
-        if(this._isMarker) {
-          this._android.setTitle(title);
+    set title(title: string) {
+        if (this._isMarker) {
+            this._android.setTitle(title);
         } else {
-          this._android.title(title);
+            this._android.title(title);
         }
     }
 
@@ -347,11 +354,11 @@ export class Marker extends MarkerBase {
         return this._android.getSnippet();
     }
 
-    set snippet(snippet : string) {
-        if(this._isMarker) {
-          this._android.setSnippet(snippet);
+    set snippet(snippet: string) {
+        if (this._isMarker) {
+            this._android.setSnippet(snippet);
         } else {
-          this._android.snippet(snippet);
+            this._android.snippet(snippet);
         }
     }
 
@@ -361,16 +368,16 @@ export class Marker extends MarkerBase {
 
     set icon(value: Image) {
         if (typeof value === 'string') {
-          var tempIcon = new Image();
-          tempIcon.imageSource = imageSource.fromResource(String(value));
-          value = tempIcon;
+            var tempIcon = new Image();
+            tempIcon.imageSource = imageSource.fromResource(String(value));
+            value = tempIcon;
         }
         this._icon = value;
         var androidIcon = com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(value.imageSource.android);
-        if(this._isMarker) {
-          this._android.setIcon(androidIcon);
+        if (this._isMarker) {
+            this._android.setIcon(androidIcon);
         } else {
-          this._android.icon(androidIcon);
+            this._android.icon(androidIcon);
         }
     }
 
@@ -384,11 +391,11 @@ export class Marker extends MarkerBase {
         return this._android.getAlpha();
     }
 
-    set alpha(value : number) {
-        if(this._isMarker) {
-          this._android.setAlpha(value);
+    set alpha(value: number) {
+        if (this._isMarker) {
+            this._android.setAlpha(value);
         } else {
-          this._android.alpha(value);
+            this._android.alpha(value);
         }
     }
 
@@ -396,11 +403,11 @@ export class Marker extends MarkerBase {
         return this._android.isFlat();
     }
 
-    set flat(value : boolean) {
-        if(this._isMarker) {
-          this._android.setFlat(value);
+    set flat(value: boolean) {
+        if (this._isMarker) {
+            this._android.setFlat(value);
         } else {
-          this._android.flat(value);
+            this._android.flat(value);
         }
     }
 
@@ -408,11 +415,11 @@ export class Marker extends MarkerBase {
         return this._android.isDraggable();
     }
 
-    set draggable(value : boolean) {
-        if(this._isMarker) {
-          this._android.setDraggable(value);
+    set draggable(value: boolean) {
+        if (this._isMarker) {
+            this._android.setDraggable(value);
         } else {
-          this._android.draggable(value);
+            this._android.draggable(value);
         }
     }
 
@@ -420,11 +427,11 @@ export class Marker extends MarkerBase {
         return this._android.isVisible();
     }
 
-    set visible(value : boolean) {
-        if(this._isMarker) {
-          this._android.setVisible(value);
+    set visible(value: boolean) {
+        if (this._isMarker) {
+            this._android.setVisible(value);
         } else {
-          this._android.visible(value);
+            this._android.visible(value);
         }
     }
 
@@ -481,10 +488,10 @@ export class Polyline extends PolylineBase {
         this._points.push(point);
         this.reloadPoints();
     }
-    
+
     removePoint(point: Position, reload: boolean): void {
         var index = this._points.indexOf(point);
-        if(index > -1) {
+        if (index > -1) {
             this._points.splice(index, 1);
             this.reloadPoints();
         }
@@ -497,7 +504,7 @@ export class Polyline extends PolylineBase {
 
     loadPoints(): void {
         if (!this._isReal) {
-            this._points.forEach(function(point){
+            this._points.forEach(function(point) {
                 this._android.add(point.android);
             }.bind(this));
         }

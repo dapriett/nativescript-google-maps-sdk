@@ -66,14 +66,14 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
   <GridLayout>
     <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" 
     								zoom="{{ zoom }}" bearing="{{ bearing }}" 
-    								tilt="{{ tilt }}" mapReady="OnMapReady"  
+    								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="OnMapReady"  
    								markerSelect="onMarkerSelect" 
    								cameraChanged="onCameraChanged" />
   </GridLayout>
 </Page>
 ```
 
-The following properties `latitude`, `latitude`, `zoom`, `bearing`, and `tilt` are available to you for adjusting camera view.
+The following properties `latitude`, `latitude`, `zoom`, `bearing`, `tilt` and `padding` are available to you for adjusting camera view.
 
 The following events are available:
 

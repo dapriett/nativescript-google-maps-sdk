@@ -7,7 +7,7 @@ import imageSource = require("image-source");
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public static ObjCProtocols = [GMSMapViewDelegate];
-    
+
     private _owner: WeakRef<MapView>;
 
     public static initWithOwner(owner: WeakRef<MapView>): MapViewDelegateImpl {
@@ -16,32 +16,32 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         return handler;
     }
 
-    public mapViewIdleAtCameraPosition(mapView: GMSMapView, cameraPosition : GMSCameraPosition) : void {
+    public mapViewIdleAtCameraPosition(mapView: GMSMapView, cameraPosition: GMSCameraPosition): void {
         let owner = this._owner.get();
         if (owner) {
 
             owner._processingCameraEvent = true;
-            
-            let cameraChanged : boolean = false;
+
+            let cameraChanged: boolean = false;
             if (owner.latitude != cameraPosition.target.latitude) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.latitudeProperty, cameraPosition.target.latitude);    
-            } 
+                owner._onPropertyChangedFromNative(MapViewCommon.latitudeProperty, cameraPosition.target.latitude);
+            }
             if (owner.longitude != cameraPosition.target.longitude) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.longitudeProperty, cameraPosition.target.longitude);    
+                owner._onPropertyChangedFromNative(MapViewCommon.longitudeProperty, cameraPosition.target.longitude);
             }
             if (owner.bearing != cameraPosition.bearing) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.bearingProperty, cameraPosition.bearing);    
+                owner._onPropertyChangedFromNative(MapViewCommon.bearingProperty, cameraPosition.bearing);
             }
             if (owner.zoom != cameraPosition.zoom) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.zoomProperty, cameraPosition.zoom);    
+                owner._onPropertyChangedFromNative(MapViewCommon.zoomProperty, cameraPosition.zoom);
             }
             if (owner.tilt != cameraPosition.viewingAngle) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.viewingAngle);    
+                owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.viewingAngle);
             }
 
             if (cameraChanged) {
@@ -57,8 +57,8 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
             owner._processingCameraEvent = false;
         }
     }
-    
-    public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker) : void {
+
+    public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
         let owner = this._owner.get();
         if (owner) {
             let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
@@ -69,25 +69,25 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
 
 export class MapView extends MapViewCommon {
-    
+
     private _ios: any;
-    private _delegate : any;
-    private _markers : Array<Marker>;
+    private _delegate: any;
+    private _markers: Array<Marker>;
     private _shapes: Array<Shape>;
-    
+
     constructor() {
         super();
         this._markers = [];
         this._shapes = [];
         this._ios = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
     }
-    
+
     onLoaded() {
         super.onLoaded();
         this.notifyMapReady();
         this._ios.delegate = this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
     }
-    
+
     private _createCameraPosition() {
         return GMSCameraPosition.cameraWithLatitudeLongitudeZoomBearingViewingAngle(
             this.latitude,
@@ -97,33 +97,39 @@ export class MapView extends MapViewCommon {
             this.tilt
         );
     }
-    
+
     updateCamera() {
         this.ios.animateToCameraPosition(this._createCameraPosition());
     }
-    
+
+    updatePadding() {
+        if (this.padding) {
+            this.gMap.padding = UIEdgeInsetsMake(this.padding[0] || 0, this.padding[1] || 0, this.padding[2] || 0, this.padding[3] || 0);
+        }
+    }
+
     get ios() {
         return this._ios;
     }
-    
+
     get gMap() {
         return this._ios;
     }
-    
-    set ios(value : any) {
+
+    set ios(value: any) {
         console.warn('Cannot set value from outside this class');
     }
-    
+
     addMarker(marker: Marker) {
         marker.ios.map = this.gMap;
         this._markers.push(marker);
     }
-    
+
     removeMarker(marker: Marker) {
         marker.ios.map = null;
         this._markers.splice(this._markers.indexOf(marker), 1);
     }
-    
+
     removeAllMarkers() {
         this._markers.forEach(marker => {
             marker.ios.map = null;
@@ -166,7 +172,7 @@ export class MapView extends MapViewCommon {
         });
         this._shapes = [];
     }
-    
+
     findShape(callback: (shape: Shape) => boolean): Shape {
         return this._markers.find(callback);
     }
@@ -175,7 +181,7 @@ export class MapView extends MapViewCommon {
         this._markers = [];
         this.ios.clear();
     }
-    
+
 }
 
 export class Position extends PositionBase {
@@ -183,29 +189,29 @@ export class Position extends PositionBase {
     get ios() {
         return this._ios;
     }
-    
+
     get latitude() {
         return this._ios.latitude;
     }
-    
+
     set latitude(latitude) {
         this._ios = CLLocationCoordinate2DMake(latitude, this.longitude);
     }
-    
+
     get longitude() {
         return this._ios.latitude;
     }
-    
+
     set longitude(longitude) {
         this._ios = CLLocationCoordinate2DMake(this.latitude, longitude);
     }
-    
+
     constructor() {
         super();
         this._ios = CLLocationCoordinate2DMake(0, 0);
     }
-    
-    public static positionFromLatLng(latitude: number, longitude: number) : Position {
+
+    public static positionFromLatLng(latitude: number, longitude: number): Position {
         let position: Position = new Position();
         position.latitude = latitude;
         position.longitude = longitude;
@@ -214,45 +220,45 @@ export class Position extends PositionBase {
 }
 
 export class Marker extends MarkerBase {
-    private _ios : any;
+    private _ios: any;
     private _position: Position;
     private _icon: Image;
-    
+
     constructor() {
         super();
         this._ios = GMSMarker.new();
     }
-    
+
     get title() {
         return this._ios.title;
     }
-    
+
     set title(title) {
         this._ios.title = title;
     }
-    
+
     get snippet() {
         return this._ios.snippet;
     }
-    
+
     set snippet(snippet) {
-        this._ios.snippet = snippet; 
+        this._ios.snippet = snippet;
     }
-    
+
     get position() {
         return this._position;
     }
-    
+
     set position(position: Position) {
         this._position = position;
         this._ios.position = position.ios;
     }
-    
+
     get icon() {
         return this._icon;
     }
-    
-    set icon(value : Image) {
+
+    set icon(value: Image) {
         if (typeof value === 'string') {
             var tempIcon = new Image();
             tempIcon.imageSource = imageSource.fromResource(String(value));
@@ -261,7 +267,7 @@ export class Marker extends MarkerBase {
         this._icon = value;
         this._ios.icon = this._icon.ios.image;
     }
-    
+
     get ios() {
         return this._ios;
     }
