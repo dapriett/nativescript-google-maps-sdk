@@ -1,4 +1,4 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
 import { View } from "ui/core/view";
 import { Image } from "ui/image";
 
@@ -80,6 +80,10 @@ export abstract class MapView extends View implements IMapView {
 
     public abstract removeAllMarkers(): void;
 
+    public abstract addPolyline(shape: Polyline): void;
+
+    public abstract addPolygon(shape: Polygon): void;
+
     public abstract addCircle(shape: Circle): void;
 
     public abstract removeShape(shape: Shape): void;
@@ -104,6 +108,11 @@ export abstract class MapView extends View implements IMapView {
     }
 }
 
+export class Position implements IPosition {
+    public latitude: number;
+    public longitude: number;
+}
+
 export class Marker implements IMarker {
     public position : IPosition;
     public snippet : string;
@@ -113,16 +122,23 @@ export class Marker implements IMarker {
     public _map: any;
 }
 
-export class Position implements IPosition {
-    public latitude: number;
-    public longitude: number;
-}
-
 export class Shape implements IShape {
+    public shape: string;
+    public userData: any;
 }
 
-export class Circle implements ICircle {
+export class Polyline extends Shape implements IPolyline {
+    public shape: string = 'polyline';
+    public _map: any;
+}
+
+export class Polygon extends Shape implements IPolygon {
+    public shape: string = 'polygon';
+    public _map: any;
+}
+
+export class Circle extends Shape implements ICircle {
+    public shape: string = 'circle';
     public center: IPosition;
-    public userData: any;
     public _map: any;
 }

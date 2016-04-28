@@ -46,9 +46,15 @@ declare module "nativescript-google-maps-sdk" {
 
         public removeMarker(marker : Marker) : void;
 
-        public removeAllMarkers() : void;
+        public removeAllMarkers(): void;
 
-        // public addCircle(shape: Shape): void;
+        public findMarker(callback: (marker: Marker) => boolean): Marker;
+
+        public notifyMarkerEvent(eventName: string, marker: Marker);
+
+        public addPolyline(shape: Polyline): void;
+        
+        public addPolygon(shape: Polygon): void;
 
         public addCircle(shape: Circle): void;
 
@@ -56,11 +62,9 @@ declare module "nativescript-google-maps-sdk" {
 
         public removeAllShapes(): void;
 
+        public findShape(callback: (shape: Shape) => boolean): Shape;
+
         public clear() : void;
-
-        public findMarker(callback : (marker: Marker) => boolean) : Marker;
-
-        public notifyMarkerEvent(eventName: string, marker: Marker);
 
     }
 
@@ -89,12 +93,29 @@ declare module "nativescript-google-maps-sdk" {
     }
 
     export class Shape {
+        public shape: string;
         public visible: boolean;
+        public zIndex: number;
         public userData: any;
         public _map: any;
         public ios: any;
         public android: any;
     }
+
+    export class Polyline extends Shape {
+        public points: Array<Position>;
+        public width: number;
+        public color: Color;
+        public geodesic: boolean;
+        public addPoint(shape: Position): void;
+        public removePoint(shape: Position): void;
+        public removeAllPoints(): void;
+        public getPoints(): Array<Position>;
+    };
+
+    export class Polygon extends Shape {
+        // TODO: ...
+    };
 
     export class Circle extends Shape {
         public center: Position;
@@ -102,7 +123,6 @@ declare module "nativescript-google-maps-sdk" {
         public strokeWidth: number;
         public strokeColor: Color;
         public fillColor: Color;
-        public zIndex: number;
     }
 
     export interface MarkerEventData extends EventData {
