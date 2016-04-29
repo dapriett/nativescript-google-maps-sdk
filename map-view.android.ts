@@ -11,8 +11,10 @@ import imageSource = require("image-source");
 export class MapView extends MapViewCommon {
 
     private _android: any;
+    private _gMap: any;
+    private _context: any;
+    private _pendingCameraUpdate: any;
     private _markers: Array<Marker>;
-    private _shapes: Array<Shape>;
 
     constructor() {
         super();
@@ -139,7 +141,7 @@ export class MapView extends MapViewCommon {
         this._shapes.push(shape);
     }
 
-    removeShape(shape: Shape) {
+    removeShape(shape: IShape) {
         shape.android.remove();
         this._shapes.splice(this._shapes.indexOf(shape), 1);
     }
@@ -157,7 +159,7 @@ export class MapView extends MapViewCommon {
         this.gMap.clear();
     }
 
-    findShape(callback: (shape: Shape) => boolean): Shape {
+    findShape(callback: (shape: IShape) => boolean): IShape {
         return this._shapes.find(callback);
     }
 
@@ -265,7 +267,9 @@ export class MapView extends MapViewCommon {
 }
 
 export class Position extends PositionBase {
-    private _android: any; /* CLLocationCoordinate2D */
+
+    private _android: any;
+
     get android() {
         return this._android;
     }
@@ -317,12 +321,12 @@ export class Marker extends MarkerBase {
         return this._position;
     }
 
-    set position(position: Position) {
-        this._position = position;
+    set position(value: Position) {
+        this._position = value;
         if (this._isMarker) {
-            this._android.setPosition(position.android);
+            this._android.setPosition(value.android);
         } else {
-            this._android.position(position.android);
+            this._android.position(value.android);
         }
     }
 
@@ -330,11 +334,11 @@ export class Marker extends MarkerBase {
         return this._android.getRotation();
     }
 
-    set rotation(rotation: number) {
+    set rotation(value: number) {
         if (this._isMarker) {
-            this._android.setRotation(rotation);
+            this._android.setRotation(value);
         } else {
-            this._android.rotation(rotation);
+            this._android.rotation(value);
         }
     }
 
@@ -381,12 +385,6 @@ export class Marker extends MarkerBase {
         }
     }
 
-    set icon(value: string) {
-        var tempIcon = new Image();
-        tempIcon.imageSource = imageSource.fromResource(String(value));
-        this.icon = tempIcon;
-    }
-
     get alpha() {
         return this._android.getAlpha();
     }
@@ -408,6 +406,18 @@ export class Marker extends MarkerBase {
             this._android.setFlat(value);
         } else {
             this._android.flat(value);
+        }
+    }
+
+    get anchor() {
+        return [this._android.getAnchorU(), this._android.getAnchorV()];
+    }
+
+    set anchor(value: Array<number>) {
+        if (this._isMarker) {
+            this._android.setAnchor(value[0], value[1]);
+        } else {
+            this._android.anchor(value[0], value[1]);
         }
     }
 

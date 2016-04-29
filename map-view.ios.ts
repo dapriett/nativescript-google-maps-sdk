@@ -229,6 +229,23 @@ export class Marker extends MarkerBase {
         this._ios = GMSMarker.new();
     }
 
+    get position() {
+        return this._position;
+    }
+
+    set position(position: Position) {
+        this._position = position;
+        this._ios.position = position.ios;
+    }
+
+    get rotation() {
+        return this._ios.rotation;
+    }
+
+    set rotation(value: number) {
+        this._ios.rotation = value;
+    }
+
     get title() {
         return this._ios.title;
     }
@@ -245,15 +262,6 @@ export class Marker extends MarkerBase {
         this._ios.snippet = snippet;
     }
 
-    get position() {
-        return this._position;
-    }
-
-    set position(position: Position) {
-        this._position = position;
-        this._ios.position = position.ios;
-    }
-
     get icon() {
         return this._icon;
     }
@@ -266,6 +274,38 @@ export class Marker extends MarkerBase {
         }
         this._icon = value;
         this._ios.icon = this._icon.ios.image;
+    }
+
+    get alpha() {
+        return this._ios.opacity;
+    }
+
+    set alpha(value: number) {
+        this._ios.opacity = value;
+    }
+
+    get flat() {
+        return this._ios.flat;
+    }
+
+    set flat(value: boolean) {
+        this._ios.flat = value;
+    }
+
+    get anchor() {
+        return [this._ios.groundAnchor.x, this._ios.groundAnchor.y];
+    }
+
+    set anchor(value: Array<number>) {
+        this._ios.groundAnchor = CGPointMake(value[0], value[1]);
+    }
+
+    get draggable() {
+        return this._ios.draggable;
+    }
+
+    set draggable(value: boolean) {
+        this._ios.draggable = value;
     }
 
     get ios() {

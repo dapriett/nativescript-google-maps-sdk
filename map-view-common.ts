@@ -119,6 +119,8 @@ export abstract class MapView extends View implements IMapView {
 
     public abstract removeAllShapes(): void;
 
+    protected _shapes: Array<IShape>;
+
     public removeAllPolylines() {
         this._shapes.forEach(shape => {
             if (shape.shape === 'polyline') {

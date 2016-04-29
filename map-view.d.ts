@@ -81,6 +81,7 @@ declare module "nativescript-google-maps-sdk" {
     export class Marker {
         public position: Position;
         public rotation: number;
+        public anchor: Array<number>;
         public title: string;
         public snippet: string;
         public icon: Image;
