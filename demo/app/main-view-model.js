@@ -8,6 +8,7 @@ var HelloWorldModel = (function (_super) {
         this.set("zoom", 8);
         this.set("bearing", 0);
         this.set("tilt", 0);
+        this.set("padding", [40, 40, 40, 40]);
     }
 
     return HelloWorldModel;

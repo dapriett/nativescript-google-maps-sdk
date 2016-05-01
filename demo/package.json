@@ -5,11 +5,18 @@
 			"version": "2.0.0"
 		},
 		"tns-android": {
-			"version": "1.7.1"
+			"version": "2.0.0"
 		}
 	},
 	"dependencies": {
 		"nativescript-google-maps-sdk": "file:../",
 		"tns-core-modules": "^2.0.0"
+	},
+	"devDependencies": {
+		"babel-traverse": "6.7.6",
+		"babel-types": "6.7.7",
+		"babylon": "6.7.0",
+		"filewalker": "0.1.2",
+		"lazy": "1.0.11"
 	}
 }
