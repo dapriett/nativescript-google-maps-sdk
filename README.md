@@ -66,7 +66,7 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
   <GridLayout>
     <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" 
     								zoom="{{ zoom }}" bearing="{{ bearing }}" 
-    								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="OnMapReady"  
+    								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="onMapReady"  
    								markerSelect="onMarkerSelect" 
    								cameraChanged="onCameraChanged" />
   </GridLayout>
@@ -91,7 +91,7 @@ The property `gMap` gives you access to the raw platform Map Object - see their 
 
 var mapsModule = require("nativescript-google-maps-sdk");
 
-function OnMapReady(args) {
+function onMapReady(args) {
   var mapView = args.object;
 
   console.log("Setting a marker...");
