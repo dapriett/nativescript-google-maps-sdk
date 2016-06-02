@@ -67,7 +67,8 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
     <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" 
     								zoom="{{ zoom }}" bearing="{{ bearing }}" 
     								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="onMapReady"  
-   								markerSelect="onMarkerSelect" 
+   								markerSelect="onMarkerSelect" markerBeginDragging="onMarkerBeginDragging"
+   								markerEndDragging="onMarkerEndDragging" markerDrag="onMarkerDrag"
    								cameraChanged="onCameraChanged" />
   </GridLayout>
 </Page>
@@ -81,6 +82,9 @@ Event          | Description
 -------------- |:---------------------------------
 `mapReady`     | Called when Google Map is ready for use
 `markerSelect` | Fires whenever a marker is selected
+`markerBeginDragging` | Fires when a marker begins dragging
+`markerDrag` | Fires repeatedly while a marker is being dragged
+`markerEndDragging` | Fires when a marker ends dragging
 `cameraChanged`| Fired on each camera change
 
 

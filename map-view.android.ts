@@ -121,10 +121,6 @@ export class MapView extends MapViewCommon {
         return this._markers.find(callback);
     }
 
-    notifyMarkerTapped(marker: Marker) {
-        this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
-    }
-
     addPolyline(shape: Polyline) {
         shape.loadPoints();
         shape.android = this.gMap.addPolyline(shape.android);
@@ -212,6 +208,21 @@ export class MapView extends MapViewCommon {
                         owner.notifyMarkerTapped(marker);
 
                         return false;
+                    }
+                }));
+
+                gMap.setOnMarkerDragListener(new com.google.android.gms.maps.GoogleMap.OnMarkerDragListener({
+                    onMarkerDrag: function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerDrag(marker);
+                    },
+                    onMarkerDragEnd: function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerEndDragging(marker);
+                    },
+                    onMarkerDragStart: function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerBeginDragging(marker);
                     }
                 }));
 

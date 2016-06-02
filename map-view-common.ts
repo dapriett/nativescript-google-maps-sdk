@@ -24,6 +24,9 @@ export abstract class MapView extends View implements IMapView {
 
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
+    public static markerBeginDraggingEvent: string = "markerBeginDragging";
+    public static markerEndDraggingEvent: string = "markerEndDragging";
+    public static markerDragEvent: string = "markerDrag";
     public static coordinateTappedEvent: string = "coordinateTapped";
     public static cameraChangedEvent: string = "cameraChanged";
 
@@ -150,6 +153,22 @@ export abstract class MapView extends View implements IMapView {
     notifyMarkerEvent(eventName: string, marker: IMarker) {
         let args: MarkerEventData = { eventName: eventName, object: this, marker: marker };
         this.notify(args);
+    }
+
+    notifyMarkerTapped(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerSelectEvent, marker);
+    }
+
+    notifyMarkerBeginDragging(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerBeginDraggingEvent, marker);
+    }
+
+    notifyMarkerEndDragging(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerEndDraggingEvent, marker);
+    }
+
+    notifyMarkerDrag(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerDragEvent, marker);
     }
 
     notifyPositionEvent(eventName: string, position: IPosition) {

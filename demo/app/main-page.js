@@ -101,8 +101,6 @@ function onMapReady(args) {
         mapView.removeMarker(marker);
         return wait(9000);
     }).then(function() {
-        console.log("Removing all markers...");
-        mapView.removeAllMarkers();
         console.log("Removing all circles...");
         mapView.removeAllCircles();
         console.log("Removing all polylines...");
@@ -113,8 +111,8 @@ function onMapReady(args) {
 
 }
 
-function onMarkerSelect(args) {
-   console.log("Clicked on "+args.marker.title);
+function onMarkerEvent(args) {
+   console.log("Marker Event: '" + args.eventName + "' triggered on: " +args.marker.title, args);
 }
 
 var lastCamera = null;
@@ -124,5 +122,5 @@ function onCameraChanged(args) {
 }
 
 exports.onMapReady = onMapReady;
-exports.onMarkerSelect = onMarkerSelect;
+exports.onMarkerEvent = onMarkerEvent;
 exports.onCameraChanged = onCameraChanged;
