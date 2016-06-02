@@ -283,7 +283,7 @@ export class Position extends PositionBase {
     }
 
     get longitude() {
-        return this._android.latitude;
+        return this._android.longitude;
     }
 
     set longitude(longitude) {

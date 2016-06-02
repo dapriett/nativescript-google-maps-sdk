@@ -199,7 +199,7 @@ export class Position extends PositionBase {
     }
 
     get longitude() {
-        return this._ios.latitude;
+        return this._ios.longitude;
     }
 
     set longitude(longitude) {
