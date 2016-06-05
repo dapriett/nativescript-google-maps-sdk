@@ -204,7 +204,7 @@ export class MapView extends MapViewCommon {
                 gMap.setOnMapClickListener(new com.google.android.gms.maps.GoogleMap.OnMapClickListener({
                     onMapClick: function(gmsPoint) {
 
-                        let position: Position = Position.positionFromLatLng(gmsPoint.latitude, gmsPoint.longitude);
+                        let position: Position = new Position(gmsPoint);
                         owner.notifyPositionEvent(MapViewCommon.coordinateTappedEvent, position);
                     }
                 }));
@@ -309,9 +309,9 @@ export class Position extends PositionBase {
         this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, longitude);
     }
 
-    constructor() {
+    constructor(android?:com.google.android.gms.maps.model.LatLng) {
         super();
-        this._android = new com.google.android.gms.maps.model.LatLng(0, 0);
+        this._android = android || new com.google.android.gms.maps.model.LatLng(0, 0);
     }
 
     public static positionFromLatLng(latitude: number, longitude: number): Position {
@@ -324,7 +324,6 @@ export class Position extends PositionBase {
 
 export class Marker extends MarkerBase {
     private _android: any;
-    private _position: Position;
     private _icon: Image;
     private _isMarker: boolean = false;
 
@@ -337,11 +336,10 @@ export class Marker extends MarkerBase {
 
 
     get position() {
-        return this._position;
+        return new Position(this._android.getPosition());
     }
 
     set position(value: Position) {
-        this._position = value;
         if (this._isMarker) {
             this._android.setPosition(value.android);
         } else {

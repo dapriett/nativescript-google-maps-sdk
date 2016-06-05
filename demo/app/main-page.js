@@ -125,7 +125,9 @@ function onCoordinateTapped(args) {
 }
 
 function onMarkerEvent(args) {
-   console.log("Marker Event: '" + args.eventName + "' triggered on: " +args.marker.title, args);
+   console.log("Marker Event: '" + args.eventName
+                + "' triggered on: " + args.marker.title
+                + ", Lat: " + args.marker.position.latitude + ", Lon: " + args.marker.position.longitude, args);
 }
 
 var lastCamera = null;

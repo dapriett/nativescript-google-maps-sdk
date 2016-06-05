@@ -234,9 +234,9 @@ export class Position extends PositionBase {
         this._ios = CLLocationCoordinate2DMake(this.latitude, longitude);
     }
 
-    constructor() {
+    constructor(ios?:CLLocationCoordinate2D) {
         super();
-        this._ios = CLLocationCoordinate2DMake(0, 0);
+        this._ios = ios || CLLocationCoordinate2DMake(0, 0);
     }
 
     public static positionFromLatLng(latitude: number, longitude: number): Position {
@@ -249,7 +249,6 @@ export class Position extends PositionBase {
 
 export class Marker extends MarkerBase {
     private _ios: any;
-    private _position: Position;
     private _icon: Image;
 
     constructor() {
@@ -258,11 +257,10 @@ export class Marker extends MarkerBase {
     }
 
     get position() {
-        return this._position;
+        return new Position(this._ios.position);
     }
 
     set position(position: Position) {
-        this._position = position;
         this._ios.position = position.ios;
     }
 
