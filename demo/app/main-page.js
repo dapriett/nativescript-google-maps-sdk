@@ -19,6 +19,8 @@ function pageLoaded(args) {
 }
 exports.pageLoaded = pageLoaded;
 
+
+
 function onMapReady(args) {
     console.log("onMapReady");
 
@@ -30,7 +32,7 @@ function onMapReady(args) {
     marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
     marker.title = "Sydney";
     marker.snippet = "Australia";
-    marker.userData = { index : 1};
+    marker.userData = {index: 1};
     mapView.addMarker(marker);
 
     var circle = new mapsModule.Circle();
@@ -44,7 +46,7 @@ function onMapReady(args) {
 
     var polyline = new mapsModule.Polyline();
     polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.86, 151.20));
-    var point = mapsModule.Position.positionFromLatLng(-32.89,151.44);
+    var point = mapsModule.Position.positionFromLatLng(-32.89, 151.44);
     polyline.addPoint(point);
     polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.42, 151.32));
     polyline.visible = true;
@@ -66,49 +68,60 @@ function onMapReady(args) {
     marker.anchor = [0.5, 0.5];
     marker.draggable = true;
     marker.visible = false;
-    marker.userData = { index : 2};
+    marker.userData = {index: 2};
     mapView.addMarker(marker);
 
-    wait(3000).then(function() {
-        var marker = mapView.findMarker(function(marker) { return marker.userData.index === 2; });
+    wait(3000).then(function () {
+        var marker = mapView.findMarker(function (marker) {
+            return marker.userData.index === 2;
+        });
         console.log("Moving marker...", marker.userData);
-        marker.position = mapsModule.Position.positionFromLatLng(-33.33,151.08);
+        marker.position = mapsModule.Position.positionFromLatLng(-33.33, 151.08);
         marker.rotation = 45;
         polyline.removePoint(point);
         return wait(3000);
-    }).then(function() {
+    }).then(function () {
         vmModule.mainViewModel.set("zoom", 9);
         console.log("Zooming in...", vmModule.mainViewModel);
         return wait(3000);
-    }).then(function() {
-        polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.33,151.08));
+    }).then(function () {
+        polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.33, 151.08));
         console.log("Adding point to Polyline...", polyline);
-        vmModule.mainViewModel.set("padding", [40,40,40,40]);
+        vmModule.mainViewModel.set("padding", [40, 40, 40, 40]);
         return wait(3000);
-    }).then(function() {
-        var marker = mapView.findMarker(function(marker) { return marker.userData.index === 2; });
+    }).then(function () {
+        var marker = mapView.findMarker(function (marker) {
+            return marker.userData.index === 2;
+        });
         marker.visible = true;
         return wait(3000);
-    }).then(function() {
-        var marker = mapView.findMarker(function(marker) { return marker.userData.index === 2; });
+    }).then(function () {
+        var marker = mapView.findMarker(function (marker) {
+            return marker.userData.index === 2;
+        });
         // marker.position = mapsModule.Position.positionFromLatLng(-32.89,151.44);
         marker.anchor = [1, 1];
         marker.alpha = 0.8;
         return wait(3000);
-    }).then(function() {
-        var marker = mapView.findMarker(function(marker) { return marker.userData.index === 1; });
+    }).then(function () {
+        var marker = mapView.findMarker(function (marker) {
+            return marker.userData.index === 1;
+        });
         console.log("Removing marker...", marker.userData);
         mapView.removeMarker(marker);
         return wait(9000);
-    }).then(function() {
+    }).then(function () {
         console.log("Removing all circles...");
         mapView.removeAllCircles();
         console.log("Removing all polylines...");
         mapView.removeAllPolylines();
-    }).catch(function(error){
-      console.log(error);
+    }).catch(function (error) {
+        console.log(error);
     });
+}
 
+function onCoordinateTapped(args) {
+    console.log("Coordinate Tapped, Lat: " + args.position.latitude + ", Lon: " + args.position.longitude, args);
 }
 
 function onMarkerEvent(args) {
@@ -122,5 +135,6 @@ function onCameraChanged(args) {
 }
 
 exports.onMapReady = onMapReady;
+exports.onCoordinateTapped = onCoordinateTapped;
 exports.onMarkerEvent = onMarkerEvent;
 exports.onCameraChanged = onCameraChanged;

@@ -201,6 +201,14 @@ export class MapView extends MapViewCommon {
                     owner.updateCamera();
                 }
 
+                gMap.setOnMapClickListener(new com.google.android.gms.maps.GoogleMap.OnMapClickListener({
+                    onMapClick: function(gmsPoint) {
+
+                        let position: Position = Position.positionFromLatLng(gmsPoint.latitude, gmsPoint.longitude);
+                        owner.notifyPositionEvent(MapViewCommon.coordinateTappedEvent, position);
+                    }
+                }));
+
                 gMap.setOnMarkerClickListener(new com.google.android.gms.maps.GoogleMap.OnMarkerClickListener({
                     onMarkerClick: function(gmsMarker) {
 

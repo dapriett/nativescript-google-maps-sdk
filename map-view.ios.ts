@@ -58,6 +58,14 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         }
     }
 
+    public mapViewDidTapAtCoordinate(mapView: GMSMapView, coordinate: CLLocationCoordinate2D): void {
+        let owner = this._owner.get();
+        if (owner) {
+            let position: Position = Position.positionFromLatLng(coordinate.latitude, coordinate.longitude);
+            owner.notifyPositionEvent(MapViewCommon.coordinateTappedEvent, position);
+        }
+    }
+
     public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
         let owner = this._owner.get();
         if (owner) {

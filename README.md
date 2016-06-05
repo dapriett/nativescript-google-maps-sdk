@@ -81,6 +81,7 @@ The following events are available:
 Event          | Description
 -------------- |:---------------------------------
 `mapReady`     | Called when Google Map is ready for use
+`coordinateTapped` | Fires when coordinate is clicked on map
 `markerSelect` | Fires whenever a marker is selected
 `markerBeginDragging` | Fires when a marker begins dragging
 `markerDrag` | Fires repeatedly while a marker is being dragged
