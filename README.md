@@ -121,7 +121,7 @@ exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
 
-## Angular
+## Using with Angular
 
 ```
 // /app/map-example.component.ts
@@ -129,6 +129,7 @@ exports.onCameraChanged = onCameraChanged;
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {registerElement} from "nativescript-angular/element-registry";
 
+// Important - must register MapView plugin in order to use in Angular templates
 registerElement("MapView", () => require("nativescript-google-maps-sdk").MapView);
 
 @Component({
