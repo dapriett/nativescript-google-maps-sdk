@@ -120,3 +120,30 @@ exports.onMapReady = onMapReady;
 exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
+
+## Angular
+
+```
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {registerElement} from "nativescript-angular/element-registry";
+
+registerElement("MapView", () => require("nativescript-google-maps-sdk").MapView);
+
+@Component({
+    selector: 'google-maps-example',
+    template: `
+    <GridLayout>
+        <MapView (mapReady)="onMapReady($event)"></MapView>
+    </GridLayout>
+    `
+})
+export class GoogleMapsExample {
+
+    @ViewChild("MapView") mapView: ElementRef;
+
+    //Map events
+    onMapReady = (event) => {
+        console.log("Map Ready");
+    };
+}
+```
