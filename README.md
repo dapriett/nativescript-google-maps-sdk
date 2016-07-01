@@ -124,20 +124,22 @@ exports.onCameraChanged = onCameraChanged;
 ## Angular
 
 ```
+// /app/map-example.component.ts
+
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {registerElement} from "nativescript-angular/element-registry";
 
 registerElement("MapView", () => require("nativescript-google-maps-sdk").MapView);
 
 @Component({
-    selector: 'google-maps-example',
+    selector: 'map-example-component',
     template: `
     <GridLayout>
         <MapView (mapReady)="onMapReady($event)"></MapView>
     </GridLayout>
     `
 })
-export class GoogleMapsExample {
+export class MapExampleComponent {
 
     @ViewChild("MapView") mapView: ElementRef;
 
