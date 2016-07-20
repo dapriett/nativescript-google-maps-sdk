@@ -1,14 +1,18 @@
 {
     "compilerOptions": {
-        "target": "ES5",
         "module": "commonjs",
+        "target": "es5",
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
+        "noEmitOnError": true
     },
     
     "filesGlob": [
