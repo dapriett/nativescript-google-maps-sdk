@@ -298,7 +298,7 @@ export class Position extends PositionBase {
     }
 
     set latitude(latitude) {
-        this._android = new com.google.android.gms.maps.model.LatLng(latitude, this.longitude);
+        this._android = new com.google.android.gms.maps.model.LatLng(parseFloat(latitude), this.longitude);
     }
 
     get longitude() {
@@ -306,7 +306,7 @@ export class Position extends PositionBase {
     }
 
     set longitude(longitude) {
-        this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, longitude);
+        this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, parseFloat(longitude));
     }
 
     constructor(android?:com.google.android.gms.maps.model.LatLng) {
