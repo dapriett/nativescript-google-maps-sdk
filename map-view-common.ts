@@ -28,6 +28,7 @@ export abstract class MapView extends View implements IMapView {
     public static markerEndDraggingEvent: string = "markerEndDragging";
     public static markerDragEvent: string = "markerDrag";
     public static coordinateTappedEvent: string = "coordinateTapped";
+    public static coordinateLongPressEvent: string = "coordinateLongPress";
     public static cameraChangedEvent: string = "cameraChanged";
 
     public static latitudeProperty = new Property("latitude", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));

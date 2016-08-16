@@ -18,7 +18,12 @@
         "./**/*.ts",
         "!./node_modules/**/*.ts"
     ],
-    
+    "files": [
+        "map-view.d.ts",
+        "map-view-common.ts",
+        "map-view.android.ts",
+        "map-view.ios.ts"
+    ],
     "exclude": [
         "./platforms/**/*.ts"
     ]
