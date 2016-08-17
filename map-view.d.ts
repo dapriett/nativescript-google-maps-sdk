@@ -132,6 +132,10 @@ declare module "nativescript-google-maps-sdk" {
         marker: Marker;
     }
 
+    export interface ShapeEventData extends EventData {
+        shape: Shape;
+    }
+
     export interface CameraEventData extends EventData {
         camera: Camera;
     }
