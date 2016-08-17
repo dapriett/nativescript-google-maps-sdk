@@ -1,4 +1,4 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, ShapeEventData, CameraEventData, PositionEventData } from ".";
 import { View } from "ui/core/view";
 import { Image } from "ui/image";
 
@@ -24,6 +24,7 @@ export abstract class MapView extends View implements IMapView {
 
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
+    public static shapeSelectEvent: string = "shapeSelect";
     public static markerBeginDraggingEvent: string = "markerBeginDragging";
     public static markerEndDraggingEvent: string = "markerEndDragging";
     public static markerDragEvent: string = "markerDrag";
@@ -156,10 +157,17 @@ export abstract class MapView extends View implements IMapView {
         this.notify(args);
     }
 
+    notifyShapeEvent(eventName: string, shape: IShape) {
+        let args: ShapeEventData = { eventName: eventName, object: this, shape: shape };
+        this.notify(args);
+    }
     notifyMarkerTapped(marker: Marker) {
         this.notifyMarkerEvent(MapView.markerSelectEvent, marker);
     }
 
+    notifyShapeTapped(shape: Shape) {
+        this.notifyShapeEvent(MapView.shapeSelectEvent, shape);
+    }
     notifyMarkerBeginDragging(marker: Marker) {
         this.notifyMarkerEvent(MapView.markerBeginDraggingEvent, marker);
     }
@@ -200,6 +208,7 @@ export class Marker implements IMarker {
 export class Shape implements IShape {
     public shape: string;
     public userData: any;
+    public clickable: boolean;
 }
 
 export class Polyline extends Shape implements IPolyline {
