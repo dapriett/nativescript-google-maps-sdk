@@ -209,6 +209,13 @@ export class MapView extends MapViewCommon {
                     }
                 }));
 
+                gMap.setOnMapLongClickListener(new com.google.android.gms.maps.GoogleMap.OnMapLongClickListener({
+                    onMapLongClick: function(gmsPoint) {
+                        let position: Position = new Position(gmsPoint);
+                        owner.notifyPositionEvent(MapViewCommon.coordinateLongPressEvent, position);
+                    }
+                }));
+
                 gMap.setOnMarkerClickListener(new com.google.android.gms.maps.GoogleMap.OnMarkerClickListener({
                     onMarkerClick: function(gmsMarker) {
 
