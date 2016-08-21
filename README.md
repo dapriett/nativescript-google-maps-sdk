@@ -84,6 +84,7 @@ Event          | Description
 `coordinateTapped` | Fires when coordinate is clicked on map
 `coordinateLongPress` | Fires when coordinate is "long pressed"
 `markerSelect` | Fires whenever a marker is selected
+`shapeSelect` | Fires whenever a shape (`Circle`, `Polygon`, `Polyline`) is clicked.  You must explicity configure `shape.clickable = true;` on your shapes.
 `markerBeginDragging` | Fires when a marker begins dragging
 `markerDrag` | Fires repeatedly while a marker is being dragged
 `markerEndDragging` | Fires when a marker ends dragging
