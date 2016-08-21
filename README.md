@@ -43,6 +43,16 @@ cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app
 
 Next modify the file at `app/App_Resources/Android/values/nativescript_google_maps_api.xml`, uncomment `nativescript_google_maps_api_key` string and replace `PUT_API_KEY_HERE` with your api key.
 
+The plugin will default to latest available version of the Android `play-services-maps` SDK.  If you need to change the version, you can add a project ext property `googlePlayServicesVersion` like so:
+
+```
+//   /app/App_Resources/Android/app.gradle
+
+project.ext {
+    googlePlayServicesVersion = "+"
+}
+```
+
 ## Setup iOS API Key
 
 In the main script of your app `app.js`, use the following to add the API key (providing your key in place of `PUT_API_KEY_HERE`)
