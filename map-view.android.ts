@@ -395,6 +395,18 @@ export class Marker extends MarkerBase {
         }
     }
 
+    get zIndex() {
+        return this._android.getZIndex();
+    }
+
+    set zIndex(value: number) {
+        if (this._isMarker) {
+            this._android.setZIndex(value);
+        } else {
+            this._android.zIndex(value);
+        }
+    }
+
     get title() {
         return this._android.getTitle();
     }

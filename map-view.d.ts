@@ -89,6 +89,7 @@ declare module "nativescript-google-maps-sdk" {
         public flat: boolean;
         public draggable: boolean;
         public visible: boolean;
+        public zIndex: number;
         public userData: any;
         public _map: any;
         public ios: any;
