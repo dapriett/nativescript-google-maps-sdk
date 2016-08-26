@@ -289,6 +289,14 @@ export class Marker extends MarkerBase {
         this._ios.rotation = value;
     }
 
+    get zIndex() {
+        return this._ios.zIndex;
+    }
+
+    set zIndex(value: number) {
+        this._ios.zIndex = value;
+    }
+
     get title() {
         return this._ios.title;
     }
