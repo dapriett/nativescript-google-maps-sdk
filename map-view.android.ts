@@ -431,6 +431,12 @@ export class Marker extends MarkerBase {
         }
     }
 
+    showInfoWindow(): void {
+        if (this._isMarker) {
+            this.android.showInfoWindow();
+        }
+    }
+
     get icon() {
         return this._icon;
     }
