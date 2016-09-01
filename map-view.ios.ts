@@ -313,6 +313,10 @@ export class Marker extends MarkerBase {
         this._ios.snippet = snippet;
     }
 
+    showInfoWindow(): void {
+        this._ios.map.selectedMarker = this._ios;
+    }
+
     get icon() {
         return this._icon;
     }
