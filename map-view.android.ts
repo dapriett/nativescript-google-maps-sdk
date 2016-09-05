@@ -228,7 +228,7 @@ export class MapView extends MapViewCommon {
                 gMap.setOnInfoWindowClickListener(new com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener({
                     onInfoWindowClick: function (gmsMarker) {
                         let marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
-                        owner.notifyMarkerInfowindowTapped(marker);
+                        owner.notifyMarkerInfoWindowTapped(marker);
 
                         return false;
                     }

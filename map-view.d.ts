@@ -35,7 +35,13 @@ declare module "nativescript-google-maps-sdk" {
 
         public static mapReadyEvent: string;
         public static markerSelectEvent: string;
+        public static markerInfoWindowTapEvent:string;
+        public static shapeSelectEvent: string;
+        public static markerBeginDraggingEvent: string;
+        public static markerEndDraggingEvent: string;
+        public static markerDragEvent: string;
         public static coordinateTappedEvent: string;
+        public static coordinateLongPressEvent: string;
         public static cameraChangedEvent: string;
 
         public ios: any; /* GMSMapView */

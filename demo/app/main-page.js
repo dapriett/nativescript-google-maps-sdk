@@ -115,6 +115,13 @@ function onMapReady(args) {
         mapView.removeAllCircles();
         console.log("Removing all polylines...");
         mapView.removeAllPolylines();
+    }).then(function () {
+        var marker = new mapsModule.Marker();
+        marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
+        marker.title = "All Done";
+        marker.snippet = "Enjoy!";
+        mapView.addMarker(marker);
+        marker.showInfoWindow();
     }).catch(function (error) {
         console.log(error);
     });
