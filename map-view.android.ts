@@ -225,6 +225,15 @@ export class MapView extends MapViewCommon {
                     }
                 }));
 
+                gMap.setOnInfoWindowClickListener(new com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener({
+                    onInfoWindowClick: function (gmsMarker) {
+                        let marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerInfowindowTapped(marker);
+
+                        return false;
+                    }
+                }));
+
                 gMap.setOnCircleClickListener(new com.google.android.gms.maps.GoogleMap.OnCircleClickListener({
                     onCircleClick: function(gmsCircle) {
                         let shape: Shape = owner.findShape((shape: Shape) => shape.android.getId() === gmsCircle.getId());

@@ -24,6 +24,7 @@ export abstract class MapView extends View implements IMapView {
 
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
+    public static markerInfowindowTapEvent:string = "infowindowTap";
     public static shapeSelectEvent: string = "shapeSelect";
     public static markerBeginDraggingEvent: string = "markerBeginDragging";
     public static markerEndDraggingEvent: string = "markerEndDragging";
@@ -164,7 +165,9 @@ export abstract class MapView extends View implements IMapView {
     notifyMarkerTapped(marker: Marker) {
         this.notifyMarkerEvent(MapView.markerSelectEvent, marker);
     }
-
+    notifyMarkerInfowindowTapped (marker:Marker) {
+        this.notifyMarkerEvent(MapView.markerInfowindowTapEvent, marker);
+    }
     notifyShapeTapped(shape: Shape) {
         this.notifyShapeEvent(MapView.shapeSelectEvent, shape);
     }
