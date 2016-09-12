@@ -142,7 +142,11 @@ export class MapView extends MapViewCommon {
     onLoaded() {
         super.onLoaded();
         this._ios.delegate = this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
-        this.notifyMapReady();
+        let self = this;
+        setTimeout(function(){
+            self.notifyMapReady();
+        }, 0);
+
     }
 
     private _createCameraPosition() {
