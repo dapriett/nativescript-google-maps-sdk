@@ -125,7 +125,14 @@ declare module "nativescript-google-maps-sdk" {
     };
 
     export class Polygon extends Shape {
-        // TODO: ...
+        public points: Array<Position>;
+        public strokeWidth: number;
+        public strokeColor: Color;
+        public fillColor: Color;
+        public addPoint(shape: Position): void;
+        public removePoint(shape: Position): void;
+        public removeAllPoints(): void;
+        public getPoints(): Array<Position>;
     };
 
     export class Circle extends Shape {

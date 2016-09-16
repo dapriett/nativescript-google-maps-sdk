@@ -128,6 +128,7 @@ export class MapView extends MapViewCommon {
     }
 
     addPolygon(shape: Polygon) {
+        shape.loadPoints();
         shape.android = this.gMap.addPolygon(shape.android);
         this._shapes.push(shape);
     }
@@ -670,6 +671,145 @@ export class Polyline extends PolylineBase {
     set android(android) {
         this._android = android;
         this._isReal = android.getClass().getName() === Polyline.CLASS;
+    }
+}
+
+export class Polygon extends PolygonBase {
+    private _android: any;
+    private _points: Array<Position>;
+    private _strokeColor: Color;
+    private _fillColor: Color;
+    private _isReal: boolean = false;
+
+    static CLASS = 'com.google.android.gms.maps.model.Polygon';
+
+    constructor() {
+        super();
+        this.android = new com.google.android.gms.maps.model.PolygonOptions();
+        this._points = [];
+    }
+
+    get clickable() {
+        return this._android.isClickable();
+    }
+
+    set clickable(value: boolean) {
+        if (this._isReal) {
+            this._android.setClickable(value);
+        } else {
+            this._android.clickable(value);
+        }
+    }
+
+    get zIndex() {
+        return this._android.getZIndex();
+    }
+
+    set zIndex(value: number) {
+        if (this._isReal) {
+            this._android.setZIndex(value);
+        } else {
+            this._android.zIndex(value);
+        }
+    }
+
+    get visible() {
+        return this._android.isVisible();
+    }
+
+    set visible(value: boolean) {
+        if (this._isReal) {
+            this._android.setVisible(value);
+        } else {
+            this._android.visible(value);
+        }
+    }
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+        this.reloadPoints();
+    }
+
+    removePoint(point: Position, reload: boolean): void {
+        var index = this._points.indexOf(point);
+        if (index > -1) {
+            this._points.splice(index, 1);
+            this.reloadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.reloadPoints();
+    }
+
+    loadPoints(): void {
+        if (!this._isReal) {
+            this._points.forEach(function(point) {
+                this._android.add(point.android);
+            }.bind(this));
+        }
+    }
+
+    reloadPoints(): void {
+        if (this._isReal) {
+            var points = new java.util.ArrayList();
+            this._points.forEach(function(point) {
+                points.add(point.android);
+            }.bind(this));
+            this._android.setPoints(points);
+        }
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    get strokeWidth() {
+        return this._android.getStrokeWidth();
+    }
+
+    set strokeWidth(value: number) {
+        if (this._isReal) {
+            this._android.setStrokeWidth(value);
+        } else {
+            this._android.strokeWidth(value);
+        }
+    }
+
+    get strokeColor() {
+        return this._strokeColor;
+    }
+
+    set strokeColor(value: Color) {
+        this._strokeColor = value;
+        if (this._isReal) {
+            this._android.setStrokeColor(value.android);
+        } else {
+            this._android.strokeColor(value.android);
+        }
+    }
+
+    get fillColor() {
+        return this._fillColor;
+    }
+
+    set fillColor(value: Color) {
+        this._fillColor = value;
+        if (this._isReal) {
+            this._android.setFillColor(value.android);
+        } else {
+            this._android.fillColor(value.android);
+        }
+    }
+
+    get android() {
+        return this._android;
+    }
+
+    set android(android) {
+        this._android = android;
+        this._isReal = android.getClass().getName() === Polygon.CLASS;
     }
 }
 
