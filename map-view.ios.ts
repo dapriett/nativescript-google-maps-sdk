@@ -467,6 +467,95 @@ export class Polyline extends PolylineBase {
     }
 }
 
+export class Polygon extends PolygonBase {
+    private _ios: any;
+    private _points: Array<Position>;
+    private _strokeColor: Color;
+    private _fillColor: Color;
+
+    constructor() {
+        super();
+        this._ios = GMSPolygon.new();
+        this._points = [];
+    }
+
+    get clickable() {
+        return this._ios.tappable;
+    }
+
+    set clickable(value: boolean) {
+        this._ios.tappable = value;
+    }
+
+    get zIndex() {
+        return this._ios.zIndex;
+    }
+
+    set zIndex(value: number) {
+        this._ios.zIndex = value;
+    }
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+        this.loadPoints();
+    }
+
+    removePoint(point: Position, reload: boolean): void {
+        var index = this._points.indexOf(point);
+        if (index > -1) {
+            this._points.splice(index, 1);
+            this.loadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.loadPoints();
+    }
+
+    loadPoints(): void {
+        var points = GMSMutablePath.new();
+        this._points.forEach(function(point) {
+            points.addCoordinate(point.ios);
+        }.bind(this));
+        this._ios.path = points;
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    get strokeWidth() {
+        return this._ios.strokeWidth;
+    }
+
+    set strokeWidth(value: number) {
+        this._ios.strokeWidth = value;
+    }
+
+    get strokeColor() {
+        return this._strokeColor;
+    }
+
+    set strokeColor(value: Color) {
+        this._strokeColor = value;
+        this._ios.strokeColor = value.ios;
+    }
+
+    get fillColor() {
+        return this._fillColor;
+    }
+
+    set fillColor(value: Color) {
+        this._fillColor = value;
+        this._ios.fillColor = value.ios;
+    }
+
+    get ios() {
+        return this._ios;
+    }
+}
+
 export class Circle extends CircleBase {
     private _ios: any;
     private _center: Position;

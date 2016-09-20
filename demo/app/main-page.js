@@ -55,6 +55,17 @@ function onMapReady(args) {
     polyline.geodesic = true;
     mapView.addPolyline(polyline);
 
+    var polygon = new mapsModule.Polygon();
+    polygon.addPoint(mapsModule.Position.positionFromLatLng(-33.86, 151.20));
+    point = mapsModule.Position.positionFromLatLng(-33.89, 151.40);
+    polygon.addPoint(point);
+    polygon.addPoint(mapsModule.Position.positionFromLatLng(-34.22, 151.32));
+    polygon.visible = true;
+    polygon.fillColor = new Color('#9970d0a0');
+    polygon.strokeColor = new Color('#9900d0a0');
+    polygon.strokeWidth = 5;
+    mapView.addPolygon(polygon);
+
     marker = new mapsModule.Marker();
     marker.position = mapsModule.Position.positionFromLatLng(-33.42, 151.32);
     marker.title = "Gosford";
@@ -90,6 +101,10 @@ function onMapReady(args) {
         vmModule.mainViewModel.set("padding", [40, 40, 40, 40]);
         return wait(3000);
     }).then(function () {
+        polygon.addPoint(mapsModule.Position.positionFromLatLng(-34.22, 151.20));
+        console.log("Adding point to Polygon...", polygon);
+        return wait(3000);
+    }).then(function () {
         var marker = mapView.findMarker(function (marker) {
             return marker.userData.index === 2;
         });
@@ -115,6 +130,8 @@ function onMapReady(args) {
         mapView.removeAllCircles();
         console.log("Removing all polylines...");
         mapView.removeAllPolylines();
+        console.log("Removing all polygons...");
+        mapView.removeAllPolygons();
     }).then(function () {
         var marker = new mapsModule.Marker();
         marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
@@ -140,7 +157,7 @@ function onMarkerEvent(args) {
 var lastCamera = null;
 function onCameraChanged(args) {
     console.log("Camera changed: "+JSON.stringify(args.camera), JSON.stringify(args.camera) === lastCamera);
-    lastCamera = JSON.stringify(args.camera); 
+    lastCamera = JSON.stringify(args.camera);
 }
 
 exports.onMapReady = onMapReady;
