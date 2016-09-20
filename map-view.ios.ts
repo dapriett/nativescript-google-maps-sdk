@@ -122,6 +122,18 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
             owner.notifyMarkerInfoWindowTapped(marker);
         }
     }
+
+    public mapViewMarkerInfoWindow(mapView: GMSMapView, gmsMarker: GMSMarker): UIView {
+        return null;
+    }
+
+    public mapViewMarkerInfoContents(mapView: GMSMapView, gmsMarker: GMSMarker): UIView {
+        let owner = this._owner.get();
+        if(!owner) return null;
+        let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+        var content = owner._getMarkerInfoWindowContent(marker);
+        return (content) ? content.ios : null;
+    }
 }
 
 
@@ -327,6 +339,10 @@ export class Marker extends MarkerBase {
 
     showInfoWindow(): void {
         this._ios.map.selectedMarker = this._ios;
+    }
+
+    isInfoWindowShown(): boolean {
+        return this._ios.map.selectedMarker == this._ios;
     }
 
     get icon() {

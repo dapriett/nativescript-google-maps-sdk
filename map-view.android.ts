@@ -322,6 +322,19 @@ export class MapView extends MapViewCommon {
                     }
                 }));
 
+                gMap.setInfoWindowAdapter(new com.google.android.gms.maps.GoogleMap.InfoWindowAdapter({
+
+                    getInfoWindow : function(gmsMarker) {
+                        return null;
+                    },
+
+                    getInfoContents : function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        var content = owner._getMarkerInfoWindowContent(marker);
+                        return (content) ? content.android : null;
+                    }
+                }));
+
                 owner.notifyMapReady();
             }
         });
@@ -445,6 +458,10 @@ export class Marker extends MarkerBase {
         if (this._isMarker) {
             this.android.showInfoWindow();
         }
+    }
+
+    isInfoWindowShown(): boolean {
+        return (this._isMarker) ? this.android.showInfoWindow() : false;
     }
 
     get icon() {

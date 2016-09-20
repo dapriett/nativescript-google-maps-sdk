@@ -2,6 +2,8 @@
     font-size: 30;
     horizontal-align: center;
     margin: 20;
+    margin: 0;
+    color: #009688;
 }
 
 button {
@@ -13,4 +15,18 @@ button {
     font-size: 20;
     color: #284848;
     horizontal-align: center;
+}
+
+.infoWindowImage {
+    horizontal-align: center;
+    margin: 0;
+}
+
+.infoWindowCoordinates {
+    horizontal-align: center;
+    margin: 0;
+    color: #999999;
+    font-size: 16;
+    font-weight: bold;
+    text-decoration: none;
 }

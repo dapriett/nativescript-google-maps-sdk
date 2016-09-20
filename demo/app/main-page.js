@@ -1,5 +1,6 @@
 var vmModule = require("./main-view-model");
 var observableModule = require("data/observable");
+var builder = require("ui/builder");
 var mapsModule = require("nativescript-google-maps-sdk");
 var Image = require("ui/image").Image;
 var imageSource = require("image-source");
@@ -82,6 +83,20 @@ function onMapReady(args) {
     marker.userData = {index: 2};
     mapView.addMarker(marker);
 
+    // Custom Info Window Marker
+    marker = new mapsModule.Marker();
+    marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
+    marker.title = "All Done";
+    marker.snippet = "Enjoy!";
+    marker.infoWindowTemplate =
+        '<StackLayout orientation="vertical" >' +
+            '<Image src="res://icon" stretch="none"  height="50" cssClass="infoWindowImage" />' +
+            '<Label text="{{snippet}}" cssClass="title"  />' +
+            '<Label text="{{position.latitude + \',\' + position.longitude}}" cssClass="infoWindowCoordinates"  />' +
+        '</StackLayout>';
+    mapView.addMarker(marker);
+    marker.showInfoWindow();
+
     wait(3000).then(function () {
         var marker = mapView.findMarker(function (marker) {
             return marker.userData.index === 2;
@@ -132,13 +147,6 @@ function onMapReady(args) {
         mapView.removeAllPolylines();
         console.log("Removing all polygons...");
         mapView.removeAllPolygons();
-    }).then(function () {
-        var marker = new mapsModule.Marker();
-        marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
-        marker.title = "All Done";
-        marker.snippet = "Enjoy!";
-        mapView.addMarker(marker);
-        marker.showInfoWindow();
     }).catch(function (error) {
         console.log(error);
     });

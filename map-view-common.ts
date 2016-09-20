@@ -1,6 +1,8 @@
 import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, ShapeEventData, CameraEventData, PositionEventData } from ".";
-import { View } from "ui/core/view";
+import { View, Template } from "ui/core/view";
 import { Image } from "ui/image";
+import builder = require("ui/builder");
+import frame = require("ui/frame");
 
 import { Property, PropertyChangeData, PropertyMetadata, PropertyMetadataSettings } from "ui/core/dependency-observable";
 
@@ -86,6 +88,37 @@ export abstract class MapView extends View implements IMapView {
 
     set padding(value: any) {
         this._setValue(MapView.paddingProperty, this._transformPadding(value));
+    }
+
+    public _getMarkerInfoWindowContent(marker: Marker) {
+        var view;
+
+        if(marker && marker._infoWindowView) {
+            view = marker._infoWindowView;
+            marker._infoWindowView = null;
+            return view;
+        }
+
+        if (marker && marker.infoWindowTemplate) {
+            view = builder.parse(marker.infoWindowTemplate, this);
+        }
+
+        if (!view) return null;
+
+        marker._infoWindowView = view;
+
+        view.bindingContext = marker;
+        // Wait for view loaded, then trigger info window show again
+        view.on("loaded", function () {
+            setTimeout(function() {
+                if(marker.isInfoWindowShown()) marker.showInfoWindow();
+            }, 0)
+        });
+
+        this._addView(view);
+        //view._onAttached(this._context);
+
+        return view;
     }
 
     private _transformPadding(value) {

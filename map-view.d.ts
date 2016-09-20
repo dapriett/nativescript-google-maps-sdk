@@ -20,6 +20,7 @@ declare module "nativescript-google-maps-sdk" {
         public static bearingProperty: Property;
         public static zoomProperty: Property;
         public static tiltProperty: Property;
+        public static infoWindowTemplete: Property;
 
         public latitude: number;
         public longitude: number;
@@ -97,6 +98,7 @@ declare module "nativescript-google-maps-sdk" {
         public visible: boolean;
         public zIndex: number;
         public showInfoWindow(): void;
+        public isInfoWindowShown(): boolean;
         public userData: any;
         public _map: any;
         public ios: any;

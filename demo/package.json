@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "nativescript-google-maps-sdk": "file:../",
-    "tns-core-modules": "^2.2.1"
+    "tns-core-modules": "^2.3.0"
   },
   "devDependencies": {
     "babel-traverse": "6.7.6",
