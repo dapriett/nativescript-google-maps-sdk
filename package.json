@@ -3,6 +3,7 @@
   "version": "1.3.13",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view.js",
+  "typings": "map-view.d.ts",
   "nativescript": {
     "platforms": {
       "android": "1.5.1",

@@ -122,7 +122,7 @@ declare module "nativescript-google-maps-sdk" {
         public removePoint(shape: Position): void;
         public removeAllPoints(): void;
         public getPoints(): Array<Position>;
-    };
+    }
 
     export class Polygon extends Shape {
         public points: Array<Position>;
@@ -133,7 +133,7 @@ declare module "nativescript-google-maps-sdk" {
         public removePoint(shape: Position): void;
         public removeAllPoints(): void;
         public getPoints(): Array<Position>;
-    };
+    }
 
     export class Circle extends Shape {
         public center: Position;
