@@ -2,7 +2,7 @@ import application = require("application");
 
 import common = require("./map-view-common");
 
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
 import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
@@ -154,6 +154,11 @@ export class MapView extends MapViewCommon {
         this._markers = [];
         this._shapes = [];
         this.gMap.clear();
+    }
+
+    setStyle(style: Style) {
+        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(style);
+        return this.gMap.setMapStyle(styleOptions);
     }
 
     findShape(callback: (shape: IShape) => boolean): IShape {

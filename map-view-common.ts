@@ -153,6 +153,8 @@ export abstract class MapView extends View implements IMapView {
 
     public abstract clear(): void;
 
+    public abstract setStyle(): void;
+
     notifyMarkerEvent(eventName: string, marker: IMarker) {
         let args: MarkerEventData = { eventName: eventName, object: this, marker: marker };
         this.notify(args);

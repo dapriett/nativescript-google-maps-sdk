@@ -134,6 +134,11 @@ exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
 
+## Styling
+Use `gMap.setStyle(style);` to change the map styling.
+
+For map styles, see [Google Maps Style Reference](https://developers.google.com/maps/documentation/android-api/style-reference) and the [Styling Wizard](https://mapstyle.withgoogle.com/).
+
 ## Using with Angular
 
 ```
