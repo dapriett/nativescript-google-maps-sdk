@@ -544,7 +544,6 @@ export class Marker extends MarkerBase {
 
 export class Polyline extends PolylineBase {
     private _android: any;
-    private _points: Array<Position>;
     private _color: Color;
     private _isReal: boolean = false;
 
@@ -592,24 +591,6 @@ export class Polyline extends PolylineBase {
         }
     }
 
-    addPoint(point: Position): void {
-        this._points.push(point);
-        this.reloadPoints();
-    }
-
-    removePoint(point: Position, reload: boolean): void {
-        var index = this._points.indexOf(point);
-        if (index > -1) {
-            this._points.splice(index, 1);
-            this.reloadPoints();
-        }
-    }
-
-    removeAllPoints(): void {
-        this._points.length = 0;
-        this.reloadPoints();
-    }
-
     loadPoints(): void {
         if (!this._isReal) {
             this._points.forEach(function(point) {
@@ -626,10 +607,6 @@ export class Polyline extends PolylineBase {
             }.bind(this));
             this._android.setPoints(points);
         }
-    }
-
-    getPoints(): Array<Position> {
-        return this._points.slice();
     }
 
     get width() {
@@ -681,7 +658,6 @@ export class Polyline extends PolylineBase {
 
 export class Polygon extends PolygonBase {
     private _android: any;
-    private _points: Array<Position>;
     private _strokeColor: Color;
     private _fillColor: Color;
     private _isReal: boolean = false;
@@ -730,24 +706,6 @@ export class Polygon extends PolygonBase {
         }
     }
 
-    addPoint(point: Position): void {
-        this._points.push(point);
-        this.reloadPoints();
-    }
-
-    removePoint(point: Position, reload: boolean): void {
-        var index = this._points.indexOf(point);
-        if (index > -1) {
-            this._points.splice(index, 1);
-            this.reloadPoints();
-        }
-    }
-
-    removeAllPoints(): void {
-        this._points.length = 0;
-        this.reloadPoints();
-    }
-
     loadPoints(): void {
         if (!this._isReal) {
             this._points.forEach(function(point) {
@@ -764,10 +722,6 @@ export class Polygon extends PolygonBase {
             }.bind(this));
             this._android.setPoints(points);
         }
-    }
-
-    getPoints(): Array<Position> {
-        return this._points.slice();
     }
 
     get strokeWidth() {

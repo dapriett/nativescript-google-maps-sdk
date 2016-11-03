@@ -120,6 +120,7 @@ declare module "nativescript-google-maps-sdk" {
         public color: Color;
         public geodesic: boolean;
         public addPoint(shape: Position): void;
+        public addPoints(shapes: Position[]): void;
         public removePoint(shape: Position): void;
         public removeAllPoints(): void;
         public getPoints(): Array<Position>;
@@ -131,6 +132,7 @@ declare module "nativescript-google-maps-sdk" {
         public strokeColor: Color;
         public fillColor: Color;
         public addPoint(shape: Position): void;
+        public addPoints(shapes: Position[]): void;
         public removePoint(shape: Position): void;
         public removeAllPoints(): void;
         public getPoints(): Array<Position>;

@@ -216,14 +216,74 @@ export class Shape implements IShape {
     public clickable: boolean;
 }
 
-export class Polyline extends Shape implements IPolyline {
+export abstract class Polyline extends Shape implements IPolyline {
     public shape: string = 'polyline';
     public _map: any;
+    public _points: Array<Position>;
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+        this.reloadPoints();
+    }
+
+    addPoints(points: Position[]): void {
+        this._points = this._points.concat(points);
+        this.reloadPoints();
+    }
+
+    removePoint(point: Position): void {
+        var index = this._points.indexOf(point);
+        if (index > -1) {
+            this._points.splice(index, 1);
+            this.reloadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.reloadPoints();
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    public abstract reloadPoints(): void;
 }
 
-export class Polygon extends Shape implements IPolygon {
+export abstract class Polygon extends Shape implements IPolygon {
     public shape: string = 'polygon';
     public _map: any;
+    public _points: Array<Position>;
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+        this.reloadPoints();
+    }
+
+    addPoints(points: Position[]): void {
+        this._points = this._points.concat(points);
+        this.reloadPoints();
+    }
+
+    removePoint(point: Position): void {
+        var index = this._points.indexOf(point);
+        if (index > -1) {
+            this._points.splice(index, 1);
+            this.reloadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.reloadPoints();
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    public abstract reloadPoints(): void;
 }
 
 export class Circle extends Shape implements ICircle {

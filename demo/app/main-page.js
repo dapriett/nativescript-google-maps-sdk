@@ -46,10 +46,12 @@ function onMapReady(args) {
     mapView.addCircle(circle);
 
     var polyline = new mapsModule.Polyline();
-    polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.86, 151.20));
     var point = mapsModule.Position.positionFromLatLng(-32.89, 151.44);
-    polyline.addPoint(point);
-    polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.42, 151.32));
+    polyline.addPoints([
+        mapsModule.Position.positionFromLatLng(-33.86, 151.20),
+        point,
+        mapsModule.Position.positionFromLatLng(-33.42, 151.32)
+    ]);
     polyline.visible = true;
     polyline.width = 8;
     polyline.color = new Color('#DD00b3fd');
@@ -57,10 +59,11 @@ function onMapReady(args) {
     mapView.addPolyline(polyline);
 
     var polygon = new mapsModule.Polygon();
-    polygon.addPoint(mapsModule.Position.positionFromLatLng(-33.86, 151.20));
-    point = mapsModule.Position.positionFromLatLng(-33.89, 151.40);
-    polygon.addPoint(point);
-    polygon.addPoint(mapsModule.Position.positionFromLatLng(-34.22, 151.32));
+    polygon.addPoints([
+        mapsModule.Position.positionFromLatLng(-33.86, 151.20),
+        mapsModule.Position.positionFromLatLng(-33.89, 151.40),
+        mapsModule.Position.positionFromLatLng(-34.22, 151.32)
+    ]);
     polygon.visible = true;
     polygon.fillColor = new Color('#9970d0a0');
     polygon.strokeColor = new Color('#9900d0a0');
@@ -90,6 +93,7 @@ function onMapReady(args) {
         console.log("Moving marker...", marker.userData);
         marker.position = mapsModule.Position.positionFromLatLng(-33.33, 151.08);
         marker.rotation = 45;
+        console.log("Removing Point from polyline...", polyline, point);
         polyline.removePoint(point);
         return wait(3000);
     }).then(function () {
