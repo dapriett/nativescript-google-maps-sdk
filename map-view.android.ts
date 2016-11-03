@@ -157,7 +157,7 @@ export class MapView extends MapViewCommon {
     }
 
     setStyle(style: Style) {
-        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(style);
+        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
         return this.gMap.setMapStyle(styleOptions);
     }
 
