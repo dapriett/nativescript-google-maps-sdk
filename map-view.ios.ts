@@ -1,4 +1,4 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
 import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
@@ -239,6 +239,14 @@ export class MapView extends MapViewCommon {
         this.ios.clear();
     }
 
+    setStyle(style: Style) {
+        try {
+            this._ios.mapStyle = GMSMapStyle.styleWithJSONStringError(JSON.stringify(style));
+            return true;
+        } catch(err) {
+            return false;
+        }
+    }
 }
 
 export class Position extends PositionBase {

@@ -4,6 +4,7 @@ var mapsModule = require("nativescript-google-maps-sdk");
 var Image = require("ui/image").Image;
 var imageSource = require("image-source");
 var Color = require("color").Color;
+var style = require('./map-style.json');
 
 function wait(milliSeconds) {
     return new Promise(function(resolve, reject) {
@@ -117,6 +118,10 @@ function onMapReady(args) {
         // marker.position = mapsModule.Position.positionFromLatLng(-32.89,151.44);
         marker.anchor = [1, 1];
         marker.alpha = 0.8;
+        return wait(3000);
+    }).then(function () {
+        console.log("Changing to dark mode...");
+        mapView.setStyle(style);
         return wait(3000);
     }).then(function () {
         var marker = mapView.findMarker(function (marker) {
