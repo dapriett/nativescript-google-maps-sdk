@@ -11,7 +11,6 @@ declare module "nativescript-google-maps-sdk" {
         public zoom: number;
         public bearing: number;
         public tilt: number;
-        public paddig: Array<number>;
     }
 
     export class MapView extends View {
@@ -21,12 +20,14 @@ declare module "nativescript-google-maps-sdk" {
         public static bearingProperty: Property;
         public static zoomProperty: Property;
         public static tiltProperty: Property;
+        public static paddingProperty: Property;
 
         public latitude: number;
         public longitude: number;
         public zoom: number;
         public bearing: number;
         public tilt: number;
+        public padding: Array<number>;
 
         public notifyMapReady(): void;
 
