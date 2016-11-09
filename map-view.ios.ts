@@ -165,7 +165,12 @@ export class MapView extends MapViewCommon {
 
     updatePadding() {
         if (this.padding) {
-            this.gMap.padding = UIEdgeInsetsMake(this.padding[0] || 0, this.padding[1] || 0, this.padding[2] || 0, this.padding[3] || 0);
+            this.gMap.padding = UIEdgeInsetsMake(
+                this.padding[0] || 0,
+                this.padding[2] || 0,
+                this.padding[1] || 0,
+                this.padding[3] || 0
+            );
         }
     }
 

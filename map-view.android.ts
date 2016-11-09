@@ -84,7 +84,12 @@ export class MapView extends MapViewCommon {
 
     updatePadding() {
         if (this.padding && this.gMap) {
-            this.gMap.setPadding(this.padding[0] || 0, this.padding[1] || 0, this.padding[2] || 0, this.padding[3] || 0);
+            this.gMap.setPadding(
+                this.padding[2] || 0,
+                this.padding[0] || 0,
+                this.padding[3] || 0,
+                this.padding[1] || 0
+            );
         }
     }
 

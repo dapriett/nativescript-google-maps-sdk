@@ -103,7 +103,7 @@ function onMapReady(args) {
     }).then(function () {
         polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.33, 151.08));
         console.log("Adding point to Polyline...", polyline);
-        vmModule.mainViewModel.set("padding", [40, 40, 40, 40]);
+        vmModule.mainViewModel.set("padding", [30, 60, 40, 40]);
         return wait(3000);
     }).then(function () {
         polygon.addPoint(mapsModule.Position.positionFromLatLng(-34.22, 151.20));
