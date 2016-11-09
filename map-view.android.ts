@@ -2,7 +2,7 @@ import application = require("application");
 
 import common = require("./map-view-common");
 
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
 import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
@@ -121,10 +121,6 @@ export class MapView extends MapViewCommon {
         return this._markers.find(callback);
     }
 
-    notifyMarkerTapped(marker: Marker) {
-        this.notifyMarkerEvent(MapViewCommon.markerSelectEvent, marker);
-    }
-
     addPolyline(shape: Polyline) {
         shape.loadPoints();
         shape.android = this.gMap.addPolyline(shape.android);
@@ -132,6 +128,7 @@ export class MapView extends MapViewCommon {
     }
 
     addPolygon(shape: Polygon) {
+        shape.loadPoints();
         shape.android = this.gMap.addPolygon(shape.android);
         this._shapes.push(shape);
     }
@@ -157,6 +154,11 @@ export class MapView extends MapViewCommon {
         this._markers = [];
         this._shapes = [];
         this.gMap.clear();
+    }
+
+    setStyle(style: Style) {
+        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
+        return this.gMap.setMapStyle(styleOptions);
     }
 
     findShape(callback: (shape: IShape) => boolean): IShape {
@@ -205,13 +207,81 @@ export class MapView extends MapViewCommon {
                     owner.updateCamera();
                 }
 
+                gMap.setOnMapClickListener(new com.google.android.gms.maps.GoogleMap.OnMapClickListener({
+                    onMapClick: function(gmsPoint) {
+
+                        let position: Position = new Position(gmsPoint);
+                        owner.notifyPositionEvent(MapViewCommon.coordinateTappedEvent, position);
+                    }
+                }));
+
+                gMap.setOnMapLongClickListener(new com.google.android.gms.maps.GoogleMap.OnMapLongClickListener({
+                    onMapLongClick: function(gmsPoint) {
+                        let position: Position = new Position(gmsPoint);
+                        owner.notifyPositionEvent(MapViewCommon.coordinateLongPressEvent, position);
+                    }
+                }));
+
                 gMap.setOnMarkerClickListener(new com.google.android.gms.maps.GoogleMap.OnMarkerClickListener({
                     onMarkerClick: function(gmsMarker) {
-
                         let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerTapped(marker);
 
                         return false;
+                    }
+                }));
+
+                gMap.setOnInfoWindowClickListener(new com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener({
+                    onInfoWindowClick: function (gmsMarker) {
+                        let marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerInfoWindowTapped(marker);
+
+                        return false;
+                    }
+                }));
+
+                gMap.setOnCircleClickListener(new com.google.android.gms.maps.GoogleMap.OnCircleClickListener({
+                    onCircleClick: function(gmsCircle) {
+                        let shape: Shape = owner.findShape((shape: Shape) => shape.android.getId() === gmsCircle.getId());
+                        if (shape) {
+                            owner.notifyShapeTapped(shape);
+                        }
+                        return false;
+                    }
+                }));
+
+                gMap.setOnPolylineClickListener(new com.google.android.gms.maps.GoogleMap.OnPolylineClickListener({
+                    onPolylineClick: function(gmsPolyline) {
+                        let shape: Shape = owner.findShape((shape: Shape) => shape.android.getId() === gmsPolyline.getId());
+                        if (shape) {
+                            owner.notifyShapeTapped(shape);
+                        }
+                        return false;
+                    }
+                }));
+
+                gMap.setOnPolygonClickListener(new com.google.android.gms.maps.GoogleMap.OnPolygonClickListener({
+                    onPolygonClick: function(gmsPolygon) {
+                        let shape: Shape = owner.findShape((shape: Shape) => shape.android.getId() === gmsPolygon.getId());
+                        if (shape) {
+                            owner.notifyShapeTapped(shape);
+                        }
+                        return false;
+                    }
+                }));
+
+                gMap.setOnMarkerDragListener(new com.google.android.gms.maps.GoogleMap.OnMarkerDragListener({
+                    onMarkerDrag: function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerDrag(marker);
+                    },
+                    onMarkerDragEnd: function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerEndDragging(marker);
+                    },
+                    onMarkerDragStart: function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerBeginDragging(marker);
                     }
                 }));
 
@@ -279,20 +349,20 @@ export class Position extends PositionBase {
     }
 
     set latitude(latitude) {
-        this._android = new com.google.android.gms.maps.model.LatLng(latitude, this.longitude);
+        this._android = new com.google.android.gms.maps.model.LatLng(parseFloat(latitude), this.longitude);
     }
 
     get longitude() {
-        return this._android.latitude;
+        return this._android.longitude;
     }
 
     set longitude(longitude) {
-        this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, longitude);
+        this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, parseFloat(longitude));
     }
 
-    constructor() {
+    constructor(android?:com.google.android.gms.maps.model.LatLng) {
         super();
-        this._android = new com.google.android.gms.maps.model.LatLng(0, 0);
+        this._android = android || new com.google.android.gms.maps.model.LatLng(0, 0);
     }
 
     public static positionFromLatLng(latitude: number, longitude: number): Position {
@@ -305,7 +375,6 @@ export class Position extends PositionBase {
 
 export class Marker extends MarkerBase {
     private _android: any;
-    private _position: Position;
     private _icon: Image;
     private _isMarker: boolean = false;
 
@@ -318,11 +387,10 @@ export class Marker extends MarkerBase {
 
 
     get position() {
-        return this._position;
+        return new Position(this._android.getPosition());
     }
 
     set position(value: Position) {
-        this._position = value;
         if (this._isMarker) {
             this._android.setPosition(value.android);
         } else {
@@ -339,6 +407,18 @@ export class Marker extends MarkerBase {
             this._android.setRotation(value);
         } else {
             this._android.rotation(value);
+        }
+    }
+
+    get zIndex() {
+        return this._android.getZIndex();
+    }
+
+    set zIndex(value: number) {
+        if (this._isMarker) {
+            this._android.setZIndex(value);
+        } else {
+            this._android.zIndex(value);
         }
     }
 
@@ -363,6 +443,12 @@ export class Marker extends MarkerBase {
             this._android.setSnippet(snippet);
         } else {
             this._android.snippet(snippet);
+        }
+    }
+
+    showInfoWindow(): void {
+        if (this._isMarker) {
+            this.android.showInfoWindow();
         }
     }
 
@@ -458,7 +544,6 @@ export class Marker extends MarkerBase {
 
 export class Polyline extends PolylineBase {
     private _android: any;
-    private _points: Array<Position>;
     private _color: Color;
     private _isReal: boolean = false;
 
@@ -468,6 +553,18 @@ export class Polyline extends PolylineBase {
         super();
         this.android = new com.google.android.gms.maps.model.PolylineOptions();
         this._points = [];
+    }
+
+    get clickable() {
+        return this._android.isClickable();
+    }
+
+    set clickable(value: boolean) {
+        if (this._isReal) {
+            this._android.setClickable(value);
+        } else {
+            this._android.clickable(value);
+        }
     }
 
     get zIndex() {
@@ -494,24 +591,6 @@ export class Polyline extends PolylineBase {
         }
     }
 
-    addPoint(point: Position): void {
-        this._points.push(point);
-        this.reloadPoints();
-    }
-
-    removePoint(point: Position, reload: boolean): void {
-        var index = this._points.indexOf(point);
-        if (index > -1) {
-            this._points.splice(index, 1);
-            this.reloadPoints();
-        }
-    }
-
-    removeAllPoints(): void {
-        this._points.length = 0;
-        this.reloadPoints();
-    }
-
     loadPoints(): void {
         if (!this._isReal) {
             this._points.forEach(function(point) {
@@ -528,10 +607,6 @@ export class Polyline extends PolylineBase {
             }.bind(this));
             this._android.setPoints(points);
         }
-    }
-
-    getPoints(): Array<Position> {
-        return this._points.slice();
     }
 
     get width() {
@@ -581,6 +656,122 @@ export class Polyline extends PolylineBase {
     }
 }
 
+export class Polygon extends PolygonBase {
+    private _android: any;
+    private _strokeColor: Color;
+    private _fillColor: Color;
+    private _isReal: boolean = false;
+
+    static CLASS = 'com.google.android.gms.maps.model.Polygon';
+
+    constructor() {
+        super();
+        this.android = new com.google.android.gms.maps.model.PolygonOptions();
+        this._points = [];
+    }
+
+    get clickable() {
+        return this._android.isClickable();
+    }
+
+    set clickable(value: boolean) {
+        if (this._isReal) {
+            this._android.setClickable(value);
+        } else {
+            this._android.clickable(value);
+        }
+    }
+
+    get zIndex() {
+        return this._android.getZIndex();
+    }
+
+    set zIndex(value: number) {
+        if (this._isReal) {
+            this._android.setZIndex(value);
+        } else {
+            this._android.zIndex(value);
+        }
+    }
+
+    get visible() {
+        return this._android.isVisible();
+    }
+
+    set visible(value: boolean) {
+        if (this._isReal) {
+            this._android.setVisible(value);
+        } else {
+            this._android.visible(value);
+        }
+    }
+
+    loadPoints(): void {
+        if (!this._isReal) {
+            this._points.forEach(function(point) {
+                this._android.add(point.android);
+            }.bind(this));
+        }
+    }
+
+    reloadPoints(): void {
+        if (this._isReal) {
+            var points = new java.util.ArrayList();
+            this._points.forEach(function(point) {
+                points.add(point.android);
+            }.bind(this));
+            this._android.setPoints(points);
+        }
+    }
+
+    get strokeWidth() {
+        return this._android.getStrokeWidth();
+    }
+
+    set strokeWidth(value: number) {
+        if (this._isReal) {
+            this._android.setStrokeWidth(value);
+        } else {
+            this._android.strokeWidth(value);
+        }
+    }
+
+    get strokeColor() {
+        return this._strokeColor;
+    }
+
+    set strokeColor(value: Color) {
+        this._strokeColor = value;
+        if (this._isReal) {
+            this._android.setStrokeColor(value.android);
+        } else {
+            this._android.strokeColor(value.android);
+        }
+    }
+
+    get fillColor() {
+        return this._fillColor;
+    }
+
+    set fillColor(value: Color) {
+        this._fillColor = value;
+        if (this._isReal) {
+            this._android.setFillColor(value.android);
+        } else {
+            this._android.fillColor(value.android);
+        }
+    }
+
+    get android() {
+        return this._android;
+    }
+
+    set android(android) {
+        this._android = android;
+        this._isReal = android.getClass().getName() === Polygon.CLASS;
+    }
+}
+
 export class Circle extends CircleBase {
     private _android: any;
     private _center: Position;
@@ -593,6 +784,18 @@ export class Circle extends CircleBase {
     constructor() {
         super();
         this.android = new com.google.android.gms.maps.model.CircleOptions();
+    }
+
+    get clickable() {
+        return this._android.isClickable();
+    }
+
+    set clickable(value: boolean) {
+        if (this._isReal) {
+            this._android.setClickable(value);
+        } else {
+            this._android.clickable(value);
+        }
     }
 
     get zIndex() {

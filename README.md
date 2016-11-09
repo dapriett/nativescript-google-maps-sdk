@@ -43,6 +43,16 @@ cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app
 
 Next modify the file at `app/App_Resources/Android/values/nativescript_google_maps_api.xml`, uncomment `nativescript_google_maps_api_key` string and replace `PUT_API_KEY_HERE` with your api key.
 
+The plugin will default to latest available version of the Android `play-services-maps` SDK.  If you need to change the version, you can add a project ext property `googlePlayServicesVersion` like so:
+
+```
+//   /app/App_Resources/Android/app.gradle
+
+project.ext {
+    googlePlayServicesVersion = "+"
+}
+```
+
 ## Setup iOS API Key
 
 In the main script of your app `app.js`, use the following to add the API key (providing your key in place of `PUT_API_KEY_HERE`)
@@ -66,8 +76,9 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
   <GridLayout>
     <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" 
     								zoom="{{ zoom }}" bearing="{{ bearing }}" 
-    								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="OnMapReady"  
-   								markerSelect="onMarkerSelect" 
+    								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="onMapReady"  
+   								markerSelect="onMarkerSelect" markerBeginDragging="onMarkerBeginDragging"
+   								markerEndDragging="onMarkerEndDragging" markerDrag="onMarkerDrag"
    								cameraChanged="onCameraChanged" />
   </GridLayout>
 </Page>
@@ -80,8 +91,15 @@ The following events are available:
 Event          | Description
 -------------- |:---------------------------------
 `mapReady`     | Called when Google Map is ready for use
+`coordinateTapped` | Fires when coordinate is clicked on map
+`coordinateLongPress` | Fires when coordinate is "long pressed"
 `markerSelect` | Fires whenever a marker is selected
-`cameraChanged`| Fired on each camera change
+`shapeSelect` | Fires whenever a shape (`Circle`, `Polygon`, `Polyline`) is clicked.  You must explicity configure `shape.clickable = true;` on your shapes.
+`markerBeginDragging` | Fires when a marker begins dragging
+`markerDrag` | Fires repeatedly while a marker is being dragged
+`markerEndDragging` | Fires when a marker ends dragging
+`markerInfoWindowTapped` | Fired on tapping Marker Info Window
+`cameraChanged` | Fired on each camera change
 
 
 The property `gMap` gives you access to the raw platform Map Object - see their SDK references for how to use them ( [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap) )
@@ -91,7 +109,7 @@ The property `gMap` gives you access to the raw platform Map Object - see their 
 
 var mapsModule = require("nativescript-google-maps-sdk");
 
-function OnMapReady(args) {
+function onMapReady(args) {
   var mapView = args.object;
 
   console.log("Setting a marker...");
@@ -115,3 +133,42 @@ exports.onMapReady = onMapReady;
 exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
+
+## Styling
+Use `gMap.setStyle(style);` to change the map styling.
+
+For map styles, see [Google Maps Style Reference](https://developers.google.com/maps/documentation/android-api/style-reference) and the [Styling Wizard](https://mapstyle.withgoogle.com/).
+
+## Using with Angular
+
+```
+// /app/map-example.component.ts
+
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {registerElement} from "nativescript-angular/element-registry";
+
+// Important - must register MapView plugin in order to use in Angular templates
+registerElement("MapView", () => require("nativescript-google-maps-sdk").MapView);
+
+@Component({
+    selector: 'map-example-component',
+    template: `
+    <GridLayout>
+        <MapView (mapReady)="onMapReady($event)"></MapView>
+    </GridLayout>
+    `
+})
+export class MapExampleComponent {
+
+    @ViewChild("MapView") mapView: ElementRef;
+
+    //Map events
+    onMapReady = (event) => {
+        console.log("Map Ready");
+    };
+}
+```
+
+# Clustering Support (Issue [#57](https://github.com/dapriett/nativescript-google-maps-sdk/issues/57))
+
+There is a seperate plugin in development thanks to [@naderio](https://github.com/naderio) - see [nativescript-google-maps-utils](https://github.com/naderio/nativescript-google-maps-utils)

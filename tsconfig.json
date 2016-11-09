@@ -1,20 +1,29 @@
 {
     "compilerOptions": {
-        "target": "ES5",
         "module": "commonjs",
+        "target": "es5",
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "sourceMap": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noEmitHelpers": true
     },
     
     "filesGlob": [
         "./**/*.ts",
         "!./node_modules/**/*.ts"
     ],
-    
+    "files": [
+        "map-view.d.ts",
+        "map-view-common.ts",
+        "map-view.android.ts",
+        "map-view.ios.ts"
+    ],
     "exclude": [
         "./platforms/**/*.ts"
     ]

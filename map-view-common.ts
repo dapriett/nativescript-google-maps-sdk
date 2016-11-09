@@ -1,4 +1,4 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, ShapeEventData, CameraEventData, PositionEventData } from ".";
 import { View } from "ui/core/view";
 import { Image } from "ui/image";
 
@@ -24,7 +24,13 @@ export abstract class MapView extends View implements IMapView {
 
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
+    public static markerInfoWindowTappedEvent:string = "markerInfoWindowTapped";
+    public static shapeSelectEvent: string = "shapeSelect";
+    public static markerBeginDraggingEvent: string = "markerBeginDragging";
+    public static markerEndDraggingEvent: string = "markerEndDragging";
+    public static markerDragEvent: string = "markerDrag";
     public static coordinateTappedEvent: string = "coordinateTapped";
+    public static coordinateLongPressEvent: string = "coordinateLongPress";
     public static cameraChangedEvent: string = "cameraChanged";
 
     public static latitudeProperty = new Property("latitude", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
@@ -147,9 +153,36 @@ export abstract class MapView extends View implements IMapView {
 
     public abstract clear(): void;
 
+    public abstract setStyle(): void;
+
     notifyMarkerEvent(eventName: string, marker: IMarker) {
         let args: MarkerEventData = { eventName: eventName, object: this, marker: marker };
         this.notify(args);
+    }
+
+    notifyShapeEvent(eventName: string, shape: IShape) {
+        let args: ShapeEventData = { eventName: eventName, object: this, shape: shape };
+        this.notify(args);
+    }
+    notifyMarkerTapped(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerSelectEvent, marker);
+    }
+    notifyMarkerInfoWindowTapped(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerInfoWindowTappedEvent, marker);
+    }
+    notifyShapeTapped(shape: Shape) {
+        this.notifyShapeEvent(MapView.shapeSelectEvent, shape);
+    }
+    notifyMarkerBeginDragging(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerBeginDraggingEvent, marker);
+    }
+
+    notifyMarkerEndDragging(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerEndDraggingEvent, marker);
+    }
+
+    notifyMarkerDrag(marker: Marker) {
+        this.notifyMarkerEvent(MapView.markerDragEvent, marker);
     }
 
     notifyPositionEvent(eventName: string, position: IPosition) {
@@ -180,16 +213,77 @@ export class Marker implements IMarker {
 export class Shape implements IShape {
     public shape: string;
     public userData: any;
+    public clickable: boolean;
 }
 
-export class Polyline extends Shape implements IPolyline {
+export abstract class Polyline extends Shape implements IPolyline {
     public shape: string = 'polyline';
     public _map: any;
+    public _points: Array<Position>;
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+        this.reloadPoints();
+    }
+
+    addPoints(points: Position[]): void {
+        this._points = this._points.concat(points);
+        this.reloadPoints();
+    }
+
+    removePoint(point: Position): void {
+        var index = this._points.indexOf(point);
+        if (index > -1) {
+            this._points.splice(index, 1);
+            this.reloadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.reloadPoints();
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    public abstract reloadPoints(): void;
 }
 
-export class Polygon extends Shape implements IPolygon {
+export abstract class Polygon extends Shape implements IPolygon {
     public shape: string = 'polygon';
     public _map: any;
+    public _points: Array<Position>;
+
+    addPoint(point: Position): void {
+        this._points.push(point);
+        this.reloadPoints();
+    }
+
+    addPoints(points: Position[]): void {
+        this._points = this._points.concat(points);
+        this.reloadPoints();
+    }
+
+    removePoint(point: Position): void {
+        var index = this._points.indexOf(point);
+        if (index > -1) {
+            this._points.splice(index, 1);
+            this.reloadPoints();
+        }
+    }
+
+    removeAllPoints(): void {
+        this._points.length = 0;
+        this.reloadPoints();
+    }
+
+    getPoints(): Array<Position> {
+        return this._points.slice();
+    }
+
+    public abstract reloadPoints(): void;
 }
 
 export class Circle extends Shape implements ICircle {
