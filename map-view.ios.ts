@@ -1,4 +1,4 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
 import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
@@ -177,7 +177,12 @@ export class MapView extends MapViewCommon {
 
     updatePadding() {
         if (this.padding) {
-            this.gMap.padding = UIEdgeInsetsMake(this.padding[0] || 0, this.padding[1] || 0, this.padding[2] || 0, this.padding[3] || 0);
+            this.gMap.padding = UIEdgeInsetsMake(
+                this.padding[0] || 0,
+                this.padding[2] || 0,
+                this.padding[1] || 0,
+                this.padding[3] || 0
+            );
         }
     }
 
@@ -251,6 +256,14 @@ export class MapView extends MapViewCommon {
         this.ios.clear();
     }
 
+    setStyle(style: Style) {
+        try {
+            this._ios.mapStyle = GMSMapStyle.styleWithJSONStringError(JSON.stringify(style));
+            return true;
+        } catch(err) {
+            return false;
+        }
+    }
 }
 
 export class Position extends PositionBase {
@@ -398,7 +411,6 @@ export class Marker extends MarkerBase {
 
 export class Polyline extends PolylineBase {
     private _ios: any;
-    private _points: Array<Position>;
     private _color: Color;
 
     constructor() {
@@ -423,24 +435,6 @@ export class Polyline extends PolylineBase {
         this._ios.zIndex = value;
     }
 
-    addPoint(point: Position): void {
-        this._points.push(point);
-        this.loadPoints();
-    }
-
-    removePoint(point: Position, reload: boolean): void {
-        var index = this._points.indexOf(point);
-        if (index > -1) {
-            this._points.splice(index, 1);
-            this.loadPoints();
-        }
-    }
-
-    removeAllPoints(): void {
-        this._points.length = 0;
-        this.loadPoints();
-    }
-
     loadPoints(): void {
         var points = GMSMutablePath.new();
         this._points.forEach(function(point) {
@@ -449,8 +443,8 @@ export class Polyline extends PolylineBase {
         this._ios.path = points;
     }
 
-    getPoints(): Array<Position> {
-        return this._points.slice();
+    reloadPoints(): void {
+        this.loadPoints();
     }
 
     get width() {
@@ -485,7 +479,6 @@ export class Polyline extends PolylineBase {
 
 export class Polygon extends PolygonBase {
     private _ios: any;
-    private _points: Array<Position>;
     private _strokeColor: Color;
     private _fillColor: Color;
 
@@ -511,23 +504,7 @@ export class Polygon extends PolygonBase {
         this._ios.zIndex = value;
     }
 
-    addPoint(point: Position): void {
-        this._points.push(point);
-        this.loadPoints();
-    }
 
-    removePoint(point: Position, reload: boolean): void {
-        var index = this._points.indexOf(point);
-        if (index > -1) {
-            this._points.splice(index, 1);
-            this.loadPoints();
-        }
-    }
-
-    removeAllPoints(): void {
-        this._points.length = 0;
-        this.loadPoints();
-    }
 
     loadPoints(): void {
         var points = GMSMutablePath.new();
@@ -537,8 +514,8 @@ export class Polygon extends PolygonBase {
         this._ios.path = points;
     }
 
-    getPoints(): Array<Position> {
-        return this._points.slice();
+    reloadPoints(): void {
+        this.loadPoints();
     }
 
     get strokeWidth() {

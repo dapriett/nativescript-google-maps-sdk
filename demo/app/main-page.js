@@ -5,6 +5,7 @@ var mapsModule = require("nativescript-google-maps-sdk");
 var Image = require("ui/image").Image;
 var imageSource = require("image-source");
 var Color = require("color").Color;
+var style = require('./map-style.json');
 
 function wait(milliSeconds) {
     return new Promise(function(resolve, reject) {
@@ -46,10 +47,12 @@ function onMapReady(args) {
     mapView.addCircle(circle);
 
     var polyline = new mapsModule.Polyline();
-    polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.86, 151.20));
     var point = mapsModule.Position.positionFromLatLng(-32.89, 151.44);
-    polyline.addPoint(point);
-    polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.42, 151.32));
+    polyline.addPoints([
+        mapsModule.Position.positionFromLatLng(-33.86, 151.20),
+        point,
+        mapsModule.Position.positionFromLatLng(-33.42, 151.32)
+    ]);
     polyline.visible = true;
     polyline.width = 8;
     polyline.color = new Color('#DD00b3fd');
@@ -57,10 +60,11 @@ function onMapReady(args) {
     mapView.addPolyline(polyline);
 
     var polygon = new mapsModule.Polygon();
-    polygon.addPoint(mapsModule.Position.positionFromLatLng(-33.86, 151.20));
-    point = mapsModule.Position.positionFromLatLng(-33.89, 151.40);
-    polygon.addPoint(point);
-    polygon.addPoint(mapsModule.Position.positionFromLatLng(-34.22, 151.32));
+    polygon.addPoints([
+        mapsModule.Position.positionFromLatLng(-33.86, 151.20),
+        mapsModule.Position.positionFromLatLng(-33.89, 151.40),
+        mapsModule.Position.positionFromLatLng(-34.22, 151.32)
+    ]);
     polygon.visible = true;
     polygon.fillColor = new Color('#9970d0a0');
     polygon.strokeColor = new Color('#9900d0a0');
@@ -104,6 +108,7 @@ function onMapReady(args) {
         console.log("Moving marker...", marker.userData);
         marker.position = mapsModule.Position.positionFromLatLng(-33.33, 151.08);
         marker.rotation = 45;
+        console.log("Removing Point from polyline...", polyline, point);
         polyline.removePoint(point);
         return wait(3000);
     }).then(function () {
@@ -113,7 +118,7 @@ function onMapReady(args) {
     }).then(function () {
         polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.33, 151.08));
         console.log("Adding point to Polyline...", polyline);
-        vmModule.mainViewModel.set("padding", [40, 40, 40, 40]);
+        vmModule.mainViewModel.set("padding", [30, 60, 40, 40]);
         return wait(3000);
     }).then(function () {
         polygon.addPoint(mapsModule.Position.positionFromLatLng(-34.22, 151.20));
@@ -132,6 +137,10 @@ function onMapReady(args) {
         // marker.position = mapsModule.Position.positionFromLatLng(-32.89,151.44);
         marker.anchor = [1, 1];
         marker.alpha = 0.8;
+        return wait(3000);
+    }).then(function () {
+        console.log("Changing to dark mode...");
+        mapView.setStyle(style);
         return wait(3000);
     }).then(function () {
         var marker = mapView.findMarker(function (marker) {

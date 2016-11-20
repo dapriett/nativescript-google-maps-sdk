@@ -84,7 +84,16 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
 </Page>
 ```
 
-The following properties `latitude`, `latitude`, `zoom`, `bearing`, `tilt` and `padding` are available to you for adjusting camera view.
+The following properties are available to you for adjusting camera view.
+
+Property       | Description
+-------------- |:---------------------------------
+`latitude` | number
+`latitude` | number
+`zoom` | number
+`bearing` | number
+`tilt` | number
+`padding` | array of numbers reflectig top, bottom, left and right paddings
 
 The following events are available:
 
@@ -133,6 +142,11 @@ exports.onMapReady = onMapReady;
 exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
+
+## Styling
+Use `gMap.setStyle(style);` to change the map styling.
+
+For map styles, see [Google Maps Style Reference](https://developers.google.com/maps/documentation/android-api/style-reference) and the [Styling Wizard](https://mapstyle.withgoogle.com/).
 
 ## Using with Angular
 

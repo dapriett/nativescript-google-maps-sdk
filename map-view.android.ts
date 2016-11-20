@@ -2,7 +2,7 @@ import application = require("application");
 
 import common = require("./map-view-common");
 
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
+import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
 import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
@@ -84,7 +84,12 @@ export class MapView extends MapViewCommon {
 
     updatePadding() {
         if (this.padding && this.gMap) {
-            this.gMap.setPadding(this.padding[0] || 0, this.padding[1] || 0, this.padding[2] || 0, this.padding[3] || 0);
+            this.gMap.setPadding(
+                this.padding[2] || 0,
+                this.padding[0] || 0,
+                this.padding[3] || 0,
+                this.padding[1] || 0
+            );
         }
     }
 
@@ -154,6 +159,11 @@ export class MapView extends MapViewCommon {
         this._markers = [];
         this._shapes = [];
         this.gMap.clear();
+    }
+
+    setStyle(style: Style) {
+        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
+        return this.gMap.setMapStyle(styleOptions);
     }
 
     findShape(callback: (shape: IShape) => boolean): IShape {
@@ -556,7 +566,6 @@ export class Marker extends MarkerBase {
 
 export class Polyline extends PolylineBase {
     private _android: any;
-    private _points: Array<Position>;
     private _color: Color;
     private _isReal: boolean = false;
 
@@ -604,24 +613,6 @@ export class Polyline extends PolylineBase {
         }
     }
 
-    addPoint(point: Position): void {
-        this._points.push(point);
-        this.reloadPoints();
-    }
-
-    removePoint(point: Position, reload: boolean): void {
-        var index = this._points.indexOf(point);
-        if (index > -1) {
-            this._points.splice(index, 1);
-            this.reloadPoints();
-        }
-    }
-
-    removeAllPoints(): void {
-        this._points.length = 0;
-        this.reloadPoints();
-    }
-
     loadPoints(): void {
         if (!this._isReal) {
             this._points.forEach(function(point) {
@@ -638,10 +629,6 @@ export class Polyline extends PolylineBase {
             }.bind(this));
             this._android.setPoints(points);
         }
-    }
-
-    getPoints(): Array<Position> {
-        return this._points.slice();
     }
 
     get width() {
@@ -693,7 +680,6 @@ export class Polyline extends PolylineBase {
 
 export class Polygon extends PolygonBase {
     private _android: any;
-    private _points: Array<Position>;
     private _strokeColor: Color;
     private _fillColor: Color;
     private _isReal: boolean = false;
@@ -742,24 +728,6 @@ export class Polygon extends PolygonBase {
         }
     }
 
-    addPoint(point: Position): void {
-        this._points.push(point);
-        this.reloadPoints();
-    }
-
-    removePoint(point: Position, reload: boolean): void {
-        var index = this._points.indexOf(point);
-        if (index > -1) {
-            this._points.splice(index, 1);
-            this.reloadPoints();
-        }
-    }
-
-    removeAllPoints(): void {
-        this._points.length = 0;
-        this.reloadPoints();
-    }
-
     loadPoints(): void {
         if (!this._isReal) {
             this._points.forEach(function(point) {
@@ -776,10 +744,6 @@ export class Polygon extends PolygonBase {
             }.bind(this));
             this._android.setPoints(points);
         }
-    }
-
-    getPoints(): Array<Position> {
-        return this._points.slice();
     }
 
     get strokeWidth() {
