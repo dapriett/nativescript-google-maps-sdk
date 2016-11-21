@@ -95,12 +95,22 @@ export abstract class MapView extends View implements IMapView {
 
         if(marker && marker._infoWindowView) {
             view = marker._infoWindowView;
-            marker._infoWindowView = null;
+            //marker._infoWindowView = null;
             return view;
         }
 
         if (marker && marker.infoWindowTemplate) {
-            view = builder.parse(marker.infoWindowTemplate, this);
+            var page = frame.topmost().currentPage;
+
+            var pathIdx = marker.infoWindowTemplate.lastIndexOf("/") + 1;
+            var path = (pathIdx > 0) ? marker.infoWindowTemplate.substr(0, pathIdx) : "";
+            var name = (pathIdx > 0) ? marker.infoWindowTemplate.substr(pathIdx) : marker.infoWindowTemplate;
+
+            view = builder.load({
+                path: path,
+                name: name,
+                page: page
+            });
         }
 
         if (!view) return null;
@@ -108,15 +118,9 @@ export abstract class MapView extends View implements IMapView {
         marker._infoWindowView = view;
 
         view.bindingContext = marker;
-        // Wait for view loaded, then trigger info window show again
-        view.on("loaded", function () {
-            setTimeout(function() {
-                if(marker.isInfoWindowShown()) marker.showInfoWindow();
-            }, 0)
-        });
 
         this._addView(view);
-        //view._onAttached(this._context);
+        view.onLoaded();
 
         return view;
     }

@@ -89,15 +89,8 @@ function onMapReady(args) {
 
     // Custom Info Window Marker
     marker = new mapsModule.Marker();
-    marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
-    marker.title = "All Done";
-    marker.snippet = "Enjoy!";
-    marker.infoWindowTemplate =
-        '<StackLayout orientation="vertical" >' +
-            '<Image src="res://icon" stretch="none"  height="50" cssClass="infoWindowImage" />' +
-            '<Label text="{{snippet}}" cssClass="title"  />' +
-            '<Label text="{{position.latitude + \',\' + position.longitude}}" cssClass="infoWindowCoordinates"  />' +
-        '</StackLayout>';
+    marker.position = mapsModule.Position.positionFromLatLng(-33.66, 151.20);
+    marker.infoWindowTemplate = '~/info-window';
     mapView.addMarker(marker);
     marker.showInfoWindow();
 
