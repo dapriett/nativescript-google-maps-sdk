@@ -181,3 +181,13 @@ export class MapExampleComponent {
 # Clustering Support (Issue [#57](https://github.com/dapriett/nativescript-google-maps-sdk/issues/57))
 
 There is a seperate plugin in development thanks to [@naderio](https://github.com/naderio) - see [nativescript-google-maps-utils](https://github.com/naderio/nativescript-google-maps-utils)
+
+## Get Help
+
+Checking with the Nativescript community is your best bet for getting help.
+
+If you have a question, start by seeing if anyone else has encountered the scenario on [Stack Overflow](http://stackoverflow.com/questions/tagged/nativescript). If you cannot find any information, try [asking the question yourself](http://stackoverflow.com/questions/ask/advice?). Make sure to add any details needed to recreate the issue and include the “NativeScript” tag, so your question is visible to the NativeScript community.
+
+If you need more help than the Q&A format Stack Overflow can provide, try [joining the NativeScript community Slack](http://developer.telerik.com/wp-login.php?action=slack-invitation). The Slack chat is a great place to get help troubleshooting problems, as well as connect with other NativeScript developers.
+
+Finally, if you have found an issue with the NativeScript Google Maps SDK itself, or requesting a new feature, please report them here [Issues](https://github.com/dapriett/nativescript-google-maps-sdk/issues).
