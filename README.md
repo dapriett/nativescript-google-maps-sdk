@@ -182,7 +182,7 @@ export class MapExampleComponent {
 
 There is a seperate plugin in development thanks to [@naderio](https://github.com/naderio) - see [nativescript-google-maps-utils](https://github.com/naderio/nativescript-google-maps-utils)
 
-## Get Help
+# Get Help
 
 Checking with the Nativescript community is your best bet for getting help.
 
