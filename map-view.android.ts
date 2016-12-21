@@ -2,8 +2,8 @@ import application = require("application");
 
 import common = require("./map-view-common");
 
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
-import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
+// import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from ".";
+import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase, Bounds as BoundsBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
 import imageSource = require("image-source");
@@ -79,6 +79,18 @@ export class MapView extends MapViewCommon {
         this._pendingCameraUpdate = false;
 
         var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
+        this.gMap.moveCamera(cameraUpdate);
+    }
+
+    setViewport(bounds:Bounds, padding?:number) {
+        var p = padding || 0;
+        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds(bounds.android, p);
+        if (!this.gMap) {
+            this._pendingCameraUpdate = true
+            return;
+        }
+
+        this._pendingCameraUpdate = false;
         this.gMap.moveCamera(cameraUpdate);
     }
 
@@ -375,6 +387,43 @@ export class Position extends PositionBase {
         position.latitude = latitude;
         position.longitude = longitude;
         return position;
+    }
+}
+
+export class Bounds extends BoundsBase {
+    private _android: any;
+    private _north: Position;
+    private _south: Position;
+
+    get android() {
+        return this._android;
+    }
+
+    get southwest() {
+        return this._south;
+    }
+
+    set southwest(southwest:Position) {
+        this._south = southwest.android;
+        if(this.northeast) {
+            this._android = new com.google.android.gms.maps.model.LatLngBounds(this.southwest, this.northeast);
+        }
+    }
+
+    get northeast() {
+        return this._north;
+    }
+
+    set northeast(northeast:Position) {
+        this._north = northeast.android;
+        if(this.southwest) {
+            this._android = new com.google.android.gms.maps.model.LatLngBounds(this.southwest, this.northeast);
+        }
+    }
+
+    constructor() {
+        super();
+        // this._android = android || new com.google.android.gms.maps.model.LatLng(0, 0);
     }
 }
 

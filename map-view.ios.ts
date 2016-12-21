@@ -1,5 +1,5 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData } from "nativescript-google-maps-sdk";
-import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase } from "./map-view-common";
+// import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData, Bounds as IBounds } from "nativescript-google-maps-sdk";
+import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase, Bounds as BoundsBase } from "./map-view-common";
 import { Image } from "ui/image";
 import { Color } from "color";
 import imageSource = require("image-source");
@@ -163,6 +163,13 @@ export class MapView extends MapViewCommon {
         this.ios.animateToCameraPosition(this._createCameraPosition());
     }
 
+    setViewport(bounds:Bounds, padding?:number) {
+        var p = UIEdgeInsetsMake(padding,padding,padding,padding) || this.gMap.padding;
+        var cameraPosition = this.ios.cameraForBoundsInsets(bounds.ios, p);
+        console.log(cameraPosition);
+        this.ios.animateToCameraPosition(cameraPosition);
+    }
+
     updatePadding() {
         if (this.padding) {
             this.gMap.padding = UIEdgeInsetsMake(
@@ -251,6 +258,42 @@ export class MapView extends MapViewCommon {
         } catch(err) {
             return false;
         }
+    }
+}
+
+export class Bounds extends BoundsBase {
+    private _ios: any; /* GMSCoordinateBounds */
+    private _north: Position;
+    private _south: Position;
+    get ios() {
+        return this._ios;
+    }
+
+    get southwest() {
+        return this._south;
+    }
+
+    set southwest(southwest:Position) {
+        this._south = southwest.ios;
+        if(this.northeast) {
+            this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(this.southwest, this.northeast);
+        }
+    }
+
+    get northeast() {
+        return this._north;
+    }
+
+    set northeast(northeast:Position) {
+        this._north = northeast.ios;
+        if(this.southwest) {
+            this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(this.southwest, this.northeast);
+        }
+    }
+
+    constructor() {
+        super();
+        // this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(new Position(), new Position());
     }
 }
 
@@ -398,6 +441,7 @@ export class Polyline extends PolylineBase {
     private _color: Color;
 
     constructor() {
+        console.log("Polyline constructor");
         super();
         this._ios = GMSPolyline.new();
         this._points = [];
