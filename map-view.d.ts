@@ -33,6 +33,8 @@ declare module "nativescript-google-maps-sdk" {
 
         public updateCamera(): void;
 
+        public setViewport(bounds:Bounds, padding?:number): void;
+
         public updatePadding(): void;
 
         public static mapReadyEvent: string;
@@ -84,6 +86,13 @@ declare module "nativescript-google-maps-sdk" {
         public longitude: number;
         public static positionFromLatLng(latitude: number, longitude: number): Position;
         public ios: any; /* CLLocationCoordinate2D */
+        public android: any;
+    }
+
+    export class Bounds {
+        public northeast: Position;
+        public southwest: Position;
+        public ios: any; /* GMSCoordinateBounds */
         public android: any;
     }
 
