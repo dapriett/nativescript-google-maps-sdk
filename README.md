@@ -62,6 +62,15 @@ if(application.ios) {
   GMSServices.provideAPIKey("PUT_API_KEY_HERE");
 }
 ```
+If you are using Angular, you need to modify the `main.ts` as follows:
+```
+import * as platform from "platform";
+declare var GMSServices: any;
+....
+if (platform.isIOS) { 
+  GMSServices.provideAPIKey("PUT_API_KEY_HERE");
+}
+```
 
 ##  Adding the MapView
 
