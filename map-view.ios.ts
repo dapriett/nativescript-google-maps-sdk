@@ -1,8 +1,13 @@
-// import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Style as IStyle, Camera, MarkerEventData, CameraEventData, PositionEventData, Bounds as IBounds } from "nativescript-google-maps-sdk";
-import { MapView as MapViewCommon, Position as PositionBase, Marker as MarkerBase, Polyline as PolylineBase, Polygon as PolygonBase, Circle as CircleBase, Bounds as BoundsBase } from "./map-view-common";
-import { Image } from "ui/image";
-import { Color } from "color";
-import imageSource = require("image-source");
+import {
+    MapViewBase, BoundsBase, CircleBase, 
+    MarkerBase, PolygonBase, PolylineBase, 
+    PositionBase, ShapeBase, latitudeProperty,
+    longitudeProperty, bearingProperty, zoomProperty,
+    tiltProperty 
+} from "./map-view-common";
+import { Image } from "tns-core-modules/ui/image";
+import { Color } from "tns-core-modules/color";
+import * as imageSource from 'tns-core-modules/image-source';
 
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
@@ -25,27 +30,27 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
             let cameraChanged: boolean = false;
             if (owner.latitude != cameraPosition.target.latitude) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.latitudeProperty, cameraPosition.target.latitude);
+                latitudeProperty.nativeValueChange(owner, cameraPosition.target.latitude);
             }
             if (owner.longitude != cameraPosition.target.longitude) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.longitudeProperty, cameraPosition.target.longitude);
+                longitudeProperty.nativeValueChange(owner, cameraPosition.target.longitude);
             }
             if (owner.bearing != cameraPosition.bearing) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.bearingProperty, cameraPosition.bearing);
+                bearingProperty.nativeValueChange(owner, cameraPosition.bearing);
             }
             if (owner.zoom != cameraPosition.zoom) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.zoomProperty, cameraPosition.zoom);
+                zoomProperty.nativeValueChange(owner, cameraPosition.zoom);
             }
             if (owner.tilt != cameraPosition.viewingAngle) {
                 cameraChanged = true;
-                owner._onPropertyChangedFromNative(MapViewCommon.tiltProperty, cameraPosition.viewingAngle);
+                tiltProperty.nativeValueChange(owner, cameraPosition.viewingAngle);
             }
 
             if (cameraChanged) {
-                owner.notifyCameraEvent(MapViewCommon.cameraChangedEvent, {
+                owner.notifyCameraEvent(MapViewBase.cameraChangedEvent, {
                     latitude: cameraPosition.target.latitude,
                     longitude: cameraPosition.target.longitude,
                     zoom: cameraPosition.zoom,
@@ -62,7 +67,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         let owner = this._owner.get();
         if (owner) {
             let position: Position = Position.positionFromLatLng(coordinate.latitude, coordinate.longitude);
-            owner.notifyPositionEvent(MapViewCommon.coordinateTappedEvent, position);
+            owner.notifyPositionEvent(MapViewBase.coordinateTappedEvent, position);
         }
     }
 
@@ -70,7 +75,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         let owner = this._owner.get();
         if (owner) {
             let position: Position = Position.positionFromLatLng(coordinate.latitude, coordinate.longitude);
-            owner.notifyPositionEvent(MapViewCommon.coordinateLongPressEvent, position);
+            owner.notifyPositionEvent(MapViewBase.coordinateLongPressEvent, position);
         }
     }
 
@@ -125,28 +130,22 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 }
 
 
-export class MapView extends MapViewCommon {
+export class MapView extends MapViewBase {
 
-    private _ios: any;
-    private _delegate: any;
-    private _markers: Array<Marker>;
-    private _shapes: Array<Shape>;
+    protected _markers: Array<Marker> = new Array<Marker>();
 
-    constructor() {
-        super();
-        this._markers = [];
-        this._shapes = [];
-        this._ios = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
+    private createNativeView() {
+        return GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
     }
 
-    onLoaded() {
-        super.onLoaded();
-        this._ios.delegate = this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
-        let self = this;
-        setTimeout(function(){
-            self.notifyMapReady();
-        }, 0);
+    private initNativeView() {
+        this.nativeView = this.createNativeView();
 
+        this.nativeView.delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
+
+        setTimeout(function(){
+            this.notifyMapReady();
+        }.bind(this), 0);
     }
 
     private _createCameraPosition() {
@@ -160,14 +159,13 @@ export class MapView extends MapViewCommon {
     }
 
     updateCamera() {
-        this.ios.animateToCameraPosition(this._createCameraPosition());
+        this.nativeView.animateToCameraPosition(this._createCameraPosition());
     }
 
-    setViewport(bounds:Bounds, padding?:number) {
-        var p = UIEdgeInsetsMake(padding,padding,padding,padding) || this.gMap.padding;
-        var cameraPosition = this.ios.cameraForBoundsInsets(bounds.ios, p);
-        console.log(cameraPosition);
-        this.ios.animateToCameraPosition(cameraPosition);
+    setViewport(bounds: Bounds, padding?: number) {
+        var p = UIEdgeInsetsMake(padding, padding, padding, padding) || this.gMap.padding;
+        let cameraPosition = this.nativeView.cameraForBoundsInsets(bounds.ios, p);
+        this.nativeView.animateToCameraPosition(cameraPosition);
     }
 
     updatePadding() {
@@ -181,16 +179,12 @@ export class MapView extends MapViewCommon {
         }
     }
 
-    get ios() {
-        return this._ios;
+    get ios(): never {
+        throw new Error('Now use instance.nativeView instead of instance.ios');
     }
 
     get gMap() {
-        return this._ios;
-    }
-
-    set ios(value: any) {
-        console.warn('Cannot set value from outside this class');
+        return this.nativeView;
     }
 
     addMarker(marker: Marker) {
@@ -248,12 +242,12 @@ export class MapView extends MapViewCommon {
 
     clear() {
         this._markers = [];
-        this.ios.clear();
+        this.nativeView.clear();
     }
 
     setStyle(style: Style) {
         try {
-            this._ios.mapStyle = GMSMapStyle.styleWithJSONStringError(JSON.stringify(style));
+            this.nativeView.mapStyle = GMSMapStyle.styleWithJSONStringError(JSON.stringify(style));
             return true;
         } catch(err) {
             return false;
@@ -441,7 +435,6 @@ export class Polyline extends PolylineBase {
     private _color: Color;
 
     constructor() {
-        console.log("Polyline constructor");
         super();
         this._ios = GMSPolyline.new();
         this._points = [];

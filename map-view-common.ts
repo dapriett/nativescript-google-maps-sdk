@@ -1,26 +1,48 @@
-import { MapView as IMapView, Position as IPosition, Marker as IMarker, Shape as IShape, Polyline as IPolyline, Polygon as IPolygon, Circle as ICircle, Camera, MarkerEventData, ShapeEventData, CameraEventData, PositionEventData, Bounds as IBounds } from ".";
-import { View } from "ui/core/view";
-import { Image } from "ui/image";
+import {
+    MapView as IMapView, Position as IPosition, Marker as IMarker,
+    Shape as IShape, Polyline as IPolyline, Polygon as IPolygon,
+    Circle as ICircle, Camera, MarkerEventData, ShapeEventData,
+    CameraEventData, PositionEventData, Bounds as IBounds
+} from ".";
+import { View } from "tns-core-modules/ui/core/view";
+import { Image } from "tns-core-modules/ui/image";
 
-import { Property, PropertyChangeData, PropertyMetadata, PropertyMetadataSettings } from "ui/core/dependency-observable";
+import { Property, PropertyOptions } from "tns-core-modules/ui/core/properties";
 
-//let CAMERA_PROPERTIES : String[] = ["latitude", "longitude", "bearing", "zoom", "tilt", "padding"];
-
-let MAP_VIEW: string = "MapView";
-
-function onMapPropertyChanged(data: PropertyChangeData) {
-    let mapView = <MapView>data.object;
-    if (!mapView._processingCameraEvent) mapView.updateCamera();
+function onMapPropertyChanged(mapView: MapViewBase, oldValue: number, newValue: number) {
+    if (!mapView.processingCameraEvent) mapView.updateCamera();
 }
 
-function onPaddingPropertyChanged(data: PropertyChangeData) {
-    let mapView = <MapView>data.object;
+function onPaddingPropertyChanged(mapView: MapViewBase, oldValue: number, newValue: number) {
     mapView.updatePadding();
 }
 
-export abstract class MapView extends View implements IMapView {
+function paddingValueConverter(value: any) {
+    if (!Array.isArray(value)) {
+        value = String(value).split(',').map(function(v) {
+            return parseInt(v, 10);
+        });
+    }
+    if (value.length === 4) {
+        return value;
+    } else {
+        return [0, 0, 0, 0];
+    }
+}
 
-    public gMap: any;
+
+export abstract class MapViewBase extends View implements IMapView {
+
+    protected _gMap: any;
+    protected _markers: Array<MarkerBase> = new Array<MarkerBase>();
+    protected _shapes: Array<ShapeBase> = new Array<ShapeBase>();
+    protected _processingCameraEvent: boolean;
+    public latitude: number;
+    public longitude: number;
+    public bearing: number;
+    public zoom: number;
+    public tilt: number;
+    public padding: number;
 
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
@@ -33,72 +55,12 @@ export abstract class MapView extends View implements IMapView {
     public static coordinateLongPressEvent: string = "coordinateLongPress";
     public static cameraChangedEvent: string = "cameraChanged";
 
-    public static latitudeProperty = new Property("latitude", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
-    public static longitudeProperty = new Property("longitude", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
-    public static bearingProperty = new Property("bearing", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
-    public static zoomProperty = new Property("zoom", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
-    public static tiltProperty = new Property("tilt", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onMapPropertyChanged));
-    public static paddingProperty = new Property("padding", MAP_VIEW, new PropertyMetadata(0, PropertyMetadataSettings.None, onPaddingPropertyChanged));
-
-    get latitude() {
-        return this._getValue(MapView.latitudeProperty);
+    public get gMap() {
+        return this._gMap;
     }
 
-    set latitude(value: any) {
-        this._setValue(MapView.latitudeProperty, parseFloat(value));
-    }
-
-    get longitude() {
-        return this._getValue(MapView.longitudeProperty);
-    }
-
-    set longitude(value: any) {
-        this._setValue(MapView.longitudeProperty, parseFloat(value));
-    }
-
-    get bearing() {
-        return this._getValue(MapView.bearingProperty);
-    }
-
-    set bearing(value: any) {
-        this._setValue(MapView.bearingProperty, parseFloat(value));
-    }
-
-    get zoom() {
-        return this._getValue(MapView.zoomProperty);
-    }
-
-    set zoom(value: any) {
-        this._setValue(MapView.zoomProperty, parseFloat(value));
-    }
-
-    get tilt() {
-        return this._getValue(MapView.tiltProperty);
-    }
-
-    set tilt(value: any) {
-        this._setValue(MapView.tiltProperty, parseFloat(value));
-    }
-
-    get padding() {
-        return this._getValue(MapView.paddingProperty);
-    }
-
-    set padding(value: any) {
-        this._setValue(MapView.paddingProperty, this._transformPadding(value));
-    }
-
-    private _transformPadding(value) {
-        if (!Array.isArray(value)) {
-            value = String(value).split(',').map(function(v) {
-                return parseInt(v, 10);
-            });
-        }
-        if (value.length === 4) {
-            return value;
-        } else {
-            return [0, 0, 0, 0];
-        }
+    public get processingCameraEvent(): boolean {
+        return this._processingCameraEvent;
     }
 
     public abstract updateCamera(): void;
@@ -107,27 +69,25 @@ export abstract class MapView extends View implements IMapView {
 
     public abstract updatePadding(): void;
 
-    notifyMapReady() {
-        this.notify({ eventName: MapView.mapReadyEvent, object: this, gMap: this.gMap });
-    }
-
     public abstract addMarker(marker: IMarker): void;
 
     public abstract removeMarker(marker: IMarker): void;
 
     public abstract removeAllMarkers(): void;
 
-    public abstract addPolyline(shape: Polyline): void;
+    public abstract addPolyline(shape: PolylineBase): void;
 
-    public abstract addPolygon(shape: Polygon): void;
+    public abstract addPolygon(shape: PolygonBase): void;
 
-    public abstract addCircle(shape: Circle): void;
+    public abstract addCircle(shape: CircleBase): void;
 
-    public abstract removeShape(shape: Shape): void;
+    public abstract removeShape(shape: ShapeBase): void;
 
     public abstract removeAllShapes(): void;
 
-    protected _shapes: Array<IShape>;
+    public abstract clear(): void;
+
+    public abstract setStyle(style: any): void;
 
     public removeAllPolylines() {
         this._shapes.forEach(shape => {
@@ -153,9 +113,9 @@ export abstract class MapView extends View implements IMapView {
         });
     }
 
-    public abstract clear(): void;
-
-    public abstract setStyle(): void;
+    notifyMapReady() {
+        this.notify({ eventName: MapViewBase.mapReadyEvent, object: this, gMap: this.gMap });
+    }
 
     notifyMarkerEvent(eventName: string, marker: IMarker) {
         let args: MarkerEventData = { eventName: eventName, object: this, marker: marker };
@@ -166,25 +126,25 @@ export abstract class MapView extends View implements IMapView {
         let args: ShapeEventData = { eventName: eventName, object: this, shape: shape };
         this.notify(args);
     }
-    notifyMarkerTapped(marker: Marker) {
-        this.notifyMarkerEvent(MapView.markerSelectEvent, marker);
+    notifyMarkerTapped(marker: MarkerBase) {
+        this.notifyMarkerEvent(MapViewBase.markerSelectEvent, marker);
     }
-    notifyMarkerInfoWindowTapped(marker: Marker) {
-        this.notifyMarkerEvent(MapView.markerInfoWindowTappedEvent, marker);
+    notifyMarkerInfoWindowTapped(marker: MarkerBase) {
+        this.notifyMarkerEvent(MapViewBase.markerInfoWindowTappedEvent, marker);
     }
-    notifyShapeTapped(shape: Shape) {
-        this.notifyShapeEvent(MapView.shapeSelectEvent, shape);
+    notifyShapeTapped(shape: ShapeBase) {
+        this.notifyShapeEvent(MapViewBase.shapeSelectEvent, shape);
     }
-    notifyMarkerBeginDragging(marker: Marker) {
-        this.notifyMarkerEvent(MapView.markerBeginDraggingEvent, marker);
-    }
-
-    notifyMarkerEndDragging(marker: Marker) {
-        this.notifyMarkerEvent(MapView.markerEndDraggingEvent, marker);
+    notifyMarkerBeginDragging(marker: MarkerBase) {
+        this.notifyMarkerEvent(MapViewBase.markerBeginDraggingEvent, marker);
     }
 
-    notifyMarkerDrag(marker: Marker) {
-        this.notifyMarkerEvent(MapView.markerDragEvent, marker);
+    notifyMarkerEndDragging(marker: MarkerBase) {
+        this.notifyMarkerEvent(MapViewBase.markerEndDraggingEvent, marker);
+    }
+
+    notifyMarkerDrag(marker: MarkerBase) {
+        this.notifyMarkerEvent(MapViewBase.markerDragEvent, marker);
     }
 
     notifyPositionEvent(eventName: string, position: IPosition) {
@@ -198,17 +158,35 @@ export abstract class MapView extends View implements IMapView {
     }
 }
 
-export class Position implements IPosition {
+export const latitudeProperty = new Property<MapViewBase, number>({ name: 'latitude', defaultValue: 0, valueChanged: onMapPropertyChanged });
+latitudeProperty.register(MapViewBase);
+
+export const longitudeProperty = new Property<MapViewBase, number>({ name: 'longitude', defaultValue: 0, valueChanged: onMapPropertyChanged });
+longitudeProperty.register(MapViewBase);
+
+export const bearingProperty = new Property<MapViewBase, number>({ name: 'bearing', defaultValue: 0, valueChanged: onMapPropertyChanged });
+bearingProperty.register(MapViewBase);
+
+export const zoomProperty = new Property<MapViewBase, number>({ name: 'zoom', defaultValue: 0, valueChanged: onMapPropertyChanged });
+zoomProperty.register(MapViewBase);
+
+export const tiltProperty = new Property<MapViewBase, number>({ name: 'tilt', defaultValue: 0, valueChanged: onMapPropertyChanged });
+tiltProperty.register(MapViewBase);
+
+export const paddingProperty = new Property<MapViewBase, number>(<PropertyOptions<MapViewBase, number>>{ name: 'padding', defaultValue: 0, valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
+paddingProperty.register(MapViewBase);
+
+export class PositionBase implements IPosition {
     public latitude: number;
     public longitude: number;
 }
 
-export class Bounds implements IBounds {
-    public northeast: Position;
-    public southwest: Position;
+export class BoundsBase implements IBounds {
+    public northeast: PositionBase;
+    public southwest: PositionBase;
 }
 
-export class Marker implements IMarker {
+export class MarkerBase implements IMarker {
     public position: IPosition;
     public snippet: string;
     public title: string;
@@ -217,28 +195,28 @@ export class Marker implements IMarker {
     public _map: any;
 }
 
-export class Shape implements IShape {
+export class ShapeBase implements IShape {
     public shape: string;
     public userData: any;
     public clickable: boolean;
 }
 
-export abstract class Polyline extends Shape implements IPolyline {
+export abstract class PolylineBase extends ShapeBase implements IPolyline {
     public shape: string = 'polyline';
     public _map: any;
-    public _points: Array<Position>;
+    public _points: Array<PositionBase>;
 
-    addPoint(point: Position): void {
+    addPoint(point: PositionBase): void {
         this._points.push(point);
         this.reloadPoints();
     }
 
-    addPoints(points: Position[]): void {
+    addPoints(points: PositionBase[]): void {
         this._points = this._points.concat(points);
         this.reloadPoints();
     }
 
-    removePoint(point: Position): void {
+    removePoint(point: PositionBase): void {
         var index = this._points.indexOf(point);
         if (index > -1) {
             this._points.splice(index, 1);
@@ -251,29 +229,29 @@ export abstract class Polyline extends Shape implements IPolyline {
         this.reloadPoints();
     }
 
-    getPoints(): Array<Position> {
+    getPoints(): Array<PositionBase> {
         return this._points.slice();
     }
 
     public abstract reloadPoints(): void;
 }
 
-export abstract class Polygon extends Shape implements IPolygon {
+export abstract class PolygonBase extends ShapeBase implements IPolygon {
     public shape: string = 'polygon';
     public _map: any;
-    public _points: Array<Position>;
+    public _points: Array<PositionBase>;
 
-    addPoint(point: Position): void {
+    addPoint(point: PositionBase): void {
         this._points.push(point);
         this.reloadPoints();
     }
 
-    addPoints(points: Position[]): void {
+    addPoints(points: PositionBase[]): void {
         this._points = this._points.concat(points);
         this.reloadPoints();
     }
 
-    removePoint(point: Position): void {
+    removePoint(point: PositionBase): void {
         var index = this._points.indexOf(point);
         if (index > -1) {
             this._points.splice(index, 1);
@@ -286,14 +264,14 @@ export abstract class Polygon extends Shape implements IPolygon {
         this.reloadPoints();
     }
 
-    getPoints(): Array<Position> {
+    getPoints(): Array<PositionBase> {
         return this._points.slice();
     }
 
     public abstract reloadPoints(): void;
 }
 
-export class Circle extends Shape implements ICircle {
+export class CircleBase extends ShapeBase implements ICircle {
     public shape: string = 'circle';
     public center: IPosition;
     public _map: any;

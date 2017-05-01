@@ -1,9 +1,9 @@
 declare module "nativescript-google-maps-sdk" {
-    import { View } from "ui/core/view";
-    import { Property } from "ui/core/dependency-observable";
-    import { Image } from "ui/image";
-    import { Color } from "color";
-    import { EventData } from "data/observable";
+    import { View } from "tns-core-modules/ui/core/view";
+    import { Property } from "tns-core-modules/ui/core/properties";
+    import { Image } from "tns-core-modules/ui/image";
+    import { Color } from "tns-core-modules/color";
+    import { EventData } from "tns-core-modules/data/observable";
 
     export class Camera {
         public latitude: number;
@@ -14,13 +14,6 @@ declare module "nativescript-google-maps-sdk" {
     }
 
     export class MapView extends View {
-
-        public static latitudeProperty: Property;
-        public static longitudeProperty: Property;
-        public static bearingProperty: Property;
-        public static zoomProperty: Property;
-        public static tiltProperty: Property;
-        public static paddingProperty: Property;
 
         public latitude: number;
         public longitude: number;
@@ -48,9 +41,17 @@ declare module "nativescript-google-maps-sdk" {
         public static coordinateLongPressEvent: string;
         public static cameraChangedEvent: string;
 
+        /**
+         * __Obsolete:__ Now use instance.nativeView
+         */
         public ios: any; /* GMSMapView */
 
+        /**
+         * __Obsolete:__ Now use instance.nativeView
+         */
         public android: any; /* com.google.android.gms.maps.MapView */
+
+        public nativeView: any; /* GMSMapView | com.google.android.gms.maps.MapView */
 
         public gMap: any;
 
@@ -80,6 +81,13 @@ declare module "nativescript-google-maps-sdk" {
 
         public setStyle(style: Style): boolean;
     }
+
+    export const latitudeProperty: Property<MapView, number>;
+    export const longitudeProperty: Property<MapView, number>;
+    export const bearingProperty: Property<MapView, number>;
+    export const zoomProperty: Property<MapView, number>;
+    export const tiltProperty: Property<MapView, number>;
+    export const paddingProperty: Property<MapView, number>;
 
     export class Position {
         public latitude: number;
