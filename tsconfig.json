@@ -5,26 +5,25 @@
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
-        "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
         "sourceMap": false,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noEmitHelpers": true
+        "noEmitHelpers": true,
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "./node_modules/tns-core-modules/*",
+                "./node_modules/*"
+            ]
+        }
     },
-    
-    "filesGlob": [
-        "./**/*.ts",
-        "!./node_modules/**/*.ts"
-    ],
-    "files": [
-        "map-view.d.ts",
-        "map-view-common.ts",
-        "map-view.android.ts",
-        "map-view.ios.ts"
-    ],
     "exclude": [
-        "./platforms/**/*.ts"
+        "node_modules",
+        "platforms"
     ]
 }
