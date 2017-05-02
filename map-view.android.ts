@@ -256,35 +256,42 @@ export class MapView extends MapViewBase {
                     }
                 }));
 
-                gMap.setOnCircleClickListener(new com.google.android.gms.maps.GoogleMap.OnCircleClickListener({
-                    onCircleClick: (gmsCircle) => {
-                        let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsCircle.getId());
-                        if (shape) {
-                            owner.notifyShapeTapped(shape);
+                // Add checks for backwards capability to earlier SDK versions
+                if (gMap.setOnCircleClickListener) {
+                    gMap.setOnCircleClickListener(new com.google.android.gms.maps.GoogleMap.OnCircleClickListener({
+                        onCircleClick: (gmsCircle) => {
+                            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsCircle.getId());
+                            if (shape) {
+                                owner.notifyShapeTapped(shape);
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                }));
+                    }));
+                }
 
-                gMap.setOnPolylineClickListener(new com.google.android.gms.maps.GoogleMap.OnPolylineClickListener({
-                    onPolylineClick: (gmsPolyline) => {
-                        let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolyline.getId());
-                        if (shape) {
-                            owner.notifyShapeTapped(shape);
+                if (gMap.setOnPolylineClickListener) {
+                    gMap.setOnPolylineClickListener(new com.google.android.gms.maps.GoogleMap.OnPolylineClickListener({
+                        onPolylineClick: (gmsPolyline) => {
+                            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolyline.getId());
+                            if (shape) {
+                                owner.notifyShapeTapped(shape);
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                }));
+                    }));
+                }
 
-                gMap.setOnPolygonClickListener(new com.google.android.gms.maps.GoogleMap.OnPolygonClickListener({
-                    onPolygonClick: (gmsPolygon) => {
-                        let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolygon.getId());
-                        if (shape) {
-                            owner.notifyShapeTapped(shape);
+                if (gMap.setOnPolygonClickListener) {
+                    gMap.setOnPolygonClickListener(new com.google.android.gms.maps.GoogleMap.OnPolygonClickListener({
+                        onPolygonClick: (gmsPolygon) => {
+                            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolygon.getId());
+                            if (shape) {
+                                owner.notifyShapeTapped(shape);
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                }));
+                    }));
+                }
 
                 gMap.setOnMarkerDragListener(new com.google.android.gms.maps.GoogleMap.OnMarkerDragListener({
                     onMarkerDrag: (gmsMarker) => {
