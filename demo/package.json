@@ -2,15 +2,15 @@
   "nativescript": {
     "id": "org.nativescript.demo",
     "tns-ios": {
-      "version": "2.3.0"
+      "version": "3.0.0-rc.2"
     },
     "tns-android": {
-      "version": "2.3.0"
+      "version": "3.0.0-rc.1"
     }
   },
   "dependencies": {
     "nativescript-google-maps-sdk": "file:../",
-    "tns-core-modules": "^2.2.1"
+    "tns-core-modules": "^3.0.0-rc.2"
   },
   "devDependencies": {
     "babel-traverse": "6.7.6",
