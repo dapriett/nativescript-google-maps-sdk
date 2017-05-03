@@ -14,206 +14,31 @@ import { Color } from "tns-core-modules/color";
 import imageSource = require("tns-core-modules/image-source");
 
 declare const com: any;
+declare const android: any;
 
 export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();
     private _context: any;
     private _pendingCameraUpdate: boolean;
+    private hasPermissions: boolean;
 
-    onLoaded() {
-        super.onLoaded();
+    public createNativeView() {
+        let nativeView = new org.nativescript.widgets.ContentLayout(this._context);
 
-        application.android.on(application.AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
-        application.android.on(application.AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
-        application.android.on(application.AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
-        application.android.on(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
-    }
-
-    onUnloaded() {
-        super.onUnloaded();
-
-        application.android.off(application.AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
-        application.android.off(application.AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
-        application.android.off(application.AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
-        application.android.off(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
-    }
-
-    private _createCameraPosition() {
-        var cpBuilder = new com.google.android.gms.maps.model.CameraPosition.Builder();
-        var update = false;
-
-        if (!isNaN(this.latitude) && !isNaN(this.longitude)) {
-            update = true;
-            cpBuilder.target(new com.google.android.gms.maps.model.LatLng(this.latitude, this.longitude));
-        }
-
-        if (!isNaN(this.bearing)) {
-            update = true;
-            cpBuilder.bearing(this.bearing);
-        }
-
-        if (!isNaN(this.zoom)) {
-            update = true;
-            cpBuilder.zoom(this.zoom);
-        }
-
-        if (!isNaN(this.tilt)) {
-            update = true;
-            cpBuilder.tilt(this.tilt);
-        }
-
-        return (update) ? cpBuilder.build() : null;
-    }
-
-    updateCamera() {
-        var cameraPosition = this._createCameraPosition();
-        if (!cameraPosition) return;
-
-        if (!this.gMap) {
-            this._pendingCameraUpdate = true;
-            return;
-        }
-
-        this._pendingCameraUpdate = false;
-
-        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
-        this.gMap.moveCamera(cameraUpdate);
-    }
-
-    setViewport(bounds:Bounds, padding?:number) {
-        var p = padding || 0;
-        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds(bounds.android, p);
-        if (!this.gMap) {
-            this._pendingCameraUpdate = true
-            return;
-        }
-
-        this._pendingCameraUpdate = false;
-        this.gMap.moveCamera(cameraUpdate);
-    }
-
-    updatePadding() {
-        if (this.padding && this.gMap) {
-            this.gMap.setPadding(
-                this.padding[2] || 0,
-                this.padding[0] || 0,
-                this.padding[3] || 0,
-                this.padding[1] || 0
-            );
-        }
-    }
-
-    get android(): never {
-        throw new Error('Now use instance.nativeView instead of instance.android');
-    }
-
-    get gMap() {
-        return this._gMap;
-    }
-
-    addMarker(marker: Marker) {
-        marker.android = this.gMap.addMarker(marker.android);
-        this._markers.push(marker);
-    }
-
-    removeMarker(marker: Marker) {
-        marker.android.remove();
-        this._markers.splice(this._markers.indexOf(marker), 1);
-    }
-
-    removeAllMarkers() {
-        this._markers.forEach(marker => {
-            marker.android.remove();
-        });
-        this._markers = [];
-    }
-
-    findMarker(callback: (marker: Marker) => boolean): Marker {
-        return this._markers.find(callback);
-    }
-
-    addPolyline(shape: Polyline) {
-        shape.loadPoints();
-        shape.android = this.gMap.addPolyline(shape.android);
-        this._shapes.push(shape);
-    }
-
-    addPolygon(shape: Polygon) {
-        shape.loadPoints();
-        shape.android = this.gMap.addPolygon(shape.android);
-        this._shapes.push(shape);
-    }
-
-    addCircle(shape: Circle) {
-        shape.android = this.gMap.addCircle(shape.android);
-        this._shapes.push(shape);
-    }
-
-    removeShape(shape: ShapeBase) {
-        shape.android.remove();
-        this._shapes.splice(this._shapes.indexOf(shape), 1);
-    }
-
-    removeAllShapes() {
-        this._shapes.forEach(shape => {
-            shape.android.remove();
-        });
-        this._shapes = [];
-    }
-
-    clear() {
-        this._markers = [];
-        this._shapes = [];
-        this.gMap.clear();
-    }
-
-    setStyle(style: Style): void {
-        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
-        return this.gMap.setMapStyle(styleOptions);
-    }
-
-    findShape(callback: (shape: ShapeBase) => boolean): ShapeBase {
-        return this._shapes.find(callback);
-    }
-
-    private onActivityPaused(args) {
-        if (!this.nativeView || this._context != args.activity) return;
-        this.nativeView.onPause();
-    }
-
-    private onActivityResumed(args) {
-        if (!this.nativeView || this._context != args.activity) return;
-        this.nativeView.onResume();
-    }
-
-    private onActivitySaveInstanceState(args) {
-        if (!this.nativeView || this._context != args.activity) return;
-        this.nativeView.onSaveInstanceState(args.bundle);
-    }
-
-    private onActivityDestroyed(args) {
-        if (!this.nativeView || this._context != args.activity) return;
-        this.nativeView.onDestroy();
-    }
-
-    private createNativeView() {
+        let id = android.view.View.generateViewId();
+        nativeView.setId(id);
+        let activity = this._context;
         var cameraPosition = this._createCameraPosition();
 
-        var options = new com.google.android.gms.maps.GoogleMapOptions();
+        let options = new com.google.android.gms.maps.GoogleMapOptions();
         if (cameraPosition) options = options.camera(cameraPosition);
 
-        return new com.google.android.gms.maps.MapView(this._context, options);
-    }
-
-    private initNativeView() {
-        var that = new WeakRef(this);
-
-        this.nativeView = this.createNativeView();
-
-        this.nativeView.onCreate(null);
-        this.nativeView.onResume();
-
+        let mapFragment = com.google.android.gms.maps.MapFragment.newInstance(options);
+        let transaction = activity.getFragmentManager().beginTransaction();
+        transaction.add(id, mapFragment, "MAP_FRAGMENT");
+        transaction.commit();
+        let that = new WeakRef(this);
         var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
             onMapReady: (gMap) => {
                 var owner = that.get();
@@ -353,8 +178,147 @@ export class MapView extends MapViewBase {
                 owner.notifyMapReady();
             }
         });
+        mapFragment.getMapAsync(mapReadyCallback);
 
-        this.nativeView.getMapAsync(mapReadyCallback);
+        return nativeView;
+    }
+
+    private _createCameraPosition() {
+        var cpBuilder = new com.google.android.gms.maps.model.CameraPosition.Builder();
+        var update = false;
+
+        if (!isNaN(this.latitude) && !isNaN(this.longitude)) {
+            update = true;
+            cpBuilder.target(new com.google.android.gms.maps.model.LatLng(this.latitude, this.longitude));
+        }
+
+        if (!isNaN(this.bearing)) {
+            update = true;
+            cpBuilder.bearing(this.bearing);
+        }
+
+        if (!isNaN(this.zoom)) {
+            update = true;
+            cpBuilder.zoom(this.zoom);
+        }
+
+        if (!isNaN(this.tilt)) {
+            update = true;
+            cpBuilder.tilt(this.tilt);
+        }
+
+        return (update) ? cpBuilder.build() : null;
+    }
+
+    updateCamera() {
+        var cameraPosition = this._createCameraPosition();
+        if (!cameraPosition) return;
+
+        if (!this.gMap) {
+            this._pendingCameraUpdate = true;
+            return;
+        }
+
+        this._pendingCameraUpdate = false;
+
+        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
+        this.gMap.moveCamera(cameraUpdate);
+    }
+
+    setViewport(bounds:Bounds, padding?:number) {
+        var p = padding || 0;
+        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds(bounds.android, p);
+        if (!this.gMap) {
+            this._pendingCameraUpdate = true
+            return;
+        }
+
+        this._pendingCameraUpdate = false;
+        this.gMap.moveCamera(cameraUpdate);
+    }
+
+    updatePadding() {
+        if (this.padding && this.gMap) {
+            this.gMap.setPadding(
+                this.padding[2] || 0,
+                this.padding[0] || 0,
+                this.padding[3] || 0,
+                this.padding[1] || 0
+            );
+        }
+    }
+
+    get android(): never {
+        throw new Error('Now use instance.nativeView instead of instance.android');
+    }
+
+    get gMap() {
+        return this._gMap;
+    }
+
+    addMarker(marker: Marker) {
+        marker.android = this.gMap.addMarker(marker.android);
+        this._markers.push(marker);
+    }
+
+    removeMarker(marker: Marker) {
+        marker.android.remove();
+        this._markers.splice(this._markers.indexOf(marker), 1);
+    }
+
+    removeAllMarkers() {
+        this._markers.forEach(marker => {
+            marker.android.remove();
+        });
+        this._markers = [];
+    }
+
+    findMarker(callback: (marker: Marker) => boolean): Marker {
+        return this._markers.find(callback);
+    }
+
+    addPolyline(shape: Polyline) {
+        shape.loadPoints();
+        shape.android = this.gMap.addPolyline(shape.android);
+        this._shapes.push(shape);
+    }
+
+    addPolygon(shape: Polygon) {
+        shape.loadPoints();
+        shape.android = this.gMap.addPolygon(shape.android);
+        this._shapes.push(shape);
+    }
+
+    addCircle(shape: Circle) {
+        shape.android = this.gMap.addCircle(shape.android);
+        this._shapes.push(shape);
+    }
+
+    removeShape(shape: ShapeBase) {
+        shape.android.remove();
+        this._shapes.splice(this._shapes.indexOf(shape), 1);
+    }
+
+    removeAllShapes() {
+        this._shapes.forEach(shape => {
+            shape.android.remove();
+        });
+        this._shapes = [];
+    }
+
+    clear() {
+        this._markers = [];
+        this._shapes = [];
+        this.gMap.clear();
+    }
+
+    setStyle(style: Style): void {
+        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
+        return this.gMap.setMapStyle(styleOptions);
+    }
+
+    findShape(callback: (shape: ShapeBase) => boolean): ShapeBase {
+        return this._shapes.find(callback);
     }
 
 }
