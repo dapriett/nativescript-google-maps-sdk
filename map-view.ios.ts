@@ -1,13 +1,42 @@
 import {
-    MapViewBase, BoundsBase, CircleBase, 
-    MarkerBase, PolygonBase, PolylineBase, 
+    MapViewBase, BoundsBase, CircleBase,
+    MarkerBase, PolygonBase, PolylineBase,
     PositionBase, ShapeBase, latitudeProperty,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty 
+    tiltProperty, StyleBase
 } from "./map-view-common";
 import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
 import * as imageSource from 'tns-core-modules/image-source';
+
+declare class GMSMapViewDelegate extends NSObject {};
+declare class GMSCameraPosition extends NSObject {
+    target: any;
+    bearing: any;
+    zoom: any;
+    viewingAngle: any;
+    public static cameraWithLatitudeLongitudeZoomBearingViewingAngle(...params: any[]): GMSCameraPosition;
+};
+declare class GMSMapView extends NSObject {
+    public static mapWithFrameCamera(...params: any[]): GMSMapView;
+};
+declare class GMSMarker extends NSObject {};
+declare class GMSOverlay extends NSObject {};
+declare class GMSMapStyle extends NSObject {
+    public static styleWithJSONStringError(input: string): GMSMapStyle;
+};
+declare class GMSCoordinateBounds extends NSObject {
+    public static alloc(): GMSCoordinateBounds;
+    public initWithCoordinateCoordinate(...params: any[]): GMSCoordinateBounds
+};
+declare class GMSPolyline extends NSObject {};
+declare class GMSPolygon extends NSObject {};
+declare class GMSCircle extends NSObject {};
+declare class GMSMutablePath extends NSObject {
+    public static new(): GMSMutablePath
+    public addCoordinate(...params: any[]): void
+};
+declare function UIEdgeInsetsMake(...params: any[]): any;
 
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
@@ -90,7 +119,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     public mapViewDidTapOverlay(mapView: GMSMapView, gmsOverlay: GMSOverlay): void {
         let owner = this._owner.get();
         if (owner) {
-            let shape: Shape = owner.findShape((shape: Shape) => shape.ios == gmsOverlay);
+            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.ios == gmsOverlay);
             if (shape) {
                 owner.notifyShapeTapped(shape);
             }
@@ -134,11 +163,11 @@ export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();
 
-    private createNativeView() {
+    public createNativeView() {
         return GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
     }
 
-    private initNativeView() {
+    public initNativeView() {
         this.nativeView = this.createNativeView();
 
         this.nativeView.delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
@@ -224,7 +253,7 @@ export class MapView extends MapViewBase {
         this._shapes.push(shape);
     }
 
-    removeShape(shape: Shape) {
+    removeShape(shape: ShapeBase) {
         shape.ios.map = null;
         this._shapes.splice(this._shapes.indexOf(shape), 1);
     }
@@ -236,7 +265,7 @@ export class MapView extends MapViewBase {
         this._shapes = [];
     }
 
-    findShape(callback: (shape: Shape) => boolean): Shape {
+    findShape(callback: (shape: ShapeBase) => boolean): ShapeBase {
         return this._shapes.find(callback);
     }
 
@@ -245,7 +274,7 @@ export class MapView extends MapViewBase {
         this.nativeView.clear();
     }
 
-    setStyle(style: Style) {
+    setStyle(style: StyleBase) {
         try {
             this.nativeView.mapStyle = GMSMapStyle.styleWithJSONStringError(JSON.stringify(style));
             return true;
@@ -329,6 +358,8 @@ export class Position extends PositionBase {
 export class Marker extends MarkerBase {
     private _ios: any;
     private _icon: Image;
+    private _alpha = 1;
+    private _visible = true;
 
     constructor() {
         super();
@@ -394,11 +425,21 @@ export class Marker extends MarkerBase {
     }
 
     get alpha() {
-        return this._ios.opacity;
+        return this._alpha;
     }
 
     set alpha(value: number) {
-        this._ios.opacity = value;
+        this._alpha = value;
+        if(this._visible) this._ios.opacity = value;
+    }
+
+    get visible() {
+        return this._visible;
+    }
+
+    set visible(value: boolean) {
+        this._visible = value;
+        this._ios.opacity = (this._visible) ? this._alpha : 0;
     }
 
     get flat() {

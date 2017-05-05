@@ -1,13 +1,13 @@
 import {
-    MapView as IMapView, Position as IPosition, Marker as IMarker,
-    Shape as IShape, Polyline as IPolyline, Polygon as IPolygon,
-    Circle as ICircle, Camera, MarkerEventData, ShapeEventData,
-    CameraEventData, PositionEventData, Bounds as IBounds
-} from ".";
+    MapView, Position, Marker, Shape, Polyline, Polygon,
+    Circle, Camera, MarkerEventData, ShapeEventData,
+    CameraEventData, PositionEventData, Bounds, Style
+} from "./map-view";
 import { View } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
 
 import { Property, PropertyOptions } from "tns-core-modules/ui/core/properties";
+import { Color } from "tns-core-modules/color";
 
 function onMapPropertyChanged(mapView: MapViewBase, oldValue: number, newValue: number) {
     if (!mapView.processingCameraEvent) mapView.updateCamera();
@@ -30,13 +30,14 @@ function paddingValueConverter(value: any) {
     }
 }
 
+export { Style as StyleBase };
 
-export abstract class MapViewBase extends View implements IMapView {
+export abstract class MapViewBase extends View implements MapView {
 
     protected _gMap: any;
     protected _markers: Array<MarkerBase> = new Array<MarkerBase>();
     protected _shapes: Array<ShapeBase> = new Array<ShapeBase>();
-    protected _processingCameraEvent: boolean;
+    public _processingCameraEvent: boolean;
     public latitude: number;
     public longitude: number;
     public bearing: number;
@@ -63,31 +64,36 @@ export abstract class MapViewBase extends View implements IMapView {
         return this._processingCameraEvent;
     }
 
+
+    public abstract findMarker(callback: (marker: Marker)=>boolean): Marker;
+
+    public abstract addPolyline(shape: Polyline): void;
+
+    public abstract addPolygon(shape: Polygon): void;
+
+    public abstract addCircle(shape: Circle): void;
+
+    public abstract removeShape(shape: Shape): void;
+
+    public abstract findShape(callback: (shape: Shape) => boolean): Shape;
+
+    public abstract setStyle(style: Style): boolean;
+
     public abstract updateCamera(): void;
 
-    public abstract setViewport(b: IBounds, p?: number): void;
+    public abstract setViewport(b: Bounds, p?: number): void;
 
     public abstract updatePadding(): void;
 
-    public abstract addMarker(marker: IMarker): void;
+    public abstract addMarker(marker: Marker): void;
 
-    public abstract removeMarker(marker: IMarker): void;
+    public abstract removeMarker(marker: Marker): void;
 
     public abstract removeAllMarkers(): void;
-
-    public abstract addPolyline(shape: PolylineBase): void;
-
-    public abstract addPolygon(shape: PolygonBase): void;
-
-    public abstract addCircle(shape: CircleBase): void;
-
-    public abstract removeShape(shape: ShapeBase): void;
 
     public abstract removeAllShapes(): void;
 
     public abstract clear(): void;
-
-    public abstract setStyle(style: any): void;
 
     public removeAllPolylines() {
         this._shapes.forEach(shape => {
@@ -117,12 +123,12 @@ export abstract class MapViewBase extends View implements IMapView {
         this.notify({ eventName: MapViewBase.mapReadyEvent, object: this, gMap: this.gMap });
     }
 
-    notifyMarkerEvent(eventName: string, marker: IMarker) {
+    notifyMarkerEvent(eventName: string, marker: Marker) {
         let args: MarkerEventData = { eventName: eventName, object: this, marker: marker };
         this.notify(args);
     }
 
-    notifyShapeEvent(eventName: string, shape: IShape) {
+    notifyShapeEvent(eventName: string, shape: Shape) {
         let args: ShapeEventData = { eventName: eventName, object: this, shape: shape };
         this.notify(args);
     }
@@ -147,7 +153,7 @@ export abstract class MapViewBase extends View implements IMapView {
         this.notifyMarkerEvent(MapViewBase.markerDragEvent, marker);
     }
 
-    notifyPositionEvent(eventName: string, position: IPosition) {
+    notifyPositionEvent(eventName: string, position: Position) {
         let args: PositionEventData = { eventName: eventName, object: this, position: position };
         this.notify(args);
     }
@@ -176,35 +182,57 @@ tiltProperty.register(MapViewBase);
 export const paddingProperty = new Property<MapViewBase, number>(<PropertyOptions<MapViewBase, number>>{ name: 'padding', defaultValue: 0, valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
 paddingProperty.register(MapViewBase);
 
-export class PositionBase implements IPosition {
+export class PositionBase implements Position {
     public latitude: number;
     public longitude: number;
+    public ios: any; /* CLLocationCoordinate2D */
+    public android: any;
 }
 
-export class BoundsBase implements IBounds {
-    public northeast: PositionBase;
-    public southwest: PositionBase;
+export class BoundsBase implements Bounds {
+    public northeast: Position;
+    public southwest: Position;
+    public ios: any; /* GMSCoordinateBounds */
+    public android: any;
 }
 
-export class MarkerBase implements IMarker {
-    public position: IPosition;
-    public snippet: string;
+export abstract class MarkerBase implements Marker {
+    public position: Position;
+    public rotation: number;
+    public anchor: Array<number>;
     public title: string;
+    public snippet: string;
     public icon: Image;
+    public alpha: number;
+    public flat: boolean;
+    public draggable: boolean;
+    public visible: boolean;
+    public zIndex: number;
+    public abstract showInfoWindow(): void;
     public userData: any;
     public _map: any;
+    public ios: any;
+    public android: any;
 }
 
-export class ShapeBase implements IShape {
+export class ShapeBase implements Shape {
     public shape: string;
+    public visible: boolean;
+    public zIndex: number;
     public userData: any;
+    public _map: any;
+    public ios: any;
+    public android: any;
     public clickable: boolean;
 }
 
-export abstract class PolylineBase extends ShapeBase implements IPolyline {
+export abstract class PolylineBase extends ShapeBase implements Polyline {
     public shape: string = 'polyline';
     public _map: any;
     public _points: Array<PositionBase>;
+    public width: number;
+    public color: Color;
+    public geodesic: boolean;
 
     addPoint(point: PositionBase): void {
         this._points.push(point);
@@ -236,10 +264,13 @@ export abstract class PolylineBase extends ShapeBase implements IPolyline {
     public abstract reloadPoints(): void;
 }
 
-export abstract class PolygonBase extends ShapeBase implements IPolygon {
+export abstract class PolygonBase extends ShapeBase implements Polygon {
     public shape: string = 'polygon';
     public _map: any;
     public _points: Array<PositionBase>;
+    public strokeWidth: number;
+    public strokeColor: Color;
+    public fillColor: Color;
 
     addPoint(point: PositionBase): void {
         this._points.push(point);
@@ -271,8 +302,12 @@ export abstract class PolygonBase extends ShapeBase implements IPolygon {
     public abstract reloadPoints(): void;
 }
 
-export class CircleBase extends ShapeBase implements ICircle {
+export class CircleBase extends ShapeBase implements Circle {
     public shape: string = 'circle';
-    public center: IPosition;
+    public center: Position;
     public _map: any;
+    public radius: number;
+    public strokeWidth: number;
+    public strokeColor: Color;
+    public fillColor: Color;
 }

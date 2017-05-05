@@ -3,11 +3,11 @@ import application = require("tns-core-modules/application");
 import common = require("./map-view-common");
 
 import {
-    MapViewBase, BoundsBase, CircleBase, 
-    MarkerBase, PolygonBase, PolylineBase, 
+    MapViewBase, BoundsBase, CircleBase,
+    MarkerBase, PolygonBase, PolylineBase,
     PositionBase, ShapeBase, latitudeProperty,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty 
+    tiltProperty, StyleBase
 } from "./map-view-common";
 import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
@@ -19,7 +19,7 @@ declare const android: any;
 export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();
-    private _context: any;
+    public _context: any;
     private _pendingCameraUpdate: boolean;
     private hasPermissions: boolean;
 
@@ -312,7 +312,7 @@ export class MapView extends MapViewBase {
         this.gMap.clear();
     }
 
-    setStyle(style: Style): void {
+    setStyle(style: StyleBase): boolean {
         let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
         return this.gMap.setMapStyle(styleOptions);
     }
@@ -347,7 +347,7 @@ export class Position extends PositionBase {
         this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, parseFloat(""+longitude));
     }
 
-    constructor(android?: com.google.android.gms.maps.model.LatLng) {
+    constructor(android?: any) {
         super();
         this._android = android || new com.google.android.gms.maps.model.LatLng(0, 0);
     }
