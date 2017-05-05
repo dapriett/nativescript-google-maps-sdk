@@ -35,7 +35,7 @@ Setup Google Maps API
 
 See demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/demo)
 
-Live Demo [here](https://tinyurl.com/llpocox)
+Live Demo [here](https://tinyurl.com/m7ndp7u)
  
 ## Setup Android API Key
 
