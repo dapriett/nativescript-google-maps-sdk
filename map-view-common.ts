@@ -202,7 +202,7 @@ export abstract class MarkerBase implements Marker {
     public anchor: Array<number>;
     public title: string;
     public snippet: string;
-    public icon: Image;
+    public icon: Image|string;
     public alpha: number;
     public flat: boolean;
     public draggable: boolean;
