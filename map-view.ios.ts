@@ -163,13 +163,10 @@ export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();
 
-    public createNativeView() {
-        return GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
-    }
+    constructor() {
+        super();
 
-    public initNativeView() {
-        this.nativeView = this.createNativeView();
-
+        this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
         this.nativeView.delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
 
         setTimeout(function(){
