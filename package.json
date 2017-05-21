@@ -1,6 +1,6 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view",
   "typings": "map-view.d.ts",
@@ -11,7 +11,8 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "clean": "rm -f *.js",
+    "build": "npm run clean && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "./node_modules/.bin/tsc"
   },
