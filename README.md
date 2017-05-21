@@ -163,6 +163,8 @@ For map styles, see [Google Maps Style Reference](https://developers.google.com/
 
 ## Using with Angular
 
+See angular demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/ng-demo)
+
 ```
 // /app/map-example.component.ts
 
