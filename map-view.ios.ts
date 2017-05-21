@@ -411,7 +411,7 @@ export class Marker extends MarkerBase {
         return this._icon;
     }
 
-    set icon(value: Image) {
+    set icon(value: Image|string) {
         if (typeof value === 'string') {
             var tempIcon = new Image();
             tempIcon.imageSource = imageSource.fromResource(String(value));
