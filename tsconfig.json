@@ -22,9 +22,13 @@
             ]
         }
     },
+    "include": [
+        "./"
+    ],
     "exclude": [
         "node_modules",
         "platforms",
-        "demo"
+        "demo",
+        "ng-demo"
     ]
 }
