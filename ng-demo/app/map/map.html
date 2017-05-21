@@ -1,0 +1,9 @@
+<GridLayout>
+    <MapView #mapView [latitude]="latitude" [longitude]="longitude"
+             [zoom]="zoom" [bearing]="bearing"
+             [tilt]="tilt" i-padding="50,50,50,50" [padding]="padding" (mapReady)="onMapReady($event)"
+             (markerSelect)="onMarkerEvent($event)" (markerBeginDragging)="onMarkerEvent($event)"
+             (markerEndDragging)="onMarkerEvent($event)" (markerDrag)="onMarkerEvent($event)"
+             (markerInfoWindowTapped)="onMarkerEvent($event)" (coordinateTapped)="onCoordinateTapped($event)"
+             (cameraChanged)="onCameraChanged($event)"></MapView>
+</GridLayout>
