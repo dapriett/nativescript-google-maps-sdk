@@ -23,21 +23,53 @@ export class MapView extends MapViewBase {
     private _pendingCameraUpdate: boolean;
     private hasPermissions: boolean;
 
-    public createNativeView() {
-        let nativeView = new org.nativescript.widgets.ContentLayout(this._context);
+    onLoaded() {
+        super.onLoaded();
 
-        let id = android.view.View.generateViewId();
-        nativeView.setId(id);
-        let activity = this._context;
+        application.android.on(application.AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
+        application.android.on(application.AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
+        application.android.on(application.AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
+        application.android.on(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
+    }
+
+    onUnloaded() {
+        super.onUnloaded();
+
+        application.android.off(application.AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
+        application.android.off(application.AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
+        application.android.off(application.AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
+        application.android.off(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
+    }
+
+    private onActivityPaused(args) {
+        if (!this.nativeView || this._context != args.activity) return;
+        this.nativeView.onPause();
+    }
+
+    private onActivityResumed(args) {
+        if (!this.nativeView || this._context != args.activity) return;
+        this.nativeView.onResume();
+    }
+
+    private onActivitySaveInstanceState(args) {
+        if (!this.nativeView || this._context != args.activity) return;
+        this.nativeView.onSaveInstanceState(args.bundle);
+    }
+
+    private onActivityDestroyed(args) {
+        if (!this.nativeView || this._context != args.activity) return;
+        this.nativeView.onDestroy();
+    }
+
+    public createNativeView() {
         var cameraPosition = this._createCameraPosition();
 
         let options = new com.google.android.gms.maps.GoogleMapOptions();
         if (cameraPosition) options = options.camera(cameraPosition);
+        this.nativeView = new com.google.android.gms.maps.MapView(this._context, options);
+        this.nativeView.onCreate(null);
+        this.nativeView.onResume();
 
-        let mapFragment = com.google.android.gms.maps.MapFragment.newInstance(options);
-        let transaction = activity.getFragmentManager().beginTransaction();
-        transaction.add(id, mapFragment, "MAP_FRAGMENT");
-        transaction.commit();
         let that = new WeakRef(this);
         var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
             onMapReady: (gMap) => {
@@ -178,9 +210,10 @@ export class MapView extends MapViewBase {
                 owner.notifyMapReady();
             }
         });
-        mapFragment.getMapAsync(mapReadyCallback);
 
-        return nativeView;
+        this.nativeView.getMapAsync(mapReadyCallback);
+
+        return this.nativeView;
     }
 
     private _createCameraPosition() {
