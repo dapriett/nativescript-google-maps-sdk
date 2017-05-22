@@ -141,6 +141,9 @@ function onMapReady(args) {
   marker.snippet = "Australia";
   marker.userData = { index : 1};
   mapView.addMarker(marker);
+  
+  // Disabling zoom gestures
+  mapView.settings.zoomGesturesEnabled = false;
 }
 
 function onMarkerSelect(args) {
@@ -155,6 +158,22 @@ exports.onMapReady = onMapReady;
 exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
+
+
+You can adjust the Map UI settings after mapReady by changing the below properties on `mapView.settings`
+
+Property       | Description
+-------------- |:---------------------------------
+`compassEnabled` | boolean - Whether the compass is enabled/disabled
+`indoorLevelPickerEnabled` | boolean - Whether the indoor level picker is enabled/disabled
+`mapToolbarEnabled` | boolean - Whether the indoor level picker is enabled/disabled ** ****Android only**** **
+`myLocationButtonEnabled` | boolean - Whether the my-location button is enabled/disabled
+`rotateGesturesEnabled` | boolean - Whether the compass is enabled/disabled
+`scrollGesturesEnabled` | boolean - Whether scroll gestures are enabled/disabled
+`tiltGesturesEnabled` | boolean - Whether tilt gestures are enabled/disabled
+`zoomControlsEnabled` | boolean - Whether the zoom controls are enabled/disabled ** ****Android only**** **
+`zoomGesturesEnabled` | boolean - Whether zoom gestures are enabled/disabled
+
 
 ## Styling
 Use `gMap.setStyle(style);` to change the map styling.
