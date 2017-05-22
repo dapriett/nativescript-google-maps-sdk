@@ -3,7 +3,7 @@ import {
     MarkerBase, PolygonBase, PolylineBase,
     PositionBase, ShapeBase, latitudeProperty,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase
+    tiltProperty, StyleBase, UISettingsBase
 } from "./map-view-common";
 import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
@@ -168,6 +168,7 @@ export class MapView extends MapViewBase {
 
         this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
         this.nativeView.delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
+        this.updatePadding();
 
         setTimeout(function(){
             this.notifyMapReady();
@@ -211,6 +212,18 @@ export class MapView extends MapViewBase {
 
     get gMap() {
         return this.nativeView;
+    }
+
+    get settings(): UISettings {
+        return (this.nativeView) ? new UISettings(this.nativeView.settings) : null;
+    }
+
+    get myLocationEnabled(): boolean {
+        return (this.nativeView) ? this.nativeView.myLocationEnabled : false;
+    }
+
+    set myLocationEnabled(value: boolean) {
+        if (this.nativeView) this.nativeView.myLocationEnabled = value;
     }
 
     addMarker(marker: Marker) {
@@ -278,6 +291,91 @@ export class MapView extends MapViewBase {
         } catch(err) {
             return false;
         }
+    }
+}
+
+export class UISettings extends UISettingsBase {
+    private _ios: any;
+
+    get ios() {
+        return this._ios;
+    }
+
+    constructor(ios: any) {
+        super();
+        this._ios = ios;
+    }
+
+    get compassEnabled(): boolean {
+        return this._ios.compassButton;
+    }
+
+    set compassEnabled(value: boolean) {
+        this._ios.compassButton = value;
+    }
+
+    get indoorLevelPickerEnabled(): boolean {
+        return this._ios.indoorPicker;
+    }
+
+    set indoorLevelPickerEnabled(value: boolean) {
+        this._ios.indoorPicker = value;
+    }
+
+    get mapToolbarEnabled(): boolean {
+        return false;
+    }
+
+    set mapToolbarEnabled(value: boolean) {
+        if (value) console.warn("Map toolbar not available on iOS");
+    }
+
+    get myLocationButtonEnabled(): boolean {
+        return this._ios.myLocationButton;
+    }
+
+    set myLocationButtonEnabled(value: boolean) {
+        this._ios.myLocationButton = value;
+    }
+
+    get rotateGesturesEnabled(): boolean {
+        return this._ios.rotateGestures;
+    }
+
+    set rotateGesturesEnabled(value: boolean) {
+        this._ios.rotateGestures = value;
+    }
+
+    get scrollGesturesEnabled(): boolean {
+        return this._ios.scrollGestures;
+    }
+
+    set scrollGesturesEnabled(value: boolean) {
+        this._ios.scrollGestures = value;
+    }
+
+    get tiltGesturesEnabled(): boolean {
+        return this._ios.tiltGestures;
+    }
+
+    set tiltGesturesEnabled(value: boolean) {
+        this._ios.tiltGestures = value;
+    }
+
+    get zoomControlsEnabled(): boolean {
+        return false;
+    }
+
+    set zoomControlsEnabled(value: boolean) {
+        if (value) console.warn("Zoom controls not available on iOS");
+    }
+
+    get zoomGesturesEnabled(): boolean {
+        return this._ios.zoomGestures;
+    }
+
+    set zoomGesturesEnabled(value: boolean) {
+        this._ios.zoomGestures = value;
     }
 }
 

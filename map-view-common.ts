@@ -1,7 +1,7 @@
 import {
     MapView, Position, Marker, Shape, Polyline, Polygon,
     Circle, Camera, MarkerEventData, ShapeEventData,
-    CameraEventData, PositionEventData, Bounds, Style
+    CameraEventData, PositionEventData, Bounds, Style, UISettings
 } from "./map-view";
 import { View } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
@@ -45,6 +45,9 @@ export abstract class MapViewBase extends View implements MapView {
     public tilt: number;
     public padding: number;
 
+    public settings: UISettingsBase;
+    public myLocationEnabled: boolean;
+
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
     public static markerInfoWindowTappedEvent:string = "markerInfoWindowTapped";
@@ -63,7 +66,6 @@ export abstract class MapViewBase extends View implements MapView {
     public get processingCameraEvent(): boolean {
         return this._processingCameraEvent;
     }
-
 
     public abstract findMarker(callback: (marker: Marker)=>boolean): Marker;
 
@@ -181,6 +183,18 @@ tiltProperty.register(MapViewBase);
 
 export const paddingProperty = new Property<MapViewBase, number>(<PropertyOptions<MapViewBase, number>>{ name: 'padding', defaultValue: 0, valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
 paddingProperty.register(MapViewBase);
+
+export class UISettingsBase implements UISettings {
+    compassEnabled: boolean;
+    indoorLevelPickerEnabled: boolean;
+    mapToolbarEnabled: boolean;
+    myLocationButtonEnabled: boolean;
+    rotateGesturesEnabled: boolean;
+    scrollGesturesEnabled: boolean;
+    tiltGesturesEnabled: boolean;
+    zoomControlsEnabled: boolean;
+    zoomGesturesEnabled: boolean;
+}
 
 export class PositionBase implements Position {
     public latitude: number;

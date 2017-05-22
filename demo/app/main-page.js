@@ -1,6 +1,8 @@
 var vmModule = require("./main-view-model");
 var observableModule = require("data/observable");
 var mapsModule = require("nativescript-google-maps-sdk");
+var permissions = require("nativescript-permissions");
+var application = require("application");
 var Image = require("ui/image").Image;
 var imageSource = require("image-source");
 var Color = require("color").Color;
@@ -14,6 +16,39 @@ function wait(milliSeconds) {
     });
 }
 
+function requestPermissions() {
+  return new Promise(function(resolve, reject) {
+    if (!application.android) return resolve(true);
+    permissions.requestPermission([
+          android.Manifest.permission.ACCESS_FINE_LOCATION,
+          android.Manifest.permission.ACCESS_COARSE_LOCATION],
+        "This demo will stink without these...")
+        .then(function (result) {
+          console.log("Permissions granted!");
+          resolve(true);
+        })
+        .catch(function (result) {
+          console.log("Permissions failed :(", result);
+          resolve(false);
+        });
+
+  });
+}
+
+function printUISettings(settings) {
+  console.log("Current UI setting:\n" + JSON.stringify({
+                compassEnabled: settings.compassEnabled,
+                indoorLevelPickerEnabled: settings.indoorLevelPickerEnabled,
+                mapToolbarEnabled: settings.mapToolbarEnabled,
+                myLocationButtonEnabled: settings.myLocationButtonEnabled,
+                rotateGesturesEnabled: settings.rotateGesturesEnabled,
+                scrollGesturesEnabled: settings.scrollGesturesEnabled,
+                tiltGesturesEnabled: settings.tiltGesturesEnabled,
+                zoomControlsEnabled: settings.zoomControlsEnabled,
+                zoomGesturesEnabled: settings.zoomGesturesEnabled
+  }, undefined, 2));
+}
+
 function pageLoaded(args) {
     var page = args.object;
     page.bindingContext = vmModule.mainViewModel;
@@ -23,12 +58,14 @@ exports.pageLoaded = pageLoaded;
 
 
 function onMapReady(args) {
-    console.log("onMapReady");
-
     var mapView = args.object;
 
-    console.log("Setting a marker...");
+    console.log("onMapReady");
+    mapView.settings.compassEnabled = true;
+    printUISettings(mapView.settings);
 
+
+    console.log("Setting a marker...");
     var marker = new mapsModule.Marker();
     marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
     marker.title = "Sydney";
@@ -86,7 +123,15 @@ function onMapReady(args) {
     marker.userData = {index: 2};
     mapView.addMarker(marker);
 
-    wait(3000).then(function () {
+  requestPermissions()
+    .then(function(granted) {
+        if(granted) {
+            console.log("Enabling My Location..");
+            mapView.myLocationEnabled = true;
+            mapView.settings.myLocationButtonEnabled = true;
+        }
+        return wait(3000);
+    }).then(function () {
         var marker = mapView.findMarker(function (marker) {
             return marker.userData.index === 2;
         });
@@ -133,7 +178,7 @@ function onMapReady(args) {
         });
         console.log("Removing marker...", marker.userData);
         mapView.removeMarker(marker);
-        return wait(9000);
+        return wait(3000);
     }).then(function () {
         console.log("Removing all circles...");
         mapView.removeAllCircles();
@@ -141,6 +186,12 @@ function onMapReady(args) {
         mapView.removeAllPolylines();
         console.log("Removing all polygons...");
         mapView.removeAllPolygons();
+      return wait(3000);
+    }).then(function () {
+        console.log("Hiding compass...");
+        mapView.settings.compassEnabled = false;
+        printUISettings(mapView.settings);
+      return wait(3000);
     }).then(function () {
         var marker = new mapsModule.Marker();
         marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);

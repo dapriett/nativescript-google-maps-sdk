@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "nativescript-google-maps-sdk": "file:../",
+    "nativescript-permissions": "^1.2.3",
     "tns-core-modules": "^3.0.0"
   },
   "devDependencies": {

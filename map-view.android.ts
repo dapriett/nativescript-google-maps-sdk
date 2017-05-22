@@ -7,7 +7,7 @@ import {
     MarkerBase, PolygonBase, PolylineBase,
     PositionBase, ShapeBase, latitudeProperty,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase
+    tiltProperty, StyleBase, UISettingsBase
 } from "./map-view-common";
 import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
@@ -21,7 +21,6 @@ export class MapView extends MapViewBase {
     protected _markers: Array<Marker> = new Array<Marker>();
     public _context: any;
     private _pendingCameraUpdate: boolean;
-    private hasPermissions: boolean;
 
     onLoaded() {
         super.onLoaded();
@@ -165,47 +164,55 @@ export class MapView extends MapViewBase {
                     }
                 }));
 
-                gMap.setOnCameraChangeListener(new com.google.android.gms.maps.GoogleMap.OnCameraChangeListener({
-                    onCameraChange: (cameraPosition) => {
+                let cameraChangeHandler = (cameraPosition) => {
+                    owner._processingCameraEvent = true;
 
-                        owner._processingCameraEvent = true;
-
-                        let cameraChanged: boolean = false;
-                        if (owner.latitude != cameraPosition.target.latitude) {
-                            cameraChanged = true;
-                            latitudeProperty.nativeValueChange(owner, cameraPosition.target.latitude);
-                        }
-                        if (owner.longitude != cameraPosition.target.longitude) {
-                            cameraChanged = true;
-                            longitudeProperty.nativeValueChange(owner, cameraPosition.target.longitude);
-                        }
-                        if (owner.bearing != cameraPosition.bearing) {
-                            cameraChanged = true;
-                            bearingProperty.nativeValueChange(owner, cameraPosition.target.bearing);
-                        }
-                        if (owner.zoom != cameraPosition.zoom) {
-                            cameraChanged = true;
-                            zoomProperty.nativeValueChange(owner, cameraPosition.target.zoom);
-                        }
-                        if (owner.tilt != cameraPosition.tilt) {
-                            cameraChanged = true;
-                            tiltProperty.nativeValueChange(owner, cameraPosition.target.tilt);
-                        }
-
-                        if (cameraChanged) {
-                            owner.notifyCameraEvent(MapViewBase.cameraChangedEvent, {
-                                latitude: cameraPosition.target.latitude,
-                                longitude: cameraPosition.target.longitude,
-                                zoom: cameraPosition.zoom,
-                                bearing: cameraPosition.bearing,
-                                tilt: cameraPosition.tilt
-                            });
-                        }
-
-                        owner._processingCameraEvent = false;
-
+                    let cameraChanged: boolean = false;
+                    if (owner.latitude != cameraPosition.target.latitude) {
+                        cameraChanged = true;
+                        latitudeProperty.nativeValueChange(owner, cameraPosition.target.latitude);
                     }
-                }));
+                    if (owner.longitude != cameraPosition.target.longitude) {
+                        cameraChanged = true;
+                        longitudeProperty.nativeValueChange(owner, cameraPosition.target.longitude);
+                    }
+                    if (owner.bearing != cameraPosition.bearing) {
+                        cameraChanged = true;
+                        bearingProperty.nativeValueChange(owner, cameraPosition.bearing);
+                    }
+                    if (owner.zoom != cameraPosition.zoom) {
+                        cameraChanged = true;
+                        zoomProperty.nativeValueChange(owner, cameraPosition.zoom);
+                    }
+                    if (owner.tilt != cameraPosition.tilt) {
+                        cameraChanged = true;
+                        tiltProperty.nativeValueChange(owner, cameraPosition.tilt);
+                    }
+
+                    if (cameraChanged) {
+                        owner.notifyCameraEvent(MapViewBase.cameraChangedEvent, {
+                            latitude: cameraPosition.target.latitude,
+                            longitude: cameraPosition.target.longitude,
+                            zoom: cameraPosition.zoom,
+                            bearing: cameraPosition.bearing,
+                            tilt: cameraPosition.tilt
+                        });
+                    }
+
+                    owner._processingCameraEvent = false;
+
+                }
+
+                // If newer SDK version, use onCameraIdle
+                if (gMap.setOnCameraIdleListener) {
+                    gMap.setOnCameraIdleListener(new com.google.android.gms.maps.GoogleMap.OnCameraIdleListener({
+                        onCameraIdle: () => cameraChangeHandler(gMap.getCameraPosition())
+                    }));
+                } else if (gMap.setOnCameraChangeListener) {
+                    gMap.setOnCameraChangeListener(new com.google.android.gms.maps.GoogleMap.OnCameraChangeListener({
+                        onCameraChange: cameraChangeHandler
+                    }));
+                }
 
                 owner.notifyMapReady();
             }
@@ -289,6 +296,18 @@ export class MapView extends MapViewBase {
         return this._gMap;
     }
 
+    get settings(): UISettings {
+        return (this._gMap) ? new UISettings(this._gMap.getUiSettings()) : null;
+    }
+
+    get myLocationEnabled(): boolean {
+        return (this._gMap) ? this._gMap.isMyLocationEnabled() : false;
+    }
+
+    set myLocationEnabled(value: boolean) {
+        if (this._gMap) this._gMap.setMyLocationEnabled(value);
+    }
+
     addMarker(marker: Marker) {
         marker.android = this.gMap.addMarker(marker.android);
         this._markers.push(marker);
@@ -354,6 +373,91 @@ export class MapView extends MapViewBase {
         return this._shapes.find(callback);
     }
 
+}
+
+export class UISettings extends UISettingsBase {
+    private _android: any;
+
+    get android() {
+        return this._android;
+    }
+
+    constructor(android: any) {
+        super();
+        this._android = android;
+    }
+
+    get compassEnabled(): boolean {
+        return this._android.isCompassEnabled();
+    }
+
+    set compassEnabled(value: boolean) {
+        this._android.setCompassEnabled(value);
+    }
+
+    get indoorLevelPickerEnabled(): boolean {
+        return this._android.isIndoorLevelPickerEnabled();
+    }
+
+    set indoorLevelPickerEnabled(value: boolean) {
+        this._android.setIndoorLevelPickerEnabled(value);
+    }
+
+    get mapToolbarEnabled(): boolean {
+        return this._android.isMapToolbarEnabled();
+    }
+
+    set mapToolbarEnabled(value: boolean) {
+        this._android.setMapToolbarEnabled(value);
+    }
+
+    get myLocationButtonEnabled(): boolean {
+        return this._android.isMyLocationButtonEnabled();
+    }
+
+    set myLocationButtonEnabled(value: boolean) {
+        this._android.setMyLocationButtonEnabled(value);
+    }
+
+    get rotateGesturesEnabled(): boolean {
+        return this._android.isRotateGesturesEnabled();
+    }
+
+    set rotateGesturesEnabled(value: boolean) {
+        this._android.setRotateGesturesEnabled(value);
+    }
+
+    get scrollGesturesEnabled(): boolean {
+        return this._android.isScrollGesturesEnabled();
+    }
+
+    set scrollGesturesEnabled(value: boolean) {
+        this._android.setScrollGesturesEnabled(value);
+    }
+
+    get tiltGesturesEnabled(): boolean {
+        return this._android.isTiltGesturesEnabled();
+    }
+
+    set tiltGesturesEnabled(value: boolean) {
+        this._android.setTiltGesturesEnabled(value);
+    }
+
+    get zoomControlsEnabled(): boolean {
+        return this._android.isZoomControlsEnabled();
+    }
+
+    set zoomControlsEnabled(value: boolean) {
+        this._android.setZoomControlsEnabled(value);
+    }
+
+    get zoomGesturesEnabled(): boolean {
+        return this._android.isZoomGesturesEnabled();
+    }
+
+    set zoomGesturesEnabled(value: boolean) {
+        this._android.setZoomGesturesEnabled(value);
+    }
 }
 
 export class Position extends PositionBase {
