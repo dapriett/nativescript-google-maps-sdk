@@ -97,6 +97,8 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
 </Page>
 ```
 
+## Properties
+
 The following properties are available to you for adjusting camera view.
 
 Property       | Description
@@ -107,6 +109,8 @@ Property       | Description
 `bearing` | number
 `tilt` | number
 `padding` | array of numbers reflectig top, bottom, left and right paddings
+
+## Events
 
 The following events are available:
 
@@ -159,6 +163,7 @@ exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
 
+## UI Settings
 
 You can adjust the Map UI settings after mapReady by changing the below properties on `mapView.settings`
 
