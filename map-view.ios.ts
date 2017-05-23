@@ -162,6 +162,8 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();
+    private _pendingCameraUpdate: boolean;
+    private _pendingPaddingUpdate: boolean;
 
     constructor() {
         super();
@@ -171,6 +173,14 @@ export class MapView extends MapViewBase {
         this.updatePadding();
 
         setTimeout(function(){
+            if(this._pendingCameraUpdate){
+                this.updateCamera();
+                this._pendingCameraUpdate = false;
+            }
+            if(this._pendingPaddingUpdate){
+                this.updatePadding();
+                this._pendingPaddingUpdate = false;
+            }
             this.notifyMapReady();
         }.bind(this), 0);
     }
@@ -186,6 +196,10 @@ export class MapView extends MapViewBase {
     }
 
     updateCamera() {
+        if(!this.gMap){
+            this._pendingCameraUpdate = true;
+            return;
+        }
         this.nativeView.animateToCameraPosition(this._createCameraPosition());
     }
 
@@ -196,6 +210,10 @@ export class MapView extends MapViewBase {
     }
 
     updatePadding() {
+        if(!this.gMap){
+            this._pendingPaddingUpdate = true;
+            return;
+        }
         if (this.padding) {
             this.gMap.padding = UIEdgeInsetsMake(
                 this.padding[0] || 0,
