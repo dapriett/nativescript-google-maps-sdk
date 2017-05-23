@@ -1,17 +1,20 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "1.4.1",
+  "version": "2.1.1",
   "description": "Google Maps SDK plugin for Nativescript",
-  "main": "map-view.js",
+  "main": "map-view",
   "typings": "map-view.d.ts",
   "nativescript": {
     "platforms": {
-      "android": "1.5.1",
-      "ios": "1.5.1"
+      "android": "3.0.0",
+      "ios": "3.0.0"
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -f *.js",
+    "build": "npm run clean && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "./node_modules/.bin/tsc"
   },
   "repository": {
     "type": "git",
@@ -30,9 +33,9 @@
     "url": "https://github.com/dapriett/nativescript-google-maps-sdk/issues"
   },
   "homepage": "https://github.com/dapriett/nativescript-google-maps-sdk#readme",
-  "dependencies": {},
   "devDependencies": {
-    "tns-core-modules": "^1.5.1",
-    "typescript": "^1.8.0"
+    "tns-core-modules": "^3.0.0",
+    "tns-platform-declarations": "^3.0.1",
+    "typescript": "^2.3.2"
   }
 }

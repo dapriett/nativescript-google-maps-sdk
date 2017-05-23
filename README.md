@@ -3,7 +3,9 @@ NativeScript plugin for Google Maps SDK
 
 This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Maps API](https://developers.google.com/maps/)
 
-[![NPM version][npm-image]][npm-url] [![Dependency status][david-dm-image]][david-dm-url]
+[![NPM version][npm-image]][npm-url]
+[![Dependency status][david-dm-image]][david-dm-url]
+
 [npm-url]: https://npmjs.org/package/nativescript-google-maps-sdk
 [npm-image]: http://img.shields.io/npm/v/nativescript-google-maps-sdk.svg
 [david-dm-url]:https://david-dm.org/dapriett/nativescript-google-maps-sdk
@@ -32,6 +34,8 @@ Setup Google Maps API
 ===
 
 See demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/demo)
+
+Live Demo [here](https://tinyurl.com/m7ndp7u)
  
 ## Setup Android API Key
 
@@ -62,6 +66,15 @@ if(application.ios) {
   GMSServices.provideAPIKey("PUT_API_KEY_HERE");
 }
 ```
+If you are using Angular, you need to modify the `app.module.ts` as follows:
+```
+import * as platform from "platform";
+declare var GMSServices: any;
+....
+if (platform.isIOS) { 
+  GMSServices.provideAPIKey("PUT_API_KEY_HERE");
+}
+```
 
 ##  Adding the MapView
 
@@ -84,6 +97,8 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
 </Page>
 ```
 
+## Properties
+
 The following properties are available to you for adjusting camera view.
 
 Property       | Description
@@ -94,6 +109,8 @@ Property       | Description
 `bearing` | number
 `tilt` | number
 `padding` | array of numbers reflectig top, bottom, left and right paddings
+
+## Events
 
 The following events are available:
 
@@ -128,6 +145,9 @@ function onMapReady(args) {
   marker.snippet = "Australia";
   marker.userData = { index : 1};
   mapView.addMarker(marker);
+  
+  // Disabling zoom gestures
+  mapView.settings.zoomGesturesEnabled = false;
 }
 
 function onMarkerSelect(args) {
@@ -143,12 +163,31 @@ exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
 ```
 
+## UI Settings
+
+You can adjust the Map UI settings after mapReady by changing the below properties on `mapView.settings`
+
+Property       | Description
+-------------- |:---------------------------------
+`compassEnabled` | boolean - Whether the compass is enabled/disabled
+`indoorLevelPickerEnabled` | boolean - Whether the indoor level picker is enabled/disabled
+`mapToolbarEnabled` | boolean - Whether the indoor level picker is enabled/disabled ** ****Android only**** **
+`myLocationButtonEnabled` | boolean - Whether the my-location button is enabled/disabled
+`rotateGesturesEnabled` | boolean - Whether the compass is enabled/disabled
+`scrollGesturesEnabled` | boolean - Whether scroll gestures are enabled/disabled
+`tiltGesturesEnabled` | boolean - Whether tilt gestures are enabled/disabled
+`zoomControlsEnabled` | boolean - Whether the zoom controls are enabled/disabled ** ****Android only**** **
+`zoomGesturesEnabled` | boolean - Whether zoom gestures are enabled/disabled
+
+
 ## Styling
 Use `gMap.setStyle(style);` to change the map styling.
 
 For map styles, see [Google Maps Style Reference](https://developers.google.com/maps/documentation/android-api/style-reference) and the [Styling Wizard](https://mapstyle.withgoogle.com/).
 
 ## Using with Angular
+
+See angular demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/ng-demo)
 
 ```
 // /app/map-example.component.ts
@@ -181,3 +220,13 @@ export class MapExampleComponent {
 # Clustering Support (Issue [#57](https://github.com/dapriett/nativescript-google-maps-sdk/issues/57))
 
 There is a seperate plugin in development thanks to [@naderio](https://github.com/naderio) - see [nativescript-google-maps-utils](https://github.com/naderio/nativescript-google-maps-utils)
+
+# Get Help
+
+Checking with the Nativescript community is your best bet for getting help.
+
+If you have a question, start by seeing if anyone else has encountered the scenario on [Stack Overflow](http://stackoverflow.com/questions/tagged/nativescript). If you cannot find any information, try [asking the question yourself](http://stackoverflow.com/questions/ask/advice?). Make sure to add any details needed to recreate the issue and include the “NativeScript” and "google-maps" tags, so your question is visible to the NativeScript community.
+
+If you need more help than the Q&A format Stack Overflow can provide, try [joining the NativeScript community Slack](http://developer.telerik.com/wp-login.php?action=slack-invitation). The Slack chat is a great place to get help troubleshooting problems, as well as connect with other NativeScript developers.
+
+Finally, if you have found an issue with the NativeScript Google Maps SDK itself, or requesting a new feature, please report them here [Issues](https://github.com/dapriett/nativescript-google-maps-sdk/issues).

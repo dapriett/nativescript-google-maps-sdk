@@ -1,206 +1,235 @@
-declare module "nativescript-google-maps-sdk" {
-    import { View } from "ui/core/view";
-    import { Property } from "ui/core/dependency-observable";
-    import { Image } from "ui/image";
-    import { Color } from "color";
-    import { EventData } from "data/observable";
+import { View } from "tns-core-modules/ui/core/view";
+import { Property } from "tns-core-modules/ui/core/properties";
+import { Image } from "tns-core-modules/ui/image";
+import { Color } from "tns-core-modules/color";
+import { EventData } from "tns-core-modules/data/observable";
 
-    export class Camera {
-        public latitude: number;
-        public longitude: number;
-        public zoom: number;
-        public bearing: number;
-        public tilt: number;
-    }
+export class Camera {
+    public latitude: number;
+    public longitude: number;
+    public zoom: number;
+    public bearing: number;
+    public tilt: number;
+}
 
-    export class MapView extends View {
+export class MapView extends View {
 
-        public static latitudeProperty: Property;
-        public static longitudeProperty: Property;
-        public static bearingProperty: Property;
-        public static zoomProperty: Property;
-        public static tiltProperty: Property;
-        public static paddingProperty: Property;
-        public static infoWindowTemplete: Property;
+    public latitude: number;
+    public longitude: number;
+    public zoom: number;
+    public bearing: number;
+    public tilt: number;
+    public padding: number;
 
-        public latitude: number;
-        public longitude: number;
-        public zoom: number;
-        public bearing: number;
-        public tilt: number;
-        public padding: Array<number>;
+    public notifyMapReady(): void;
 
-        public notifyMapReady(): void;
+    public updateCamera(): void;
 
-        public updateCamera(): void;
+    public setViewport(bounds:Bounds, padding?:number): void;
 
-        public updatePadding(): void;
+    public updatePadding(): void;
 
-        public static mapReadyEvent: string;
-        public static markerSelectEvent: string;
-        public static markerInfoWindowTapEvent:string;
-        public static shapeSelectEvent: string;
-        public static markerBeginDraggingEvent: string;
-        public static markerEndDraggingEvent: string;
-        public static markerDragEvent: string;
-        public static coordinateTappedEvent: string;
-        public static coordinateLongPressEvent: string;
-        public static cameraChangedEvent: string;
+    public static mapReadyEvent: string;
+    public static markerSelectEvent: string;
+    public static markerInfoWindowTapEvent:string;
+    public static shapeSelectEvent: string;
+    public static markerBeginDraggingEvent: string;
+    public static markerEndDraggingEvent: string;
+    public static markerDragEvent: string;
+    public static coordinateTappedEvent: string;
+    public static coordinateLongPressEvent: string;
+    public static cameraChangedEvent: string;
 
-        public ios: any; /* GMSMapView */
+    public nativeView: any; /* GMSMapView | com.google.android.gms.maps.MapView */
 
-        public android: any; /* com.google.android.gms.maps.MapView */
+    public gMap: any;
 
-        public gMap: any;
+    public settings: UISettings;
 
-        public addMarker(marker: Marker): void;
+    public myLocationEnabled: boolean;
 
-        public removeMarker(marker: Marker): void;
+    public addMarker(marker: Marker): void;
 
-        public removeAllMarkers(): void;
+    public removeMarker(marker: Marker): void;
 
-        public findMarker(callback: (marker: Marker) => boolean): Marker;
+    public removeAllMarkers(): void;
 
-        public notifyMarkerEvent(eventName: string, marker: Marker);
+    public findMarker(callback: (marker: Marker) => boolean): Marker;
 
-        public addPolyline(shape: Polyline): void;
+    public notifyMarkerEvent(eventName: string, marker: Marker);
 
-        public addPolygon(shape: Polygon): void;
+    public addPolyline(shape: Polyline): void;
 
-        public addCircle(shape: Circle): void;
+    public addPolygon(shape: Polygon): void;
 
-        public removeShape(shape: Shape): void;
+    public addCircle(shape: Circle): void;
 
-        public removeAllShapes(): void;
+    public removeShape(shape: Shape): void;
 
-        public findShape(callback: (shape: Shape) => boolean): Shape;
+    public removeAllShapes(): void;
 
-        public clear(): void;
+    public findShape(callback: (shape: Shape) => boolean): Shape;
 
-        public setStyle(style: Style): boolean;
-    }
+    public clear(): void;
 
-    export class Position {
-        public latitude: number;
-        public longitude: number;
-        public static positionFromLatLng(latitude: number, longitude: number): Position;
-        public ios: any; /* CLLocationCoordinate2D */
-        public android: any;
-    }
+    public setStyle(style: Style): boolean;
+}
 
-    export class Marker {
-        public position: Position;
-        public rotation: number;
-        public anchor: Array<number>;
-        public title: string;
-        public snippet: string;
-        public icon: Image;
-        public alpha: number;
-        public flat: boolean;
-        public draggable: boolean;
-        public visible: boolean;
-        public zIndex: number;
-        public showInfoWindow(): void;
-        public isInfoWindowShown(): boolean;
-        public userData: any;
-        public _map: any;
-        public ios: any;
-        public android: any;
-    }
+export const latitudeProperty: Property<MapView, number>;
+export const longitudeProperty: Property<MapView, number>;
+export const bearingProperty: Property<MapView, number>;
+export const zoomProperty: Property<MapView, number>;
+export const tiltProperty: Property<MapView, number>;
+export const paddingProperty: Property<MapView, number>;
 
-    export class Shape {
-        public shape: string;
-        public visible: boolean;
-        public zIndex: number;
-        public userData: any;
-        public _map: any;
-        public ios: any;
-        public android: any;
-    }
+export class UISettings {
+    // Whether the compass is enabled/disabled.
+    compassEnabled: boolean;
+    // Whether the indoor level picker is enabled/disabled.
+    indoorLevelPickerEnabled: boolean;
+    // Whether the indoor level picker is enabled/disabled.
+    mapToolbarEnabled: boolean;
+    // Whether the my-location button is enabled/disabled.
+    myLocationButtonEnabled: boolean;
+    // Whether rotate gestures are enabled/disabled.
+    rotateGesturesEnabled: boolean;
+    // Whether scroll gestures are enabled/disabled.
+    scrollGesturesEnabled: boolean;
+    // Whether tilt gestures are enabled/disabled.
+    tiltGesturesEnabled: boolean;
+    // Whether the zoom controls are enabled/disabled.
+    zoomControlsEnabled: boolean;
+    // Whether zoom gestures are enabled/disabled
+    zoomGesturesEnabled: boolean;
+}
 
-    export class Polyline extends Shape {
-        public points: Array<Position>;
-        public width: number;
-        public color: Color;
-        public geodesic: boolean;
-        public addPoint(shape: Position): void;
-        public addPoints(shapes: Position[]): void;
-        public removePoint(shape: Position): void;
-        public removeAllPoints(): void;
-        public getPoints(): Array<Position>;
-    }
+export class Position {
+    public latitude: number;
+    public longitude: number;
+    public static positionFromLatLng(latitude: number, longitude: number): Position;
+    public ios: any; /* CLLocationCoordinate2D */
+    public android: any;
+}
 
-    export class Polygon extends Shape {
-        public points: Array<Position>;
-        public strokeWidth: number;
-        public strokeColor: Color;
-        public fillColor: Color;
-        public addPoint(shape: Position): void;
-        public addPoints(shapes: Position[]): void;
-        public removePoint(shape: Position): void;
-        public removeAllPoints(): void;
-        public getPoints(): Array<Position>;
-    }
+export class Bounds {
+    public northeast: Position;
+    public southwest: Position;
+    public ios: any; /* GMSCoordinateBounds */
+    public android: any;
+}
 
-    export class Circle extends Shape {
-        public center: Position;
-        public radius: number;
-        public strokeWidth: number;
-        public strokeColor: Color;
-        public fillColor: Color;
-    }
+export class Marker {
+    public position: Position;
+    public rotation: number;
+    public anchor: Array<number>;
+    public title: string;
+    public snippet: string;
+    public icon: Image|string;
+    public alpha: number;
+    public flat: boolean;
+    public draggable: boolean;
+    public visible: boolean;
+    public zIndex: number;
+    public showInfoWindow(): void;
+    public isInfoWindowShown(): boolean;
+    public infoWindowTemplate: string;
+    public userData: any;
+    public _map: any;
+    public ios: any;
+    public android: any;
+}
 
-    export class Style extends Array<StyleElement> {
-        public center: Position;
-        public radius: number;
-        public strokeWidth: number;
-        public strokeColor: Color;
-        public fillColor: Color;
-    }
+export class Shape {
+    public shape: string;
+    public visible: boolean;
+    public zIndex: number;
+    public userData: any;
+    public _map: any;
+    public ios: any;
+    public android: any;
+    public clickable: boolean;
+}
 
-    export class StyleElement {
-        public featureType?: StyleFeatureType;
-        public elementType?: StyleElementType;
-        public stylers: Array<StyleStylers>;
-    }
+export class Polyline extends Shape {
+    public width: number;
+    public color: Color;
+    public geodesic: boolean;
+    public addPoint(shape: Position): void;
+    public addPoints(shapes: Position[]): void;
+    public removePoint(shape: Position): void;
+    public removeAllPoints(): void;
+    public getPoints(): Array<Position>;
+}
 
-    export type StyleElementType = "all" | "administrative" | "administrative.country" | "administrative.land_parcel" |
-        "administrative.locality" | "administrative.neighborhoodadministrative.province" | "landscape" |
-        "landscape.man_made" | "landscape.natural" | "landscape.natural.landcover" | "landscape.natural.terrain" |
-        "poi" | "poi.attraction" | "poi.business" | "poi.government" | "poi.medical" | "poi.park" |
-        "poi.place_of_worship" | "poi.school" | "poi.sports_complex" | "road" | "road.arterial" | "road.highway" |
-        "road.highway.controlled_access" | "road.local" | "transit" | "transit.line" | "transit.station" |
-        "transit.station.airport" | "transit.station.bus" | "transit.station.rail" | "water";
+export class Polygon extends Shape {
+    public strokeWidth: number;
+    public strokeColor: Color;
+    public fillColor: Color;
+    public addPoint(shape: Position): void;
+    public addPoints(shapes: Position[]): void;
+    public removePoint(shape: Position): void;
+    public removeAllPoints(): void;
+    public getPoints(): Array<Position>;
+}
 
-    export type StyleFeatureType = "all" | "geometry" | "geometry.fill" | "geometry.stroke" | "labels" | "labels.icon" |
-        "labels.text" | "labels.text.fill" | "labels.text.stroke";
+export class Circle extends Shape {
+    public center: Position;
+    public radius: number;
+    public strokeWidth: number;
+    public strokeColor: Color;
+    public fillColor: Color;
+}
 
-    export type StyleVisibility = "on" | "off" | "simplified";
+export class Style extends Array<StyleElement> {
+    public center: Position;
+    public radius: number;
+    public strokeWidth: number;
+    public strokeColor: Color;
+    public fillColor: Color;
+}
 
-    export class StyleStylers {
-        public hue?: string;
-        public lightness?: number;
-        public saturation?: number;
-        public gamma?: number;
-        public invert_lightness: boolean;
-        public visibility: StyleVisibility;
-        public color?: string;
-        public weight: number;
-    }
+export class StyleElement {
+    public featureType?: StyleFeatureType;
+    public elementType?: StyleElementType;
+    public stylers: Array<StyleStylers>;
+}
 
-    export interface MarkerEventData extends EventData {
-        marker: Marker;
-    }
+export type StyleElementType = "all" | "administrative" | "administrative.country" | "administrative.land_parcel" |
+    "administrative.locality" | "administrative.neighborhoodadministrative.province" | "landscape" |
+    "landscape.man_made" | "landscape.natural" | "landscape.natural.landcover" | "landscape.natural.terrain" |
+    "poi" | "poi.attraction" | "poi.business" | "poi.government" | "poi.medical" | "poi.park" |
+    "poi.place_of_worship" | "poi.school" | "poi.sports_complex" | "road" | "road.arterial" | "road.highway" |
+    "road.highway.controlled_access" | "road.local" | "transit" | "transit.line" | "transit.station" |
+    "transit.station.airport" | "transit.station.bus" | "transit.station.rail" | "water";
 
-    export interface ShapeEventData extends EventData {
-        shape: Shape;
-    }
+export type StyleFeatureType = "all" | "geometry" | "geometry.fill" | "geometry.stroke" | "labels" | "labels.icon" |
+    "labels.text" | "labels.text.fill" | "labels.text.stroke";
 
-    export interface CameraEventData extends EventData {
-        camera: Camera;
-    }
+export type StyleVisibility = "on" | "off" | "simplified";
 
-    export interface PositionEventData extends EventData {
-        position: Position;
-    }
+export class StyleStylers {
+    public hue?: string;
+    public lightness?: number;
+    public saturation?: number;
+    public gamma?: number;
+    public invert_lightness: boolean;
+    public visibility: StyleVisibility;
+    public color?: string;
+    public weight: number;
+}
+
+export interface MarkerEventData extends EventData {
+    marker: Marker;
+}
+
+export interface ShapeEventData extends EventData {
+    shape: Shape;
+}
+
+export interface CameraEventData extends EventData {
+    camera: Camera;
+}
+
+export interface PositionEventData extends EventData {
+    position: Position;
 }
