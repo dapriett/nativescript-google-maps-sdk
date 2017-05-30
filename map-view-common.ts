@@ -223,6 +223,7 @@ export abstract class MarkerBase implements Marker {
     public visible: boolean;
     public zIndex: number;
     public abstract showInfoWindow(): void;
+    public abstract hideInfoWindow(): void;
     public userData: any;
     public _map: any;
     public ios: any;

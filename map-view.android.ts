@@ -613,6 +613,12 @@ export class Marker extends MarkerBase {
         }
     }
 
+    hideInfoWindow(): void {
+        if (this._isMarker) {
+            this.android.hideInfoWindow();
+        }
+    }
+
     get icon() {
         return this._icon;
     }
