@@ -131,6 +131,7 @@ export class Marker {
     public visible: boolean;
     public zIndex: number;
     public showInfoWindow(): void;
+    public hideInfoWindow(): void;
     public userData: any;
     public _map: any;
     public ios: any;
