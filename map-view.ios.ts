@@ -163,16 +163,25 @@ export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();
 
+    private _delegate: MapViewDelegateImpl;
+
     constructor() {
         super();
 
         this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
-        this.nativeView.delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
+        this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
         this.updatePadding();
+    }
 
-        setTimeout(function(){
-            this.notifyMapReady();
-        }.bind(this), 0);
+    public onLoaded() {
+        super.onLoaded();
+        this.nativeView.delegate = this._delegate;
+        this.notifyMapReady();
+    }
+
+    public onUnloaded() {
+        this.nativeView.delegate = null;
+        super.onUnloaded();
     }
 
     private _createCameraPosition() {
