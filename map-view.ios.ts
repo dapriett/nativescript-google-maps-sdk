@@ -506,7 +506,7 @@ export class Marker extends MarkerBase {
     }
 
     hideInfoWindow(): void {
-        this._ios.map.selectedMarker = nil;
+        this._ios.map.selectedMarker = null;
     }
 
     get icon() {
