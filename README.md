@@ -183,6 +183,8 @@ Property       | Description
 ## Styling
 Use `gMap.setStyle(style);` to change the map styling.
 
+For Angular map styling, use `this.mapView.setStyle(<Style>JSON.parse(this.styles));` inside of the `onMapReady` function.  In this example `this.mapView` is the imported `MapView` from the plugin and `this.styles` is a json file that was created using the link below.  The `<Style>` was also imported from the plugin as `{ Style }`.
+
 For map styles, see [Google Maps Style Reference](https://developers.google.com/maps/documentation/android-api/style-reference) and the [Styling Wizard](https://mapstyle.withgoogle.com/).
 
 ## Using with Angular
