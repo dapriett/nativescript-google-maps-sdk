@@ -262,7 +262,7 @@ export class MapView extends MapViewBase {
         this._pendingCameraUpdate = false;
 
         var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
-        this.gMap.moveCamera(cameraUpdate);
+        this.gMap.animateCamera(cameraUpdate);
     }
 
     setViewport(bounds:Bounds, padding?:number) {
@@ -274,7 +274,7 @@ export class MapView extends MapViewBase {
         }
 
         this._pendingCameraUpdate = false;
-        this.gMap.moveCamera(cameraUpdate);
+        this.gMap.animateCamera(cameraUpdate);
     }
 
     updatePadding() {
