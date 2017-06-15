@@ -124,7 +124,7 @@ function onMapReady(args) {
     // Custom Info Window Marker
     marker = new mapsModule.Marker();
     marker.position = mapsModule.Position.positionFromLatLng(-33.22, 151.20);
-    marker.infoWindowTemplate = '~/info-window';
+    marker.infoWindowTemplate = 'testWindow';
     mapView.addMarker(marker);
     marker.showInfoWindow();
 

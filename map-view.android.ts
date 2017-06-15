@@ -13,6 +13,8 @@ import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
 import imageSource = require("tns-core-modules/image-source");
 
+export * from "./map-view-common";
+
 declare const com: any;
 declare const android: any;
 
@@ -628,6 +630,12 @@ export class Marker extends MarkerBase {
 
     isInfoWindowShown(): boolean {
         return (this._isMarker) ? this.android.showInfoWindow() : false;
+    }
+
+    hideInfoWindow(): void {
+        if (this._isMarker) {
+            this.android.hideInfoWindow();
+        }
     }
 
     get icon() {

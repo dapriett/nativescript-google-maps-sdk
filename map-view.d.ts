@@ -133,6 +133,7 @@ export class Marker {
     public showInfoWindow(): void;
     public isInfoWindowShown(): boolean;
     public infoWindowTemplate: string;
+    public hideInfoWindow(): void;
     public userData: any;
     public _map: any;
     public ios: any;

@@ -6,6 +6,22 @@
                       markerSelect="onMarkerEvent" markerBeginDragging="onMarkerEvent"
                       markerEndDragging="onMarkerEvent" markerDrag="onMarkerEvent"
                       markerInfoWindowTapped="onMarkerEvent" coordinateTapped="onCoordinateTapped"
-                      cameraChanged="onCameraChanged" />
+                      cameraChanged="onCameraChanged">
+            <maps:mapView.infoWindowTemplate>
+                <StackLayout orientation="vertical" width="200" height="220" >
+                    <Image src="https://unsplash.it/200/?random" stretch="none"  height="200" width="200" className="infoWindowImage" />
+                    <Label text="{{position.latitude + ',' + position.longitude}}" className="infoWindowCoordinates"  />
+                </StackLayout>
+            </maps:mapView.infoWindowTemplate>
+            <maps:mapView.infoWindowTemplates>
+                <template key="testWindow">
+                    <StackLayout orientation="vertical" width="200" height="125" >
+                        <Image src="https://www.google.com/images/errors/logo_sm_2.png" stretch="none"  height="50" width="150" className="infoWindowImage" />
+                        <Label text="Current Location" cssClass="title"  />
+                        <Label text="{{position.latitude + ',' + position.longitude}}" className="infoWindowCoordinates"  />
+                    </StackLayout>
+                </template>
+            </maps:mapView.infoWindowTemplates>
+        </maps:mapView>
     </GridLayout>
 </Page>
