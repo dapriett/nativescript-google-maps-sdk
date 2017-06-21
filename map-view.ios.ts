@@ -1,13 +1,14 @@
 import {
     MapViewBase, BoundsBase, CircleBase,
-    MarkerBase, PolygonBase, PolylineBase,
-    PositionBase, ShapeBase, latitudeProperty,
+    MarkerBase, PolygonBase, PolylineBase, ProjectionBase,
+    PositionBase, ShapeBase, latitudeProperty, VisibleRegionBase,
     longitudeProperty, bearingProperty, zoomProperty,
     tiltProperty, StyleBase, UISettingsBase
 } from "./map-view-common";
-import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
 import * as imageSource from 'tns-core-modules/image-source';
+import { Point } from "tns-core-modules/ui/core/view";
+import { Image } from "tns-core-modules/ui/image";
 
 declare class GMSMapViewDelegate extends NSObject {};
 declare class GMSCameraPosition extends NSObject {
@@ -27,7 +28,11 @@ declare class GMSMapStyle extends NSObject {
 };
 declare class GMSCoordinateBounds extends NSObject {
     public static alloc(): GMSCoordinateBounds;
-    public initWithCoordinateCoordinate(...params: any[]): GMSCoordinateBounds
+    public initWithCoordinateCoordinate(...params: any[]): GMSCoordinateBounds;
+    public initWithRegion(...params: any[]): GMSCoordinateBounds;
+    public northEast: CLLocationCoordinate2D;
+    public southWest: CLLocationCoordinate2D;
+    public valid: boolean;
 };
 declare class GMSPolyline extends NSObject {};
 declare class GMSPolygon extends NSObject {};
@@ -223,6 +228,10 @@ export class MapView extends MapViewBase {
         return this.nativeView;
     }
 
+    get projection(): Projection {
+        return new Projection(this.nativeView.projection);
+    }
+
     get settings(): UISettings {
         return (this.nativeView) ? new UISettings(this.nativeView.settings) : null;
     }
@@ -388,39 +397,88 @@ export class UISettings extends UISettingsBase {
     }
 }
 
+export class Projection extends ProjectionBase {
+    private _ios: any; /* GMSProjection */
+    get ios() {
+        return this._ios;
+    }
+
+    get visibleRegion(): VisibleRegion {
+        return new VisibleRegion(this.ios.visibleRegion());
+    }
+
+    fromScreenLocation(point: Point) {
+        var location = this.ios.coordinateForPoint(CGPointMake(point.x, point.y));
+        return new Position(location);
+    }
+
+    toScreenLocation(position: Position) {
+        var cgPoint = this.ios.pointForCoordinate(position.ios);
+        return {
+            x: cgPoint.x,
+            y: cgPoint.y
+        };
+    }
+
+    constructor(ios: any) {
+        super();
+        this._ios = ios;
+    }
+}
+
+export class VisibleRegion extends VisibleRegionBase {
+    private _ios: any; /* GMSVisibleRegion */
+    get ios() {
+        return this._ios;
+    }
+
+    get nearLeft(): Position {
+        return new Position(this.ios.nearLeft);
+    }
+
+    get nearRight(): Position {
+        return new Position(this.ios.nearRight);
+    }
+
+    get farLeft(): Position {
+        return new Position(this.ios.farLeft);
+    }
+
+    get farRight(): Position {
+        return new Position(this.ios.farRight);
+    }
+
+    get bounds(): Bounds {
+        return new Bounds(GMSCoordinateBounds.alloc().initWithRegion(this.ios));
+    }
+
+    constructor(ios: any) {
+        super();
+        this._ios = ios;
+    }
+}
+
 export class Bounds extends BoundsBase {
-    private _ios: any; /* GMSCoordinateBounds */
-    private _north: Position;
-    private _south: Position;
+    private _ios: GMSCoordinateBounds;
     get ios() {
         return this._ios;
     }
 
     get southwest() {
-        return this._south;
-    }
-
-    set southwest(southwest:Position) {
-        this._south = southwest.ios;
-        if(this.northeast) {
-            this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(this.southwest, this.northeast);
-        }
+        return new Position(this.ios.southWest);
     }
 
     get northeast() {
-        return this._north;
+        return new Position(this._ios.northEast);
     }
 
-    set northeast(northeast:Position) {
-        this._north = northeast.ios;
-        if(this.southwest) {
-            this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(this.southwest, this.northeast);
-        }
-    }
-
-    constructor() {
+    constructor(ios: GMSCoordinateBounds) {
         super();
-        // this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(new Position(), new Position());
+        this._ios = ios;
+    }
+
+    public static fromCoordinates(southwest:Position, northeast:Position): Bounds {
+        return new Bounds(GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(southwest.ios, northeast.ios));
     }
 }
 

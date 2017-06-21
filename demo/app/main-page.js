@@ -1,10 +1,7 @@
 var vmModule = require("./main-view-model");
-var observableModule = require("data/observable");
 var mapsModule = require("nativescript-google-maps-sdk");
 var permissions = require("nativescript-permissions");
 var application = require("application");
-var Image = require("ui/image").Image;
-var imageSource = require("image-source");
 var Color = require("color").Color;
 var style = require('./map-style.json');
 
@@ -55,10 +52,10 @@ function pageLoaded(args) {
 }
 exports.pageLoaded = pageLoaded;
 
-
+var mapView = null;
 
 function onMapReady(args) {
-    var mapView = args.object;
+    mapView = args.object;
 
     console.log("onMapReady");
     mapView.settings.compassEnabled = true;
@@ -193,6 +190,14 @@ function onMapReady(args) {
         printUISettings(mapView.settings);
       return wait(3000);
     }).then(function () {
+        console.log("Changing bounds...");
+        var bounds = mapsModule.Bounds.fromCoordinates(
+            mapsModule.Position.positionFromLatLng(-33.88, 151.16),
+            mapsModule.Position.positionFromLatLng(-33.78, 151.24)
+        );
+        mapView.setViewport(bounds);
+        return wait(3000);
+    }).then(function () {
         var marker = new mapsModule.Marker();
         marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
         marker.title = "All Done";
@@ -218,6 +223,11 @@ var lastCamera = null;
 function onCameraChanged(args) {
     console.log("Camera changed: "+JSON.stringify(args.camera), JSON.stringify(args.camera) === lastCamera);
     lastCamera = JSON.stringify(args.camera);
+    var bounds = mapView.projection.visibleRegion.bounds;
+    console.log("Current bounds: " + JSON.stringify({
+          southwest: [bounds.southwest.latitude, bounds.southwest.longitude],
+          northeast: [bounds.northeast.latitude, bounds.northeast.longitude]
+        }));
 }
 
 exports.onMapReady = onMapReady;

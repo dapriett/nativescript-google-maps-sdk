@@ -1,9 +1,9 @@
 import {
-    MapView, Position, Marker, Shape, Polyline, Polygon,
-    Circle, Camera, MarkerEventData, ShapeEventData,
+    MapView, Position, Marker, Shape, Polyline, Polygon, Projection,
+    Circle, Camera, MarkerEventData, ShapeEventData, VisibleRegion,
     CameraEventData, PositionEventData, Bounds, Style, UISettings
 } from "./map-view";
-import { View } from "tns-core-modules/ui/core/view";
+import { Point, View } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
 
 import { Property, PropertyOptions } from "tns-core-modules/ui/core/properties";
@@ -45,6 +45,7 @@ export abstract class MapViewBase extends View implements MapView {
     public tilt: number;
     public padding: number;
 
+    public projection: Projection;
     public settings: UISettingsBase;
     public myLocationEnabled: boolean;
 
@@ -194,6 +195,22 @@ export class UISettingsBase implements UISettings {
     tiltGesturesEnabled: boolean;
     zoomControlsEnabled: boolean;
     zoomGesturesEnabled: boolean;
+}
+
+export abstract class ProjectionBase implements Projection {
+    public visibleRegion : VisibleRegion;
+    public abstract fromScreenLocation(point: Point): Position;
+    public abstract toScreenLocation(position: Position): Point;
+    public ios: any; /* GMSProjection */
+    public android: any;
+}
+
+export class VisibleRegionBase implements VisibleRegion {
+    public nearLeft: Position;
+    public nearRight: Position;
+    public farLeft: Position;
+    public farRight: Position;
+    public bounds: Bounds;
 }
 
 export class PositionBase implements Position {
