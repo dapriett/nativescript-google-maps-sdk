@@ -19,7 +19,7 @@ export class MapView extends View {
     public zoom: number;
     public bearing: number;
     public tilt: number;
-    public padding: number;
+    public padding: number[];
 
     public notifyMapReady(): void;
 
@@ -82,7 +82,7 @@ export const longitudeProperty: Property<MapView, number>;
 export const bearingProperty: Property<MapView, number>;
 export const zoomProperty: Property<MapView, number>;
 export const tiltProperty: Property<MapView, number>;
-export const paddingProperty: Property<MapView, number>;
+export const paddingProperty: Property<MapView, number | number[]>;
 
 export class UISettings {
     // Whether the compass is enabled/disabled.

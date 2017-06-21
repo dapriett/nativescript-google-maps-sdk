@@ -9,22 +9,29 @@ import { Image } from "tns-core-modules/ui/image";
 import { Property, PropertyOptions } from "tns-core-modules/ui/core/properties";
 import { Color } from "tns-core-modules/color";
 
-function onMapPropertyChanged(mapView: MapViewBase, oldValue: number, newValue: number) {
+function onMapPropertyChanged(mapView: MapViewBase) {
     if (!mapView.processingCameraEvent) mapView.updateCamera();
 }
 
-function onPaddingPropertyChanged(mapView: MapViewBase, oldValue: number, newValue: number) {
+function onPaddingPropertyChanged(mapView: MapViewBase) {
     mapView.updatePadding();
 }
 
 function paddingValueConverter(value: any) {
     if (!Array.isArray(value)) {
-        value = String(value).split(',').map(function(v) {
-            return parseInt(v, 10);
-        });
+        value = String(value).split(',');
     }
-    if (value.length === 4) {
+
+    value = value.map((v) => parseInt(v, 10));
+
+    if (value.length >= 4) {
         return value;
+    } else if (value.length === 3) {
+        return [value[0], value[1], value[2], value[2]];
+    } else if (value.length === 2) {
+        return [value[0], value[0], value[1], value[1]];
+    } else if (value.length === 1) {
+        return [value[0], value[0], value[0], value[0]];
     } else {
         return [0, 0, 0, 0];
     }
@@ -43,7 +50,7 @@ export abstract class MapViewBase extends View implements MapView {
     public bearing: number;
     public zoom: number;
     public tilt: number;
-    public padding: number;
+    public padding: number[];
 
     public projection: Projection;
     public settings: UISettingsBase;
@@ -182,7 +189,7 @@ zoomProperty.register(MapViewBase);
 export const tiltProperty = new Property<MapViewBase, number>({ name: 'tilt', defaultValue: 0, valueChanged: onMapPropertyChanged });
 tiltProperty.register(MapViewBase);
 
-export const paddingProperty = new Property<MapViewBase, number>(<PropertyOptions<MapViewBase, number>>{ name: 'padding', defaultValue: 0, valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
+export const paddingProperty = new Property<MapViewBase, number[]>({ name: 'padding', valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
 paddingProperty.register(MapViewBase);
 
 export class UISettingsBase implements UISettings {
