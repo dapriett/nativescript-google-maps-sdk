@@ -143,6 +143,7 @@ export class Marker {
     public anchor: Array<number>;
     public title: string;
     public snippet: string;
+    public color: Color|string|number; /* Default Icon color - either Color, string color name, string color hex, or number hue (0-360) */
     public icon: Image|string;
     public alpha: number;
     public flat: boolean;

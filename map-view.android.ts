@@ -7,7 +7,7 @@ import {
     MarkerBase, PolygonBase, PolylineBase, ProjectionBase,
     PositionBase, ShapeBase, latitudeProperty, VisibleRegionBase,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase, UISettingsBase
+    tiltProperty, StyleBase, UISettingsBase, getColorHue
 } from "./map-view-common";
 import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
@@ -589,6 +589,7 @@ export class Bounds extends BoundsBase {
 
 export class Marker extends MarkerBase {
     private _android: any;
+    private _color: number;
     private _icon: Image;
     private _isMarker: boolean = false;
 
@@ -672,6 +673,23 @@ export class Marker extends MarkerBase {
         }
     }
 
+    get color() {
+        return this._color;
+    }
+
+    set color(value: Color|string|number) {
+        value = getColorHue(value);
+
+        this._color = value;
+
+        var androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(value) : null;
+        if (this._isMarker) {
+            this._android.setIcon(androidIcon);
+        } else {
+            this._android.icon(androidIcon);
+        }
+    }
+
     get icon() {
         return this._icon;
     }
@@ -683,7 +701,7 @@ export class Marker extends MarkerBase {
             value = tempIcon;
         }
         this._icon = value;
-        var androidIcon = com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(value.imageSource.android);
+        var androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(value.imageSource.android) : null;
         if (this._isMarker) {
             this._android.setIcon(androidIcon);
         } else {

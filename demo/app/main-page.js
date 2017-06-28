@@ -67,6 +67,7 @@ function onMapReady(args) {
     marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
     marker.title = "Sydney";
     marker.snippet = "Australia";
+    marker.color = "green";
     marker.userData = {index: 1};
     mapView.addMarker(marker);
 
@@ -202,6 +203,7 @@ function onMapReady(args) {
         marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
         marker.title = "All Done";
         marker.snippet = "Enjoy!";
+        marker.color = 240;
         mapView.addMarker(marker);
         marker.showInfoWindow();
     }).catch(function (error) {

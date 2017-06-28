@@ -3,7 +3,7 @@ import {
     MarkerBase, PolygonBase, PolylineBase, ProjectionBase,
     PositionBase, ShapeBase, latitudeProperty, VisibleRegionBase,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase, UISettingsBase
+    tiltProperty, StyleBase, UISettingsBase, getColorHue
 } from "./map-view-common";
 import { Color } from "tns-core-modules/color";
 import * as imageSource from 'tns-core-modules/image-source';
@@ -21,7 +21,9 @@ declare class GMSCameraPosition extends NSObject {
 declare class GMSMapView extends NSObject {
     public static mapWithFrameCamera(...params: any[]): GMSMapView;
 };
-declare class GMSMarker extends NSObject {};
+declare class GMSMarker extends NSObject {
+    public static markerImageWithColor(color: UIColor): any;
+};
 declare class GMSOverlay extends NSObject {};
 declare class GMSMapStyle extends NSObject {
     public static styleWithJSONStringError(input: string): GMSMapStyle;
@@ -519,6 +521,7 @@ export class Position extends PositionBase {
 
 export class Marker extends MarkerBase {
     private _ios: any;
+    private _color: number;
     private _icon: Image;
     private _alpha = 1;
     private _visible = true;
@@ -576,6 +579,21 @@ export class Marker extends MarkerBase {
         this._ios.map.selectedMarker = null;
     }
 
+    get color() {
+        return this._color;
+    }
+
+    set color(value: Color|string|number) {
+        value = getColorHue(value);
+
+        this._color = value;
+        if (this._color) {
+            this._ios.icon = GMSMarker.markerImageWithColor(UIColor.colorWithHueSaturationBrightnessAlpha(this._color / 360, 1, 1, 1));
+        } else {
+            this._ios.icon = null;
+        }
+    }
+
     get icon() {
         return this._icon;
     }
@@ -587,7 +605,7 @@ export class Marker extends MarkerBase {
             value = tempIcon;
         }
         this._icon = value;
-        this._ios.icon = this._icon.ios.image;
+        this._ios.icon = (value) ? this._icon.ios.image : null;
     }
 
     get alpha() {

@@ -6,7 +6,7 @@ import {
 import { Point, View } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
 
-import { Property, PropertyOptions } from "tns-core-modules/ui/core/properties";
+import { Property } from "tns-core-modules/ui/core/properties";
 import { Color } from "tns-core-modules/color";
 
 function onMapPropertyChanged(mapView: MapViewBase) {
@@ -38,6 +38,40 @@ function paddingValueConverter(value: any) {
 }
 
 export { Style as StyleBase };
+
+export function getColorHue(color: Color|string|number): number {
+    if (typeof color === 'number') {
+        while ( color < 0) { color += 360; }
+        return color % 360;
+    }
+    if (typeof color === 'string') color = new Color(color);
+    if (!(color instanceof Color)) return color;
+
+    let min, max, delta, hue;
+
+    const r = Math.max(0, Math.min(1, color.r / 255));
+    const g = Math.max(0, Math.min(1, color.g / 255));
+    const b = Math.max(0, Math.min(1, color.b / 255));
+
+    min = Math.min(r, g, b);
+    max = Math.max(r, g, b);
+
+    delta = max - min;
+
+    if (delta == 0) { // white, grey, black
+        hue = 0;
+    } else if (r == max) {
+        hue = (g - b) / delta; // between yellow & magenta
+    } else if (g == max) {
+        hue = 2 + (b - r) / delta; // between cyan & yellow
+    } else {
+        hue = 4 + (r - g) / delta; // between magenta & cyan
+    }
+
+    hue = ((hue * 60) + 360) % 360; // degrees
+
+    return hue;
+}
 
 export abstract class MapViewBase extends View implements MapView {
 
@@ -240,6 +274,7 @@ export abstract class MarkerBase implements Marker {
     public anchor: Array<number>;
     public title: string;
     public snippet: string;
+    public color: Color|string|number;
     public icon: Image|string;
     public alpha: number;
     public flat: boolean;
