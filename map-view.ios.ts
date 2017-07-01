@@ -279,6 +279,7 @@ export class MapView extends MapViewBase {
 
     removeAllMarkers() {
         this._markers.forEach(marker => {
+            this._unloadInfoWindowContent(marker);
             marker.ios.map = null;
         });
         this._markers = [];

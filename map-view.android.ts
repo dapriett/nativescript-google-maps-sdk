@@ -336,6 +336,7 @@ export class MapView extends MapViewBase {
 
     removeAllMarkers() {
         this._markers.forEach(marker => {
+            this._unloadInfoWindowContent(marker);
             marker.android.remove();
         });
         this._markers = [];
