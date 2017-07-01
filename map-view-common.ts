@@ -100,6 +100,7 @@ export abstract class MapViewBase extends View implements MapView {
     public static coordinateTappedEvent: string = "coordinateTapped";
     public static coordinateLongPressEvent: string = "coordinateLongPress";
     public static cameraChangedEvent: string = "cameraChanged";
+    public static myLocationTappedEvent: string = "myLocationTapped";
 
     public get gMap() {
         return this._gMap;
@@ -205,6 +206,10 @@ export abstract class MapViewBase extends View implements MapView {
     notifyCameraEvent(eventName: string, camera: Camera) {
         let args: CameraEventData = { eventName: eventName, object: this, camera: camera };
         this.notify(args);
+    }
+
+    notifyMyLocationTapped() {
+        this.notify({ eventName: MapViewBase.myLocationTappedEvent, object: this });
     }
 }
 
