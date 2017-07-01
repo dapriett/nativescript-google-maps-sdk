@@ -39,6 +39,7 @@ export class MapView extends View {
     public static coordinateTappedEvent: string;
     public static coordinateLongPressEvent: string;
     public static cameraChangedEvent: string;
+    public static myLocationTappedEvent: string
 
     public nativeView: any; /* GMSMapView | com.google.android.gms.maps.MapView */
 
