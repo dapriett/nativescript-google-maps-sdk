@@ -329,6 +329,7 @@ export class MapView extends MapViewBase {
     }
 
     removeMarker(marker: Marker) {
+        this._unloadInfoWindowContent(marker);
         marker.android.remove();
         this._markers.splice(this._markers.indexOf(marker), 1);
     }
