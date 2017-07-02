@@ -11,6 +11,8 @@
     }
   },
   "scripts": {
+    "cm": "git-cz",
+    "commitmsg": "validate-commit-msg",
     "clean": "rm -f *.js",
     "build": "npm run clean && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -34,8 +36,17 @@
   },
   "homepage": "https://github.com/dapriett/nativescript-google-maps-sdk#readme",
   "devDependencies": {
+    "commitizen": "^2.9.6",
+    "cz-conventional-changelog": "^2.0.0",
+    "husky": "^0.14.2",
     "tns-core-modules": "^3.0.0",
     "tns-platform-declarations": "^3.0.1",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.2",
+    "validate-commit-msg": "^2.12.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
