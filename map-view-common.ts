@@ -178,6 +178,13 @@ export abstract class MapViewBase extends View implements MapView {
         return view;
     }
 
+    protected _unloadInfoWindowContent(marker: MarkerBase) {
+        if (marker._infoWindowView) {
+            marker._infoWindowView.onUnloaded();
+            marker._infoWindowView = null;
+        }
+    }
+
     public _getInfoWindowTemplate(marker: MarkerBase): KeyedTemplate {
         const templateKey = marker.infoWindowTemplate;
         for (let i = 0, length = this._infoWindowTemplates.length; i < length; i++) {

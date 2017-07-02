@@ -272,12 +272,14 @@ export class MapView extends MapViewBase {
     }
 
     removeMarker(marker: Marker) {
+        this._unloadInfoWindowContent(marker);
         marker.ios.map = null;
         this._markers.splice(this._markers.indexOf(marker), 1);
     }
 
     removeAllMarkers() {
         this._markers.forEach(marker => {
+            this._unloadInfoWindowContent(marker);
             marker.ios.map = null;
         });
         this._markers = [];
