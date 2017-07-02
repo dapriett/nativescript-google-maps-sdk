@@ -113,6 +113,14 @@ export class MapView extends MapViewBase {
                     }
                 }));
 
+                gMap.setOnMyLocationButtonClickListener(new com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener({
+                    onMyLocationButtonClick: () => {
+                        owner.notifyMyLocationTapped();
+                        
+                        return false;
+                    }
+                }));
+
                 // Add checks for backwards capability to earlier SDK versions
                 if (gMap.setOnCircleClickListener) {
                     gMap.setOnCircleClickListener(new com.google.android.gms.maps.GoogleMap.OnCircleClickListener({
