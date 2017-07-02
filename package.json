@@ -13,6 +13,7 @@
   "scripts": {
     "cm": "git-cz",
     "commitmsg": "validate-commit-msg",
+    "github-release": "conventional-github-releaser -p angular -r 0 -n ./.github-release.json",
     "clean": "rm -f *.js",
     "build": "npm run clean && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
