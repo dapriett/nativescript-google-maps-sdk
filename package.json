@@ -47,6 +47,23 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {
+      "helpMessage": "\nPlease fix your commit message to match format.  For help, execute 'npm run cm'\n",
+      "types": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "chore",
+        "revert",
+        "custom"
+      ],
+      "warnOnFail": false,
+      "autoFix": false
     }
   }
 }
