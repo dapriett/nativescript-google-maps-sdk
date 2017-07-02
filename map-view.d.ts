@@ -1,6 +1,6 @@
 import { Point, View } from "tns-core-modules/ui/core/view";
 import { Property } from "tns-core-modules/ui/core/properties";
-import { Image } from "tns-core-modules/ui/image";
+import { ImageSource } from "image-source";
 import { Color } from "tns-core-modules/color";
 import { EventData } from "tns-core-modules/data/observable";
 
@@ -145,7 +145,7 @@ export class Marker {
     public title: string;
     public snippet: string;
     public color: Color|string|number; /* Default Icon color - either Color, string color name, string color hex, or number hue (0-360) */
-    public icon: Image|string;
+    public icon: ImageSource|string;
     public alpha: number;
     public flat: boolean;
     public draggable: boolean;

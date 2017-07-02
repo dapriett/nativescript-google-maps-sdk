@@ -529,7 +529,7 @@ export class Position extends PositionBase {
 export class Marker extends MarkerBase {
     private _ios: any;
     private _color: number;
-    private _icon: Image;
+    private _icon: imageSource.ImageSource;
     private _alpha = 1;
     private _visible = true;
 
@@ -605,14 +605,12 @@ export class Marker extends MarkerBase {
         return this._icon;
     }
 
-    set icon(value: Image|string) {
+    set icon(value: imageSource.ImageSource|string) {
         if (typeof value === 'string') {
-            var tempIcon = new Image();
-            tempIcon.imageSource = imageSource.fromResource(String(value));
-            value = tempIcon;
+            value = imageSource.fromResource(String(value));
         }
         this._icon = value;
-        this._ios.icon = (value) ? this._icon.ios.image : null;
+        this._ios.icon = (value) ? this._icon.ios : null;
     }
 
     get alpha() {
