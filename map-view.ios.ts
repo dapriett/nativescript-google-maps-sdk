@@ -649,7 +649,7 @@ export class Marker extends MarkerBase {
             value = tempIcon;
         }
         this._icon = value;
-        this._ios.icon = (value) ? this._icon.ios.image : null;
+        this._ios.icon = (value) ? this._icon.imageSource.ios : null;
     }
 
     get alpha() {

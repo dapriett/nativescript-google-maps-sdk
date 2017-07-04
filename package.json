@@ -1,6 +1,6 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view",
   "typings": "map-view.d.ts",
@@ -13,7 +13,7 @@
   "scripts": {
     "cm": "git-cz",
     "commitmsg": "validate-commit-msg",
-    "github-release": "conventional-github-releaser -p angular -r 0 -n ./.github-release.json",
+    "github-release": "conventional-github-releaser -p angular -n ./.github-release.json",
     "clean": "rm -f *.js",
     "build": "npm run clean && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
