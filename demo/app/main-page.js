@@ -53,10 +53,10 @@ function pageLoaded(args) {
 }
 exports.pageLoaded = pageLoaded;
 
-
+var mapView = null;
 
 function onMapReady(args) {
-    var mapView = args.object;
+    mapView = args.object;
 
     console.log("onMapReady");
     mapView.settings.compassEnabled = true;
@@ -68,6 +68,7 @@ function onMapReady(args) {
     marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
     marker.title = "Sydney";
     marker.snippet = "Australia";
+    marker.color = "green";
     marker.userData = {index: 1};
     mapView.addMarker(marker);
 
@@ -197,10 +198,19 @@ function onMapReady(args) {
         printUISettings(mapView.settings);
       return wait(3000);
     }).then(function () {
+        console.log("Changing bounds...");
+        var bounds = mapsModule.Bounds.fromCoordinates(
+            mapsModule.Position.positionFromLatLng(-33.88, 151.16),
+            mapsModule.Position.positionFromLatLng(-33.78, 151.24)
+        );
+        mapView.setViewport(bounds);
+        return wait(3000);
+    }).then(function () {
         var marker = new mapsModule.Marker();
         marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
         marker.title = "All Done";
         marker.snippet = "Enjoy!";
+        marker.color = 240;
         mapView.addMarker(marker);
         marker.showInfoWindow();
     }).catch(function (error) {
@@ -222,6 +232,11 @@ var lastCamera = null;
 function onCameraChanged(args) {
     console.log("Camera changed: "+JSON.stringify(args.camera), JSON.stringify(args.camera) === lastCamera);
     lastCamera = JSON.stringify(args.camera);
+    var bounds = mapView.projection.visibleRegion.bounds;
+    console.log("Current bounds: " + JSON.stringify({
+          southwest: [bounds.southwest.latitude, bounds.southwest.longitude],
+          northeast: [bounds.northeast.latitude, bounds.northeast.longitude]
+        }));
 }
 
 exports.onMapReady = onMapReady;

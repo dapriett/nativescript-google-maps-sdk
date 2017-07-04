@@ -1,5 +1,0 @@
-<StackLayout orientation="vertical" width="200" height="125" >
-    <Image src="https://www.google.com/images/errors/logo_sm_2.png" stretch="none"  height="50" width="150" cssClass="infoWindowImage" />
-    <Label text="Current Location" cssClass="title"  />
-    <Label text="{{position.latitude + ',' + position.longitude}}" cssClass="infoWindowCoordinates"  />
-</StackLayout>

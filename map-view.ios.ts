@@ -1,13 +1,14 @@
 import {
     MapViewBase, BoundsBase, CircleBase,
-    MarkerBase, PolygonBase, PolylineBase,
-    PositionBase, ShapeBase, latitudeProperty,
+    MarkerBase, PolygonBase, PolylineBase, ProjectionBase,
+    PositionBase, ShapeBase, latitudeProperty, VisibleRegionBase,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase, UISettingsBase
+    tiltProperty, StyleBase, UISettingsBase, getColorHue
 } from "./map-view-common";
-import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
 import * as imageSource from 'tns-core-modules/image-source';
+import { Point } from "tns-core-modules/ui/core/view";
+import { Image } from "tns-core-modules/ui/image";
 
 export * from "./map-view-common";
 
@@ -22,14 +23,20 @@ declare class GMSCameraPosition extends NSObject {
 declare class GMSMapView extends NSObject {
     public static mapWithFrameCamera(...params: any[]): GMSMapView;
 };
-declare class GMSMarker extends NSObject {};
+declare class GMSMarker extends NSObject {
+    public static markerImageWithColor(color: UIColor): any;
+};
 declare class GMSOverlay extends NSObject {};
 declare class GMSMapStyle extends NSObject {
     public static styleWithJSONStringError(input: string): GMSMapStyle;
 };
 declare class GMSCoordinateBounds extends NSObject {
     public static alloc(): GMSCoordinateBounds;
-    public initWithCoordinateCoordinate(...params: any[]): GMSCoordinateBounds
+    public initWithCoordinateCoordinate(...params: any[]): GMSCoordinateBounds;
+    public initWithRegion(...params: any[]): GMSCoordinateBounds;
+    public northEast: CLLocationCoordinate2D;
+    public southWest: CLLocationCoordinate2D;
+    public valid: boolean;
 };
 declare class GMSPolyline extends NSObject {};
 declare class GMSPolygon extends NSObject {};
@@ -159,6 +166,13 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         }
     }
 
+    public didTapMyLocationButtonForMapView(mapView: GMSMapView): void {
+        var owner = this._owner.get();
+        if (owner) {
+            owner.notifyMyLocationTapped();
+        }
+    }
+
     public mapViewMarkerInfoWindow(mapView: GMSMapView, gmsMarker: GMSMarker): UIView {
         return null;
     }
@@ -252,6 +266,10 @@ export class MapView extends MapViewBase {
 
     get gMap() {
         return this.nativeView;
+    }
+
+    get projection(): Projection {
+        return new Projection(this.nativeView.projection);
     }
 
     get settings(): UISettings {
@@ -421,39 +439,88 @@ export class UISettings extends UISettingsBase {
     }
 }
 
+export class Projection extends ProjectionBase {
+    private _ios: any; /* GMSProjection */
+    get ios() {
+        return this._ios;
+    }
+
+    get visibleRegion(): VisibleRegion {
+        return new VisibleRegion(this.ios.visibleRegion());
+    }
+
+    fromScreenLocation(point: Point) {
+        var location = this.ios.coordinateForPoint(CGPointMake(point.x, point.y));
+        return new Position(location);
+    }
+
+    toScreenLocation(position: Position) {
+        var cgPoint = this.ios.pointForCoordinate(position.ios);
+        return {
+            x: cgPoint.x,
+            y: cgPoint.y
+        };
+    }
+
+    constructor(ios: any) {
+        super();
+        this._ios = ios;
+    }
+}
+
+export class VisibleRegion extends VisibleRegionBase {
+    private _ios: any; /* GMSVisibleRegion */
+    get ios() {
+        return this._ios;
+    }
+
+    get nearLeft(): Position {
+        return new Position(this.ios.nearLeft);
+    }
+
+    get nearRight(): Position {
+        return new Position(this.ios.nearRight);
+    }
+
+    get farLeft(): Position {
+        return new Position(this.ios.farLeft);
+    }
+
+    get farRight(): Position {
+        return new Position(this.ios.farRight);
+    }
+
+    get bounds(): Bounds {
+        return new Bounds(GMSCoordinateBounds.alloc().initWithRegion(this.ios));
+    }
+
+    constructor(ios: any) {
+        super();
+        this._ios = ios;
+    }
+}
+
 export class Bounds extends BoundsBase {
-    private _ios: any; /* GMSCoordinateBounds */
-    private _north: Position;
-    private _south: Position;
+    private _ios: GMSCoordinateBounds;
     get ios() {
         return this._ios;
     }
 
     get southwest() {
-        return this._south;
-    }
-
-    set southwest(southwest:Position) {
-        this._south = southwest.ios;
-        if(this.northeast) {
-            this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(this.southwest, this.northeast);
-        }
+        return new Position(this.ios.southWest);
     }
 
     get northeast() {
-        return this._north;
+        return new Position(this._ios.northEast);
     }
 
-    set northeast(northeast:Position) {
-        this._north = northeast.ios;
-        if(this.southwest) {
-            this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(this.southwest, this.northeast);
-        }
-    }
-
-    constructor() {
+    constructor(ios: GMSCoordinateBounds) {
         super();
-        // this._ios = GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(new Position(), new Position());
+        this._ios = ios;
+    }
+
+    public static fromCoordinates(southwest:Position, northeast:Position): Bounds {
+        return new Bounds(GMSCoordinateBounds.alloc().initWithCoordinateCoordinate(southwest.ios, northeast.ios));
     }
 }
 
@@ -494,6 +561,7 @@ export class Position extends PositionBase {
 
 export class Marker extends MarkerBase {
     private _ios: any;
+    private _color: number;
     private _icon: Image;
     private _alpha = 1;
     private _visible = true;
@@ -555,6 +623,21 @@ export class Marker extends MarkerBase {
         this._ios.map.selectedMarker = null;
     }
 
+    get color() {
+        return this._color;
+    }
+
+    set color(value: Color|string|number) {
+        value = getColorHue(value);
+
+        this._color = value;
+        if (this._color) {
+            this._ios.icon = GMSMarker.markerImageWithColor(UIColor.colorWithHueSaturationBrightnessAlpha(this._color / 360, 1, 1, 1));
+        } else {
+            this._ios.icon = null;
+        }
+    }
+
     get icon() {
         return this._icon;
     }
@@ -566,7 +649,7 @@ export class Marker extends MarkerBase {
             value = tempIcon;
         }
         this._icon = value;
-        this._ios.icon = this._icon.ios.image;
+        this._ios.icon = (value) ? this._icon.ios.image : null;
     }
 
     get alpha() {

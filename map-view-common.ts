@@ -1,15 +1,15 @@
 import {
-    MapView, Position, Marker, Shape, Polyline, Polygon,
-    Circle, Camera, MarkerEventData, ShapeEventData,
+    MapView, Position, Marker, Shape, Polyline, Polygon, Projection,
+    Circle, Camera, MarkerEventData, ShapeEventData, VisibleRegion,
     CameraEventData, PositionEventData, Bounds, Style, UISettings
 } from "./map-view";
-import {View, Template, KeyedTemplate} from "tns-core-modules/ui/core/view";
+import { Point, View, Template, KeyedTemplate } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
 import { LayoutBase } from "tns-core-modules/ui/layouts/layout-base";
 import builder = require("ui/builder");
 import frame = require("ui/frame");
 
-import { Property, PropertyOptions } from "tns-core-modules/ui/core/properties";
+import { Property } from "tns-core-modules/ui/core/properties";
 import { Color } from "tns-core-modules/color";
 import {parseMultipleTemplates, parse} from "tns-core-modules/ui/builder";
 import {eachDescendant} from "tns-core-modules/ui/core/view-base";
@@ -28,22 +28,29 @@ function onInfoWindowTemplatesChanged(mapView: MapViewBase) {
     mapView._infoWindowTemplates = _infoWindowTemplates;
 }
 
-function onMapPropertyChanged(mapView: MapViewBase, oldValue: number, newValue: number) {
+function onMapPropertyChanged(mapView: MapViewBase) {
     if (!mapView.processingCameraEvent) mapView.updateCamera();
 }
 
-function onPaddingPropertyChanged(mapView: MapViewBase, oldValue: number, newValue: number) {
+function onPaddingPropertyChanged(mapView: MapViewBase) {
     mapView.updatePadding();
 }
 
 function paddingValueConverter(value: any) {
     if (!Array.isArray(value)) {
-        value = String(value).split(',').map(function(v) {
-            return parseInt(v, 10);
-        });
+        value = String(value).split(',');
     }
-    if (value.length === 4) {
+
+    value = value.map((v) => parseInt(v, 10));
+
+    if (value.length >= 4) {
         return value;
+    } else if (value.length === 3) {
+        return [value[0], value[1], value[2], value[2]];
+    } else if (value.length === 2) {
+        return [value[0], value[0], value[1], value[1]];
+    } else if (value.length === 1) {
+        return [value[0], value[0], value[0], value[0]];
     } else {
         return [0, 0, 0, 0];
     }
@@ -93,6 +100,40 @@ export module knownMultiTemplates {
     export const infoWindowTemplates = "infoWindowTemplates";
 }
 
+export function getColorHue(color: Color|string|number): number {
+    if (typeof color === 'number') {
+        while ( color < 0) { color += 360; }
+        return color % 360;
+    }
+    if (typeof color === 'string') color = new Color(color);
+    if (!(color instanceof Color)) return color;
+
+    let min, max, delta, hue;
+
+    const r = Math.max(0, Math.min(1, color.r / 255));
+    const g = Math.max(0, Math.min(1, color.g / 255));
+    const b = Math.max(0, Math.min(1, color.b / 255));
+
+    min = Math.min(r, g, b);
+    max = Math.max(r, g, b);
+
+    delta = max - min;
+
+    if (delta == 0) { // white, grey, black
+        hue = 0;
+    } else if (r == max) {
+        hue = (g - b) / delta; // between yellow & magenta
+    } else if (g == max) {
+        hue = 2 + (b - r) / delta; // between cyan & yellow
+    } else {
+        hue = 4 + (r - g) / delta; // between magenta & cyan
+    }
+
+    hue = ((hue * 60) + 360) % 360; // degrees
+
+    return hue;
+}
+
 export abstract class MapViewBase extends View implements MapView {
 
     protected _gMap: any;
@@ -104,7 +145,7 @@ export abstract class MapViewBase extends View implements MapView {
     public bearing: number;
     public zoom: number;
     public tilt: number;
-    public padding: number;
+    public padding: number[];
 
     public infoWindowTemplate: string | Template;
     public infoWindowTemplates: string | Array<KeyedTemplate>;
@@ -119,6 +160,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
     public _infoWindowTemplates = new Array<KeyedTemplate>();
 
+    public projection: Projection;
     public settings: UISettingsBase;
     public myLocationEnabled: boolean;
 
@@ -132,6 +174,7 @@ export abstract class MapViewBase extends View implements MapView {
     public static coordinateTappedEvent: string = "coordinateTapped";
     public static coordinateLongPressEvent: string = "coordinateLongPress";
     public static cameraChangedEvent: string = "cameraChanged";
+    public static myLocationTappedEvent: string = "myLocationTapped";
 
     public get gMap() {
         return this._gMap;
@@ -292,6 +335,10 @@ export abstract class MapViewBase extends View implements MapView {
         let args: CameraEventData = { eventName: eventName, object: this, camera: camera };
         this.notify(args);
     }
+
+    notifyMyLocationTapped() {
+        this.notify({ eventName: MapViewBase.myLocationTappedEvent, object: this });
+    }
 }
 
 export const infoWindowTemplateProperty = new Property<MapViewBase, string | Template>({name: "infoWindowTemplate"});
@@ -315,7 +362,7 @@ zoomProperty.register(MapViewBase);
 export const tiltProperty = new Property<MapViewBase, number>({ name: 'tilt', defaultValue: 0, valueChanged: onMapPropertyChanged });
 tiltProperty.register(MapViewBase);
 
-export const paddingProperty = new Property<MapViewBase, number>(<PropertyOptions<MapViewBase, number>>{ name: 'padding', defaultValue: 0, valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
+export const paddingProperty = new Property<MapViewBase, number[]>({ name: 'padding', valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
 paddingProperty.register(MapViewBase);
 
 export class UISettingsBase implements UISettings {
@@ -328,6 +375,22 @@ export class UISettingsBase implements UISettings {
     tiltGesturesEnabled: boolean;
     zoomControlsEnabled: boolean;
     zoomGesturesEnabled: boolean;
+}
+
+export abstract class ProjectionBase implements Projection {
+    public visibleRegion : VisibleRegion;
+    public abstract fromScreenLocation(point: Point): Position;
+    public abstract toScreenLocation(position: Position): Point;
+    public ios: any; /* GMSProjection */
+    public android: any;
+}
+
+export class VisibleRegionBase implements VisibleRegion {
+    public nearLeft: Position;
+    public nearRight: Position;
+    public farLeft: Position;
+    public farRight: Position;
+    public bounds: Bounds;
 }
 
 export class PositionBase implements Position {
@@ -351,6 +414,7 @@ export abstract class MarkerBase implements Marker {
     public anchor: Array<number>;
     public title: string;
     public snippet: string;
+    public color: Color|string|number;
     public icon: Image|string;
     public alpha: number;
     public flat: boolean;

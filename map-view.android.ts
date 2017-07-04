@@ -4,13 +4,14 @@ import common = require("./map-view-common");
 
 import {
     MapViewBase, BoundsBase, CircleBase,
-    MarkerBase, PolygonBase, PolylineBase,
-    PositionBase, ShapeBase, latitudeProperty,
+    MarkerBase, PolygonBase, PolylineBase, ProjectionBase,
+    PositionBase, ShapeBase, latitudeProperty, VisibleRegionBase,
     longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase, UISettingsBase
+    tiltProperty, StyleBase, UISettingsBase, getColorHue
 } from "./map-view-common";
 import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
+import { Point } from "tns-core-modules/ui/core/view";
 import imageSource = require("tns-core-modules/image-source");
 
 export * from "./map-view-common";
@@ -110,6 +111,14 @@ export class MapView extends MapViewBase {
                         let marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerInfoWindowTapped(marker);
 
+                        return false;
+                    }
+                }));
+
+                gMap.setOnMyLocationButtonClickListener(new com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener({
+                    onMyLocationButtonClick: () => {
+                        owner.notifyMyLocationTapped();
+                        
                         return false;
                     }
                 }));
@@ -277,7 +286,7 @@ export class MapView extends MapViewBase {
         this._pendingCameraUpdate = false;
 
         var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
-        this.gMap.moveCamera(cameraUpdate);
+        this.gMap.animateCamera(cameraUpdate);
     }
 
     setViewport(bounds:Bounds, padding?:number) {
@@ -289,7 +298,7 @@ export class MapView extends MapViewBase {
         }
 
         this._pendingCameraUpdate = false;
-        this.gMap.moveCamera(cameraUpdate);
+        this.gMap.animateCamera(cameraUpdate);
     }
 
     updatePadding() {
@@ -309,6 +318,10 @@ export class MapView extends MapViewBase {
 
     get gMap() {
         return this._gMap;
+    }
+
+    get projection(): Projection {
+        return (this._gMap) ? new Projection(this._gMap.getProjection()) : null;
     }
 
     get settings(): UISettings {
@@ -477,6 +490,67 @@ export class UISettings extends UISettingsBase {
     }
 }
 
+export class Projection extends ProjectionBase {
+    private _android: any; /* GMSProjection */
+    get android() {
+        return this._android;
+    }
+
+    get visibleRegion(): VisibleRegion {
+        return new VisibleRegion(this.android.getVisibleRegion());
+    }
+
+    fromScreenLocation(point: Point) {
+        var latLng = this.android.fromScreenLocation(new android.graphics.Point(point.x, point.y));
+        return new Position(latLng);
+    }
+
+    toScreenLocation(position: Position) {
+        var point = this.android.toScreenLocation(position.android);
+        return {
+            x: point.x,
+            y: point.y
+        };
+    }
+
+    constructor(android: any) {
+        super();
+        this._android = android;
+    }
+}
+
+export class VisibleRegion extends VisibleRegionBase {
+    private _android: any;
+    get android() {
+        return this._android;
+    }
+
+    get nearLeft(): Position {
+        return new Position(this.android.nearLeft);
+    }
+
+    get nearRight(): Position {
+        return new Position(this.android.nearRight);
+    }
+
+    get farLeft(): Position {
+        return new Position(this.android.farLeft);
+    }
+
+    get farRight(): Position {
+        return new Position(this.android.farRight);
+    }
+
+    get bounds(): Bounds {
+        return new Bounds(this.android.latLngBounds);
+    }
+
+    constructor(android: any) {
+        super();
+        this._android = android;
+    }
+}
+
 export class Position extends PositionBase {
 
     private _android: any;
@@ -516,43 +590,31 @@ export class Position extends PositionBase {
 
 export class Bounds extends BoundsBase {
     private _android: any;
-    private _north: Position;
-    private _south: Position;
-
     get android() {
         return this._android;
     }
 
     get southwest() {
-        return this._south;
-    }
-
-    set southwest(southwest: Position) {
-        this._south = southwest.android;
-        if(this.northeast) {
-            this._android = new com.google.android.gms.maps.model.LatLngBounds(this.southwest, this.northeast);
-        }
+        return new Position(this.android.southwest);
     }
 
     get northeast() {
-        return this._north;
+        return new Position(this.android.northeast);
     }
 
-    set northeast(northeast: Position) {
-        this._north = northeast.android;
-        if(this.southwest) {
-            this._android = new com.google.android.gms.maps.model.LatLngBounds(this.southwest, this.northeast);
-        }
-    }
-
-    constructor() {
+    constructor(android: any) {
         super();
-        // this._android = android || new com.google.android.gms.maps.model.LatLng(0, 0);
+        this._android = android;
+    }
+
+    public static fromCoordinates(southwest:Position, northeast:Position): Bounds {
+        return new Bounds(new com.google.android.gms.maps.model.LatLngBounds(southwest.android, northeast.android));
     }
 }
 
 export class Marker extends MarkerBase {
     private _android: any;
+    private _color: number;
     private _icon: Image;
     private _isMarker: boolean = false;
 
@@ -640,6 +702,23 @@ export class Marker extends MarkerBase {
         }
     }
 
+    get color() {
+        return this._color;
+    }
+
+    set color(value: Color|string|number) {
+        value = getColorHue(value);
+
+        this._color = value;
+
+        var androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(value) : null;
+        if (this._isMarker) {
+            this._android.setIcon(androidIcon);
+        } else {
+            this._android.icon(androidIcon);
+        }
+    }
+
     get icon() {
         return this._icon;
     }
@@ -651,7 +730,7 @@ export class Marker extends MarkerBase {
             value = tempIcon;
         }
         this._icon = value;
-        var androidIcon = com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(value.imageSource.android);
+        var androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(value.imageSource.android) : null;
         if (this._isMarker) {
             this._android.setIcon(androidIcon);
         } else {

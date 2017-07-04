@@ -1,4 +1,4 @@
-import { View } from "tns-core-modules/ui/core/view";
+import { Point, View } from "tns-core-modules/ui/core/view";
 import { Property } from "tns-core-modules/ui/core/properties";
 import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
@@ -19,7 +19,7 @@ export class MapView extends View {
     public zoom: number;
     public bearing: number;
     public tilt: number;
-    public padding: number;
+    public padding: number[];
 
     public notifyMapReady(): void;
 
@@ -39,12 +39,15 @@ export class MapView extends View {
     public static coordinateTappedEvent: string;
     public static coordinateLongPressEvent: string;
     public static cameraChangedEvent: string;
+    public static myLocationTappedEvent: string
 
     public nativeView: any; /* GMSMapView | com.google.android.gms.maps.MapView */
 
     public gMap: any;
 
     public settings: UISettings;
+
+    public projection: Projection;
 
     public myLocationEnabled: boolean;
 
@@ -80,7 +83,7 @@ export const longitudeProperty: Property<MapView, number>;
 export const bearingProperty: Property<MapView, number>;
 export const zoomProperty: Property<MapView, number>;
 export const tiltProperty: Property<MapView, number>;
-export const paddingProperty: Property<MapView, number>;
+export const paddingProperty: Property<MapView, number | number[]>;
 
 export class UISettings {
     // Whether the compass is enabled/disabled.
@@ -103,6 +106,22 @@ export class UISettings {
     zoomGesturesEnabled: boolean;
 }
 
+export class Projection {
+    public visibleRegion : VisibleRegion;
+    public fromScreenLocation(point: Point): Position;
+    public toScreenLocation(position: Position): Point;
+    public ios: any; /* GMSProjection */
+    public android: any;
+}
+
+export class VisibleRegion {
+    public nearLeft: Position;
+    public nearRight: Position;
+    public farLeft: Position;
+    public farRight: Position;
+    public bounds: Bounds;
+}
+
 export class Position {
     public latitude: number;
     public longitude: number;
@@ -116,6 +135,7 @@ export class Bounds {
     public southwest: Position;
     public ios: any; /* GMSCoordinateBounds */
     public android: any;
+    public static fromCoordinates(southwest:Position, northeast:Position): Bounds;
 }
 
 export class Marker {
@@ -124,6 +144,7 @@ export class Marker {
     public anchor: Array<number>;
     public title: string;
     public snippet: string;
+    public color: Color|string|number; /* Default Icon color - either Color, string color name, string color hex, or number hue (0-360) */
     public icon: Image|string;
     public alpha: number;
     public flat: boolean;
