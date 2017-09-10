@@ -8,17 +8,19 @@
                       markerInfoWindowTapped="onMarkerEvent" coordinateTapped="onCoordinateTapped"
                       cameraChanged="onCameraChanged">
             <maps:mapView.infoWindowTemplate>
-                <StackLayout orientation="vertical" width="200" height="220" >
-                    <Image src="https://unsplash.it/200/?random" stretch="none"  height="200" width="200" className="infoWindowImage" />
-                    <Label text="{{position.latitude + ',' + position.longitude}}" className="infoWindowCoordinates"  />
+                <StackLayout orientation="vertical" width="200" height="240" >
+                    <Image src="https://unsplash.it/200/?random" stretch="fill"  height="200" width="200" className="infoWindowImage" />
+                    <Label text="{{'LAT: ' + position.latitude}}" className="infoWindowCoordinates"  />
+                    <Label text="{{'LON: ' + position.longitude}}" className="infoWindowCoordinates"  />
                 </StackLayout>
             </maps:mapView.infoWindowTemplate>
             <maps:mapView.infoWindowTemplates>
                 <template key="testWindow">
                     <StackLayout orientation="vertical" width="200" height="125" >
-                        <Image src="https://www.google.com/images/errors/logo_sm_2.png" stretch="none"  height="50" width="150" className="infoWindowImage" />
+                        <Image src="https://www.google.com/images/errors/logo_sm_2.png" stretch="fill"  height="50" width="150" className="infoWindowImage" />
                         <Label text="Current Location" cssClass="title"  />
-                        <Label text="{{position.latitude + ',' + position.longitude}}" className="infoWindowCoordinates"  />
+                        <Label text="{{'LAT: ' + position.latitude}}" className="infoWindowCoordinates"  />
+                        <Label text="{{'LON: ' + position.longitude}}" className="infoWindowCoordinates"  />
                     </StackLayout>
                 </template>
             </maps:mapView.infoWindowTemplates>

@@ -23,7 +23,7 @@ button {
 }
 
 .infoWindowCoordinates {
-    horizontal-align: center;
+    horizontal-align: left;
     margin: 0;
     color: #999999;
     font-size: 16;
