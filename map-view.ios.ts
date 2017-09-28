@@ -9,6 +9,7 @@ import { Color } from "tns-core-modules/color";
 import * as imageSource from 'tns-core-modules/image-source';
 import { Point } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
+import { GC } from "utils/utils"
 
 declare class GMSMapViewDelegate extends NSObject {};
 declare class GMSCameraPosition extends NSObject {
@@ -197,6 +198,13 @@ export class MapView extends MapViewBase {
         this.nativeView.delegate = null;
         super.onUnloaded();
     }
+
+    public disposeNativeView () {
+        this._markers = null;
+        this._delegate = null;
+        super.disposeNativeView();
+        GC();
+    };
 
     private _createCameraPosition() {
         return GMSCameraPosition.cameraWithLatitudeLongitudeZoomBearingViewingAngle(
