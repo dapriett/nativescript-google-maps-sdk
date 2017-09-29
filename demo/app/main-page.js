@@ -135,9 +135,10 @@ function onMapReady(args) {
             mapView.myLocationEnabled = true;
             mapView.settings.myLocationButtonEnabled = true;
         }
-        return wait(3000);
+        return wait(6000);
     }).then(function () {
-        var marker = mapView.findMarker(function (marker) {
+        marker.hideInfoWindow();
+        marker = mapView.findMarker(function (marker) {
             return marker.userData.index === 2;
         });
         console.log("Moving marker...", marker.userData);

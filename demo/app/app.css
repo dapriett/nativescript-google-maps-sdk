@@ -1,9 +1,16 @@
 ﻿.title {
     font-size: 30;
     horizontal-align: center;
-    margin: 20;
     margin: 0;
     color: #009688;
+}
+
+.snippet {
+    font-size: 18;
+    horizontal-align: center;
+    margin: 0;
+    margin-bottom: 20;
+    color: #999;
 }
 
 button {

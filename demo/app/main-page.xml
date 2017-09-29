@@ -8,19 +8,18 @@
                       markerInfoWindowTapped="onMarkerEvent" coordinateTapped="onCoordinateTapped"
                       cameraChanged="onCameraChanged">
             <maps:mapView.infoWindowTemplate>
-                <StackLayout orientation="vertical" width="200" height="240" >
-                    <Image src="https://unsplash.it/200/?random" stretch="fill"  height="200" width="200" className="infoWindowImage" />
+                <StackLayout orientation="vertical" width="200" height="150" >
+                    <Label text="{{title}}" className="title" width="125"   />
+                    <Label text="{{snippet}}" className="snippet" width="125"   />
                     <Label text="{{'LAT: ' + position.latitude}}" className="infoWindowCoordinates"  />
                     <Label text="{{'LON: ' + position.longitude}}" className="infoWindowCoordinates"  />
                 </StackLayout>
             </maps:mapView.infoWindowTemplate>
             <maps:mapView.infoWindowTemplates>
                 <template key="testWindow">
-                    <StackLayout orientation="vertical" width="200" height="125" >
-                        <Image src="https://www.google.com/images/errors/logo_sm_2.png" stretch="fill"  height="50" width="150" className="infoWindowImage" />
-                        <Label text="Current Location" cssClass="title"  />
-                        <Label text="{{'LAT: ' + position.latitude}}" className="infoWindowCoordinates"  />
-                        <Label text="{{'LON: ' + position.longitude}}" className="infoWindowCoordinates"  />
+                    <StackLayout orientation="vertical" width="160" height="160" >
+                        <Image src="res://icon" stretch="fill"  height="100" width="100" className="infoWindowImage" />
+                        <Label text="Let's Begin!" className="title" />
                     </StackLayout>
                 </template>
             </maps:mapView.infoWindowTemplates>
