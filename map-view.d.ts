@@ -152,6 +152,8 @@ export class Marker {
     public visible: boolean;
     public zIndex: number;
     public showInfoWindow(): void;
+    public isInfoWindowShown(): boolean;
+    public infoWindowTemplate: string;
     public hideInfoWindow(): void;
     public userData: any;
     public _map: any;

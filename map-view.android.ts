@@ -14,6 +14,8 @@ import { Color } from "tns-core-modules/color";
 import { Point } from "tns-core-modules/ui/core/view";
 import imageSource = require("tns-core-modules/image-source");
 
+export * from "./map-view-common";
+
 declare const com: any;
 declare const android: any;
 
@@ -231,6 +233,19 @@ export class MapView extends MapViewBase {
                     }));
                 }
 
+                gMap.setInfoWindowAdapter(new com.google.android.gms.maps.GoogleMap.InfoWindowAdapter({
+
+                    getInfoWindow : function(gmsMarker) {
+                        return null;
+                    },
+
+                    getInfoContents : function(gmsMarker) {
+                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        var content = owner._getMarkerInfoWindowContent(marker);
+                        return (content) ? content.android : null;
+                    }
+                }));
+
                 owner.notifyMapReady();
             }
         });
@@ -335,12 +350,14 @@ export class MapView extends MapViewBase {
     }
 
     removeMarker(marker: Marker) {
+        this._unloadInfoWindowContent(marker);
         marker.android.remove();
         this._markers.splice(this._markers.indexOf(marker), 1);
     }
 
     removeAllMarkers() {
         this._markers.forEach(marker => {
+            this._unloadInfoWindowContent(marker);
             marker.android.remove();
         });
         this._markers = [];
@@ -681,6 +698,10 @@ export class Marker extends MarkerBase {
         if (this._isMarker) {
             this.android.showInfoWindow();
         }
+    }
+
+    isInfoWindowShown(): boolean {
+        return (this._isMarker) ? this.android.showInfoWindow() : false;
     }
 
     hideInfoWindow(): void {
