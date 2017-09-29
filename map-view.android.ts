@@ -43,6 +43,14 @@ export class MapView extends MapViewBase {
         application.android.off(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
     }
 
+    public disposeNativeView () {
+        this._context = undefined;
+        this._gMap = undefined;
+        this._markers = undefined;
+        this._shapes = undefined;
+        super.disposeNativeView();
+    };
+
     private onActivityPaused(args) {
         if (!this.nativeView || this._context != args.activity) return;
         this.nativeView.onPause();

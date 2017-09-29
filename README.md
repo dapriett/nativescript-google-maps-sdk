@@ -104,7 +104,7 @@ The following properties are available to you for adjusting camera view.
 Property       | Description
 -------------- |:---------------------------------
 `latitude` | number
-`latitude` | number
+`longitude` | number
 `zoom` | number
 `bearing` | number
 `tilt` | number
