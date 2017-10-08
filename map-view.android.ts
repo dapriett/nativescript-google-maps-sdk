@@ -344,15 +344,19 @@ export class MapView extends MapViewBase {
         if (this._gMap) this._gMap.setMyLocationEnabled(value);
     }
 
-    addMarker(marker: Marker) {
-        marker.android = this.gMap.addMarker(marker.android);
-        this._markers.push(marker);
+    addMarker(...markers: Marker[]) {
+        markers.forEach(marker => {
+            marker.android = this.gMap.addMarker(marker.android);
+            this._markers.push(marker);
+        });
     }
 
-    removeMarker(marker: Marker) {
-        this._unloadInfoWindowContent(marker);
-        marker.android.remove();
-        this._markers.splice(this._markers.indexOf(marker), 1);
+    removeMarker(...markers: Marker[]) {
+        markers.forEach(marker => {
+            this._unloadInfoWindowContent(marker);
+            marker.android.remove();
+            this._markers.splice(this._markers.indexOf(marker), 1);
+        });
     }
 
     removeAllMarkers() {

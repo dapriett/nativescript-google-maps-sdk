@@ -258,9 +258,9 @@ export abstract class MapViewBase extends View implements MapView {
 
     public abstract updatePadding(): void;
 
-    public abstract addMarker(marker: Marker): void;
+    public abstract addMarker(...markers: Marker[]): void;
 
-    public abstract removeMarker(marker: Marker): void;
+    public abstract removeMarker(...markers: Marker[]): void;
 
     public abstract removeAllMarkers(): void;
 

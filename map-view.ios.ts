@@ -292,15 +292,19 @@ export class MapView extends MapViewBase {
         if (this.nativeView) this.nativeView.myLocationEnabled = value;
     }
 
-    addMarker(marker: Marker) {
-        marker.ios.map = this.gMap;
-        this._markers.push(marker);
+    addMarker(...markers: Marker[]) {
+        markers.forEach(marker => {
+            marker.ios.map = this.gMap;
+            this._markers.push(marker);
+        });
     }
 
-    removeMarker(marker: Marker) {
-        this._unloadInfoWindowContent(marker);
-        marker.ios.map = null;
-        this._markers.splice(this._markers.indexOf(marker), 1);
+    removeMarker(...markers: Marker[]) {
+        markers.forEach(marker => {
+            this._unloadInfoWindowContent(marker);
+            marker.ios.map = null;
+            this._markers.splice(this._markers.indexOf(marker), 1);
+        });
     }
 
     removeAllMarkers() {
