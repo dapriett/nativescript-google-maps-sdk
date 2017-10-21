@@ -51,9 +51,9 @@ export class MapView extends View {
 
     public myLocationEnabled: boolean;
 
-    public addMarker(marker: Marker): void;
+    public addMarker(...markers: Marker[]): void;
 
-    public removeMarker(marker: Marker): void;
+    public removeMarker(...markers: Marker[]): void;
 
     public removeAllMarkers(): void;
 
