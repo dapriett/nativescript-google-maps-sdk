@@ -43,7 +43,7 @@ export class MapView extends MapViewBase {
         application.android.off(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
     }
 
-    public disposeNativeView () {
+    public disposeNativeView() {
         this._context = undefined;
         this._gMap = undefined;
         this._markers = undefined;
@@ -126,7 +126,7 @@ export class MapView extends MapViewBase {
                 gMap.setOnMyLocationButtonClickListener(new com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener({
                     onMyLocationButtonClick: () => {
                         owner.notifyMyLocationTapped();
-                        
+
                         return false;
                     }
                 }));
@@ -235,11 +235,11 @@ export class MapView extends MapViewBase {
 
                 gMap.setInfoWindowAdapter(new com.google.android.gms.maps.GoogleMap.InfoWindowAdapter({
 
-                    getInfoWindow : function(gmsMarker) {
+                    getInfoWindow: function (gmsMarker) {
                         return null;
                     },
 
-                    getInfoContents : function(gmsMarker) {
+                    getInfoContents: function (gmsMarker) {
                         let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         var content = owner._getMarkerInfoWindowContent(marker);
                         return (content) ? content.android : null;
@@ -294,10 +294,14 @@ export class MapView extends MapViewBase {
         this._pendingCameraUpdate = false;
 
         var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
-        this.gMap.animateCamera(cameraUpdate);
+        if (this.mapAnimationsEnabled) {
+            this.gMap.animateCamera(cameraUpdate);
+        } else {
+            this.gMap.moveCamera(cameraUpdate);
+        }
     }
 
-    setViewport(bounds:Bounds, padding?:number) {
+    setViewport(bounds: Bounds, padding?: number) {
         var p = padding || 0;
         var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds(bounds.android, p);
         if (!this.gMap) {
@@ -306,7 +310,11 @@ export class MapView extends MapViewBase {
         }
 
         this._pendingCameraUpdate = false;
-        this.gMap.animateCamera(cameraUpdate);
+        if (this.mapAnimationsEnabled) {
+            this.gMap.animateCamera(cameraUpdate);
+        } else {
+            this.gMap.moveCamera(cameraUpdate);
+        }
     }
 
     updatePadding() {
@@ -576,7 +584,7 @@ export class Position extends PositionBase {
     }
 
     set latitude(latitude: number) {
-        this._android = new com.google.android.gms.maps.model.LatLng(parseFloat(""+latitude), this.longitude);
+        this._android = new com.google.android.gms.maps.model.LatLng(parseFloat("" + latitude), this.longitude);
     }
 
     get longitude() {
@@ -584,7 +592,7 @@ export class Position extends PositionBase {
     }
 
     set longitude(longitude: number) {
-        this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, parseFloat(""+longitude));
+        this._android = new com.google.android.gms.maps.model.LatLng(this.latitude, parseFloat("" + longitude));
     }
 
     constructor(android?: any) {
@@ -619,7 +627,7 @@ export class Bounds extends BoundsBase {
         this._android = android;
     }
 
-    public static fromCoordinates(southwest:Position, northeast:Position): Bounds {
+    public static fromCoordinates(southwest: Position, northeast: Position): Bounds {
         return new Bounds(new com.google.android.gms.maps.model.LatLngBounds(southwest.android, northeast.android));
     }
 }
@@ -718,7 +726,7 @@ export class Marker extends MarkerBase {
         return this._color;
     }
 
-    set color(value: Color|string|number) {
+    set color(value: Color | string | number) {
         value = getColorHue(value);
 
         this._color = value;
@@ -735,7 +743,7 @@ export class Marker extends MarkerBase {
         return this._icon;
     }
 
-    set icon(value: Image|string) {
+    set icon(value: Image | string) {
         if (typeof value === 'string') {
             var tempIcon = new Image();
             tempIcon.imageSource = imageSource.fromResource(String(value));

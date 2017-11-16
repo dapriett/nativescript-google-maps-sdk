@@ -20,18 +20,19 @@ export class MapView extends View {
     public bearing: number;
     public tilt: number;
     public padding: number[];
+    public mapAnimationsEnabled: boolean;
 
     public notifyMapReady(): void;
 
     public updateCamera(): void;
 
-    public setViewport(bounds:Bounds, padding?:number): void;
+    public setViewport(bounds: Bounds, padding?: number): void;
 
     public updatePadding(): void;
 
     public static mapReadyEvent: string;
     public static markerSelectEvent: string;
-    public static markerInfoWindowTapEvent:string;
+    public static markerInfoWindowTapEvent: string;
     public static shapeSelectEvent: string;
     public static markerBeginDraggingEvent: string;
     public static markerEndDraggingEvent: string;
@@ -107,7 +108,7 @@ export class UISettings {
 }
 
 export class Projection {
-    public visibleRegion : VisibleRegion;
+    public visibleRegion: VisibleRegion;
     public fromScreenLocation(point: Point): Position;
     public toScreenLocation(position: Position): Point;
     public ios: any; /* GMSProjection */
@@ -135,7 +136,7 @@ export class Bounds {
     public southwest: Position;
     public ios: any; /* GMSCoordinateBounds */
     public android: any;
-    public static fromCoordinates(southwest:Position, northeast:Position): Bounds;
+    public static fromCoordinates(southwest: Position, northeast: Position): Bounds;
 }
 
 export class Marker {
@@ -144,8 +145,8 @@ export class Marker {
     public anchor: Array<number>;
     public title: string;
     public snippet: string;
-    public color: Color|string|number; /* Default Icon color - either Color, string color name, string color hex, or number hue (0-360) */
-    public icon: Image|string;
+    public color: Color | string | number; /* Default Icon color - either Color, string color name, string color hex, or number hue (0-360) */
+    public icon: Image | string;
     public alpha: number;
     public flat: boolean;
     public draggable: boolean;
