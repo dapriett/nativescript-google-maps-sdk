@@ -9,6 +9,7 @@ var HelloWorldModel = (function (_super) {
         this.set("bearing", 180);
         this.set("tilt", 35);
         this.set("padding", [80, 40, 40, 40]);
+        this.set("mapAnimationsEnabled", true);
     }
 
     return HelloWorldModel;

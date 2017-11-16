@@ -366,7 +366,7 @@ tiltProperty.register(MapViewBase);
 export const paddingProperty = new Property<MapViewBase, number[]>({ name: 'padding', valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
 paddingProperty.register(MapViewBase);
 
-export const mapAnimationsEnabledProperty = new Property<MapViewBase, boolean>({ name: 'mapAnimationsEnabled', defaultValue: true, valueChanged: onMapPropertyChanged });
+export const mapAnimationsEnabledProperty = new Property<MapViewBase, boolean>({ name: 'mapAnimationsEnabled', defaultValue: true });
 mapAnimationsEnabledProperty.register(MapViewBase);
 
 export class UISettingsBase implements UISettings {

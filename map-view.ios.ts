@@ -251,7 +251,7 @@ export class MapView extends MapViewBase {
         if (this.mapAnimationsEnabled) {
             this.nativeView.animateToCameraPosition(this._createCameraPosition());
         } else {
-            this.nativeView.setCamera(this._createCameraPosition());
+            this.nativeView.camera = this._createCameraPosition();
         }
     }
 
@@ -262,7 +262,7 @@ export class MapView extends MapViewBase {
         if (this.mapAnimationsEnabled) {
             this.nativeView.animateToCameraPosition(cameraPosition);
         } else {
-            this.nativeView.setCamera(cameraPosition);
+            this.nativeView.camera = cameraPosition;
         }
     }
 

@@ -1,7 +1,7 @@
 <Page xmlns="http://www.nativescript.org/tns.xsd" xmlns:maps="nativescript-google-maps-sdk" loaded="pageLoaded">
     <GridLayout>
         <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}"
-                      zoom="{{ zoom }}" bearing="{{ bearing }}"
+                      zoom="{{ zoom }}" bearing="{{ bearing }}" mapAnimationsEnabled="{{ mapAnimationsEnabled }}"
                       tilt="{{ tilt }}" i-padding="50,50,50,50" padding="{{ padding }}" mapReady="onMapReady" 
                       markerSelect="onMarkerEvent" markerBeginDragging="onMarkerEvent"
                       markerEndDragging="onMarkerEvent" markerDrag="onMarkerEvent"
