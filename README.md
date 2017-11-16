@@ -87,7 +87,7 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
 	xmlns:maps="nativescript-google-maps-sdk"
 	>
   <GridLayout>
-    <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" 
+    <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" mapAnimationsEnabled="{{ mapAnimationsEnabled }}"
     								zoom="{{ zoom }}" bearing="{{ bearing }}" 
     								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="onMapReady"  
    								markerSelect="onMarkerSelect" markerBeginDragging="onMarkerBeginDragging"
@@ -109,6 +109,7 @@ Property       | Description
 `bearing` | number
 `tilt` | number
 `padding` | array of numbers reflectig top, bottom, left and right paddings
+`mapAnimationsEnabled` | boolean of whether to animate camera changes
 
 ## Events
 
