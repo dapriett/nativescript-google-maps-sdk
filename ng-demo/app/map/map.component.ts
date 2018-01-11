@@ -17,6 +17,8 @@ export class MapComponent {
     latitude =  -33.86;
     longitude = 151.20;
     zoom = 8;
+    minZoom = 0;
+    maxZoom = 22;
     bearing = 0;
     tilt = 0;
     padding = [40, 40, 40, 40];

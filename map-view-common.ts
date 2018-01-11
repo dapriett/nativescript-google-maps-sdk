@@ -32,6 +32,10 @@ function onMapPropertyChanged(mapView: MapViewBase) {
     if (!mapView.processingCameraEvent) mapView.updateCamera();
 }
 
+function onSetMinZoomMaxZoom(mapView: MapViewBase) {
+    mapView.setMinZoomMaxZoom();
+}
+
 function onPaddingPropertyChanged(mapView: MapViewBase) {
     mapView.updatePadding();
 }
@@ -144,6 +148,8 @@ export abstract class MapViewBase extends View implements MapView {
     public longitude: number;
     public bearing: number;
     public zoom: number;
+    public minZoom: number;
+    public maxZoom: number;
     public tilt: number;
     public padding: number[];
     public mapAnimationsEnabled: boolean;
@@ -259,6 +265,8 @@ export abstract class MapViewBase extends View implements MapView {
 
     public abstract updatePadding(): void;
 
+    public abstract setMinZoomMaxZoom(): void;
+
     public abstract addMarker(...markers: Marker[]): void;
 
     public abstract removeMarker(...markers: Marker[]): void;
@@ -359,6 +367,12 @@ bearingProperty.register(MapViewBase);
 
 export const zoomProperty = new Property<MapViewBase, number>({ name: 'zoom', defaultValue: 0, valueChanged: onMapPropertyChanged });
 zoomProperty.register(MapViewBase);
+
+export const minZoomProperty = new Property<MapViewBase, number>({ name: 'minZoom', defaultValue: 0, valueChanged: onSetMinZoomMaxZoom });
+minZoomProperty.register(MapViewBase);
+
+export const maxZoomProperty = new Property<MapViewBase, number>({ name: 'maxZoom', defaultValue: 22, valueChanged: onSetMinZoomMaxZoom });
+maxZoomProperty.register(MapViewBase);
 
 export const tiltProperty = new Property<MapViewBase, number>({ name: 'tilt', defaultValue: 0, valueChanged: onMapPropertyChanged });
 tiltProperty.register(MapViewBase);

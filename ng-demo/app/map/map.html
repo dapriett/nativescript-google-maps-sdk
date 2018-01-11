@@ -1,6 +1,6 @@
 <GridLayout>
     <MapView #mapView [latitude]="latitude" [longitude]="longitude"
-             [zoom]="zoom" [bearing]="bearing"
+             [zoom]="zoom" [minZoom]="minZoom" [maxZoom]="maxZoom" [bearing]="bearing"
              [tilt]="tilt" i-padding="50,50,50,50" [padding]="padding" (mapReady)="onMapReady($event)"
              (markerSelect)="onMarkerEvent($event)" (markerBeginDragging)="onMarkerEvent($event)"
              (markerEndDragging)="onMarkerEvent($event)" (markerDrag)="onMarkerEvent($event)"
