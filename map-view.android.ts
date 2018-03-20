@@ -44,6 +44,13 @@ export class MapView extends MapViewBase {
     }
 
     public disposeNativeView() {
+        if(this.nativeView){
+            this.nativeView.onDestroy();
+        }
+        if(this._gMap){
+            this._gMap.setMyLocationEnabled(false);
+            this._gMap.clear();
+        }
         this._context = undefined;
         this._gMap = undefined;
         this._markers = undefined;
