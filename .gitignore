@@ -3,7 +3,7 @@
 # Logs
 logs
 *.log
-*.js
+**/*.js
 !/demo/**/*.js
 
 # Runtime data
@@ -36,7 +36,7 @@ build/Release
 # Dependency directory
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
-
+src/node_modules
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
