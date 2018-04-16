@@ -1,13 +1,13 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view",
   "typings": "map-view.d.ts",
   "nativescript": {
     "platforms": {
-      "android": "3.0.0",
-      "ios": "3.0.0"
+      "android": "4.0.0",
+      "ios": "4.0.0"
     }
   },
   "scripts": {
@@ -17,7 +17,9 @@
     "clean": "rm -f *.js",
     "build": "npm run clean && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "./node_modules/.bin/tsc"
+    "compile": "./node_modules/.bin/tsc",
+    "plugin.link": "npm link && cd ../demo && npm link nativescript-google-maps-sdk && cd ../src",
+    "prepare": "node ./scripts/prepare.js"
   },
   "repository": {
     "type": "git",
@@ -40,10 +42,11 @@
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.14.2",
-    "tns-core-modules": "^3.0.0",
-    "tns-platform-declarations": "^3.0.1",
+    "tns-core-modules": "^4.0.0",
+    "tns-platform-declarations": "^4.0.0",
     "typescript": "^2.3.2",
-    "validate-commit-msg": "^2.12.2"
+    "validate-commit-msg": "^2.12.2",
+    "semver": "^5.5.0"
   },
   "config": {
     "commitizen": {
