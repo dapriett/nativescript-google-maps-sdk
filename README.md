@@ -39,13 +39,42 @@ Live Demo [here](https://tinyurl.com/m7ndp7u)
  
 ## Setup Android API Key
 
+
+
+### Nativescript < 4
+
 First copy over the template string resource files for Android
 
 ```
 cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/
 ```
-
 Next modify the file at `app/App_Resources/Android/values/nativescript_google_maps_api.xml`, uncomment `nativescript_google_maps_api_key` string and replace `PUT_API_KEY_HERE` with your api key.
+
+Then, in your `AndroidManifest.xml` located at `app/App_Resources/Android/AndroidManifest.xml`  insert into your `<application>` tags 
+
+```(xml)
+<meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/nativescript_google_maps_api_key" />
+```
+
+### Nativescript 4+
+
+First copy over the template string resource files for Android
+
+```
+cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/src/main/res
+```
+
+Next modify the file at `app/App_Resources/Android/src/main/res/values/nativescript_google_maps_api.xml`, uncomment `nativescript_google_maps_api_key` string and replace `PUT_API_KEY_HERE` with your api key.
+
+Then, in your `AndroidManifest.xml` located at `app/App_Resources/Android/src/main/AndroidManifest.xml` insert into your `<application>` tags 
+
+```(xml)
+<meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/nativescript_google_maps_api_key" />
+```
 
 The plugin will default to latest available version of the Android `play-services-maps` SDK.  If you need to change the version, you can add a project ext property `googlePlayServicesVersion` like so:
 

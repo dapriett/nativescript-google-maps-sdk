@@ -3,7 +3,7 @@
 # Logs
 logs
 *.log
-*.js
+**/*.js
 !/demo/**/*.js
 
 # Runtime data
@@ -36,7 +36,7 @@ build/Release
 # Dependency directory
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
-
+**/node_modules
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
@@ -87,3 +87,10 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 /demo/lib/
+
+# Plugin Scripts
+!src/scripts/*.js
+
+# Publish Scripts
+publish/package-lock.json
+publish/package

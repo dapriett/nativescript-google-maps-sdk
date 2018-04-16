@@ -4,3 +4,4 @@ ng-demo
 tsconfig.json
 *.ts
 !*.d.ts
+scripts
