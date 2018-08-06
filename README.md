@@ -121,7 +121,8 @@ Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-s
     								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="onMapReady"  
    								markerSelect="onMarkerSelect" markerBeginDragging="onMarkerBeginDragging"
    								markerEndDragging="onMarkerEndDragging" markerDrag="onMarkerDrag"
-   								cameraChanged="onCameraChanged" />
+   								cameraChanged="onCameraChanged" 
+                                cameraMove="onCameraMove" />
   </GridLayout>
 </Page>
 ```
@@ -155,7 +156,8 @@ Event          | Description
 `markerDrag` | Fires repeatedly while a marker is being dragged
 `markerEndDragging` | Fires when a marker ends dragging
 `markerInfoWindowTapped` | Fired on tapping Marker Info Window
-`cameraChanged` | Fired on each camera change
+`cameraChanged` | Fired after the camera has changed
+`cameraMove` | Fired while the camera is moving
 
 
 The property `gMap` gives you access to the raw platform Map Object - see their SDK references for how to use them ( [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap) )
@@ -188,9 +190,14 @@ function onCameraChanged(args) {
     console.log("Camera changed: " + JSON.stringify(args.camera)); 
 }
 
+function onCameraMove(args) {
+    console.log("Camera moving: "+JSON.stringify(args.camera));
+}
+
 exports.onMapReady = onMapReady;
 exports.onMarkerSelect = onMarkerSelect;
 exports.onCameraChanged = onCameraChanged;
+exports.onCameraMove = onCameraMove;
 ```
 
 ## UI Settings

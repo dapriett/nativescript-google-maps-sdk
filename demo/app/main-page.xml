@@ -6,7 +6,8 @@
                       markerSelect="onMarkerEvent" markerBeginDragging="onMarkerEvent"
                       markerEndDragging="onMarkerEvent" markerDrag="onMarkerEvent"
                       markerInfoWindowTapped="onMarkerEvent" coordinateTapped="onCoordinateTapped"
-                      cameraChanged="onCameraChanged">
+                      cameraChanged="onCameraChanged"
+                      cameraMove="onCameraMove">
             <maps:mapView.infoWindowTemplate>
                 <StackLayout orientation="vertical" width="200" height="150" >
                     <Label text="{{title}}" className="title" width="125"   />

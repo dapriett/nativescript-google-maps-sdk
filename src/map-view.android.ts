@@ -241,6 +241,21 @@ export class MapView extends MapViewBase {
                     }));
                 }
 
+                if (gMap.setOnCameraMoveListener) {
+                    gMap.setOnCameraMoveListener(new com.google.android.gms.maps.GoogleMap.OnCameraMoveListener({
+                        onCameraMove: () => {
+                            const cameraPosition = gMap.getCameraPosition();
+                            owner.notifyCameraEvent(MapViewBase.cameraMoveEvent, {
+                                latitude: cameraPosition.target.latitude,
+                                longitude: cameraPosition.target.longitude,
+                                zoom: cameraPosition.zoom,
+                                bearing: cameraPosition.bearing,
+                                tilt: cameraPosition.tilt
+                            });
+                        }
+                    }));
+                }
+
                 gMap.setInfoWindowAdapter(new com.google.android.gms.maps.GoogleMap.InfoWindowAdapter({
 
                     getInfoWindow: function (gmsMarker) {
