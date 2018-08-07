@@ -60,4 +60,8 @@ export class MapComponent {
         this.lastCamera = JSON.stringify(args.camera);
     }
 
+    onCameraMove(args) {
+        console.log("Camera moving: " + JSON.stringify(args.camera));
+    }
+
 }

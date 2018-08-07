@@ -241,7 +241,12 @@ function onCameraChanged(args) {
         }));
 }
 
+function onCameraMove(args) {
+    console.log("Camera moving: "+JSON.stringify(args.camera));
+}
+
 exports.onMapReady = onMapReady;
 exports.onCoordinateTapped = onCoordinateTapped;
 exports.onMarkerEvent = onMarkerEvent;
 exports.onCameraChanged = onCameraChanged;
+exports.onCameraMove = onCameraMove;
