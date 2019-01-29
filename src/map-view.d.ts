@@ -196,7 +196,12 @@ export class Polygon extends Shape {
     public addPoints(shapes: Position[]): void;
     public removePoint(shape: Position): void;
     public removeAllPoints(): void;
+    public addHole(hole: Position[]): void;
+    public addHoles(hole: Position[][]): void;
+    public removeHole(hole: Position[]): void;
+    public removeAllHoles(): void;
     public getPoints(): Array<Position>;
+    public getHoles(): Array<Array<Position>>;
 }
 
 export class Circle extends Shape {

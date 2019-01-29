@@ -812,6 +812,7 @@ export class Polygon extends PolygonBase {
         super();
         this._ios = GMSPolygon.new();
         this._points = [];
+        this._holes = [];
     }
 
     get clickable() {
@@ -830,18 +831,32 @@ export class Polygon extends PolygonBase {
         this._ios.zIndex = value;
     }
 
-
-
     loadPoints(): void {
         var points = GMSMutablePath.new();
-        this._points.forEach(function (point) {
+        this._points.forEach((point: Position) => {
             points.addCoordinate(point.ios);
-        }.bind(this));
+        });
         this._ios.path = points;
+    }
+
+    loadHoles(): void {
+        var holes = [];
+        this._holes.forEach((hole: Position[]) => {
+            var points = GMSMutablePath.new();
+            hole.forEach((point: Position) => {
+                points.addCoordinate(point.ios);
+            });
+            holes.push(points);
+        });
+        this._ios.holes = holes;
     }
 
     reloadPoints(): void {
         this.loadPoints();
+    }
+
+    reloadHoles(): void {
+        this.loadHoles();
     }
 
     get strokeWidth() {

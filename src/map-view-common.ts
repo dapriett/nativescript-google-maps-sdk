@@ -503,6 +503,7 @@ export abstract class PolygonBase extends ShapeBase implements Polygon {
     public shape: string = 'polygon';
     public _map: any;
     public _points: Array<PositionBase>;
+    public _holes: Array<Array<PositionBase>>;
     public strokeWidth: number;
     public strokeColor: Color;
     public fillColor: Color;
@@ -534,7 +535,36 @@ export abstract class PolygonBase extends ShapeBase implements Polygon {
         return this._points.slice();
     }
 
+    addHole(hole: PositionBase[]): void {
+        this._holes.push(hole);
+        this.reloadHoles();
+    }
+
+    addHoles(holes: PositionBase[][]): void {
+        this._holes = this._holes.concat(holes);
+        this.reloadHoles();
+    }
+
+    removeHole(hole: PositionBase[]): void {
+        var index = this._holes.indexOf(hole);
+        if (index > -1) {
+            this._holes.splice(index, 1);
+            this.reloadHoles();
+        }
+    }
+
+    removeAllHoles(): void {
+        this._holes.length = 0;
+        this.reloadHoles();
+    }
+
+    getHoles(): Array<Array<PositionBase>> {
+        return this._holes.slice();
+    }
+
     public abstract reloadPoints(): void;
+
+    public abstract reloadHoles(): void;
 }
 
 export class CircleBase extends ShapeBase implements Circle {
