@@ -1,0 +1,19 @@
+{
+  "name": "nativescript-google-maps-sdk",
+  "version": "1.0.0",
+  "description": "NativeScript plugin for Google Maps SDK ================",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuvelas/nativescript-google-maps-sdk.git"
+  },
+  "author": "Mike <mkuvelas@stevenswater.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kuvelas/nativescript-google-maps-sdk/issues"
+  },
+  "homepage": "https://github.com/kuvelas/nativescript-google-maps-sdk#readme"
+}
