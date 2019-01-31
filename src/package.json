@@ -39,14 +39,14 @@
   },
   "homepage": "https://github.com/dapriett/nativescript-google-maps-sdk#readme",
   "devDependencies": {
-    "commitizen": "^2.9.6",
+    "commitizen": "^3.0.5",
     "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.14.2",
+    "semver": "^5.5.0",
     "tns-core-modules": "^4.0.0",
     "tns-platform-declarations": "^4.0.0",
     "typescript": "^2.3.2",
-    "validate-commit-msg": "^2.12.2",
-    "semver": "^5.5.0"
+    "validate-commit-msg": "^2.12.2"
   },
   "config": {
     "commitizen": {
