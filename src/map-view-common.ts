@@ -237,10 +237,12 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public _getInfoWindowTemplate(marker: MarkerBase): KeyedTemplate {
-        const templateKey = marker.infoWindowTemplate;
-        for (let i = 0, length = this._infoWindowTemplates.length; i < length; i++) {
-            if (this._infoWindowTemplates[i].key === templateKey) {
-                return this._infoWindowTemplates[i];
+        if(marker){
+            const templateKey = marker.infoWindowTemplate;
+            for (let i = 0, length = this._infoWindowTemplates.length; i < length; i++) {
+                if (this._infoWindowTemplates[i].key === templateKey) {
+                    return this._infoWindowTemplates[i];
+                }
             }
         }
         return this._defaultInfoWindowTemplate;
