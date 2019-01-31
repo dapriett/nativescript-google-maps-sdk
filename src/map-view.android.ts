@@ -417,6 +417,7 @@ export class MapView extends MapViewBase {
 
     addPolygon(shape: Polygon) {
         shape.loadPoints();
+        shape.loadHoles();
         shape.android = this.gMap.addPolygon(shape.android);
         this._shapes.push(shape);
     }
@@ -985,6 +986,7 @@ export class Polygon extends PolygonBase {
         super();
         this.android = new com.google.android.gms.maps.model.PolygonOptions();
         this._points = [];
+        this._holes = [];
     }
 
     get clickable() {
@@ -1031,6 +1033,18 @@ export class Polygon extends PolygonBase {
         }
     }
 
+    loadHoles(): void {
+        if (!this._isReal) {
+            this._holes.forEach((hole: Position[]) => {
+                var points = new java.util.ArrayList();
+                hole.forEach((point: Position) => {
+                    points.add(point.android);
+                });
+                this._android.addHole(points);
+            });
+        }
+    }
+
     reloadPoints(): void {
         if (this._isReal) {
             var points = new java.util.ArrayList();
@@ -1038,6 +1052,20 @@ export class Polygon extends PolygonBase {
                 points.add(point.android);
             });
             this._android.setPoints(points);
+        }
+    }
+
+    reloadHoles(): void {
+        if (this._isReal) {
+            var holes = new java.util.ArrayList();
+            this._holes.forEach((hole) => {
+                var points = new java.util.ArrayList();
+                hole.forEach((point) => {
+                    points.add(point.android);
+                });
+                holes.add(points);
+            });
+            this._android.setHoles(holes);
         }
     }
 
