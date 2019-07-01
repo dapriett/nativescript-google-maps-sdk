@@ -946,7 +946,7 @@ export class Polyline extends PolylineBase {
     set color(value: Color) {
         this._color = value;
         if (this._isReal) {
-            this._android.setStrokeColor(value.android);
+            this._android.setColor(value.android);
         } else {
             this._android.color(value.android);
         }
