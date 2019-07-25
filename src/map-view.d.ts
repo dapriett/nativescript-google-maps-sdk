@@ -34,7 +34,7 @@ export class MapView extends View {
 
     public static mapReadyEvent: string;
     public static markerSelectEvent: string;
-    public static markerInfoWindowTapEvent: string;
+    public static markerInfoWindowTappedEvent: string;
     public static shapeSelectEvent: string;
     public static markerBeginDraggingEvent: string;
     public static markerEndDraggingEvent: string;
