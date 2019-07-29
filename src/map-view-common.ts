@@ -181,6 +181,8 @@ export abstract class MapViewBase extends View implements MapView {
     public static coordinateTappedEvent: string = "coordinateTapped";
     public static coordinateLongPressEvent: string = "coordinateLongPress";
     public static cameraChangedEvent: string = "cameraChanged";
+    public static cameraMoveStartedEvent: string = "cameraMoveStarted";
+    public static cameraMoveCanceledEvent: string = "cameraMoveCanceled";
     public static cameraMoveEvent: string = "cameraMove";
     public static myLocationTappedEvent: string = "myLocationTapped";
 

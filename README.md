@@ -157,7 +157,9 @@ Event          | Description
 `markerEndDragging` | Fires when a marker ends dragging
 `markerInfoWindowTapped` | Fired on tapping Marker Info Window
 `cameraChanged` | Fired after the camera has changed
+`cameraMoveStarted` | Fired while the camera start move
 `cameraMove` | Fired while the camera is moving
+`cameraMoveStoped` | Fired while the camera stop move
 
 
 The property `gMap` gives you access to the raw platform Map Object - see their SDK references for how to use them ( [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap) )

@@ -256,6 +256,21 @@ export class MapView extends MapViewBase {
                     }));
                 }
 
+                if(gMap.setOnCameraMoveStartedListener){
+                    gMap.setOnCameraMoveStartedListener(new com.google.android.gms.maps.GoogleMap.OnCameraMoveStartedListener({
+                        onCameraMoveStarted : function(reason){
+                            owner.notifyCameraEvent(MapViewBase.cameraMoveStartedEvent, reason);
+                        }
+                    }));
+                }
+                if(gMap.setOnCameraMoveCanceledListener){
+                    gMap.setOnCameraMoveCanceledListener(new com.google.android.gms.maps.GoogleMap.OnCameraMoveCanceledListener({
+                        onCameraMoveCanceled : function(){
+                            owner.notifyCameraEvent(MapViewBase.cameraMoveCanceledEvent, null);
+                        }
+                    }));
+                }
+                
                 gMap.setInfoWindowAdapter(new com.google.android.gms.maps.GoogleMap.InfoWindowAdapter({
 
                     getInfoWindow: function (gmsMarker) {
