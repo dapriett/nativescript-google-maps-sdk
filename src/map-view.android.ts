@@ -1,7 +1,5 @@
 import application = require("tns-core-modules/application");
 
-import common = require("./map-view-common");
-
 import {
     MapViewBase, BoundsBase, CircleBase,
     MarkerBase, PolygonBase, PolylineBase, ProjectionBase,

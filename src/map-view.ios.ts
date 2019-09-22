@@ -13,39 +13,6 @@ import { GC } from "utils/utils"
 
 export * from "./map-view-common";
 
-declare class GMSMapViewDelegate extends NSObject { };
-declare class GMSCameraPosition extends NSObject {
-    target: any;
-    bearing: any;
-    zoom: any;
-    viewingAngle: any;
-    public static cameraWithLatitudeLongitudeZoomBearingViewingAngle(...params: any[]): GMSCameraPosition;
-};
-declare class GMSMapView extends NSObject {
-    public static mapWithFrameCamera(...params: any[]): GMSMapView;
-};
-declare class GMSMarker extends NSObject {
-    public static markerImageWithColor(color: UIColor): any;
-};
-declare class GMSOverlay extends NSObject { };
-declare class GMSMapStyle extends NSObject {
-    public static styleWithJSONStringError(input: string): GMSMapStyle;
-};
-declare class GMSCoordinateBounds extends NSObject {
-    public static alloc(): GMSCoordinateBounds;
-    public initWithCoordinateCoordinate(...params: any[]): GMSCoordinateBounds;
-    public initWithRegion(...params: any[]): GMSCoordinateBounds;
-    public northEast: CLLocationCoordinate2D;
-    public southWest: CLLocationCoordinate2D;
-    public valid: boolean;
-};
-declare class GMSPolyline extends NSObject { };
-declare class GMSPolygon extends NSObject { };
-declare class GMSCircle extends NSObject { };
-declare class GMSMutablePath extends NSObject {
-    public static new(): GMSMutablePath
-    public addCoordinate(...params: any[]): void
-};
 declare function UIEdgeInsetsMake(...params: any[]): any;
 
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
@@ -129,12 +96,16 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         }
     }
 
-    public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
-        let owner = this._owner.get();
+    public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker): boolean {
+        const owner = this._owner.get();
         if (owner) {
             let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
-            owner.notifyMarkerTapped(marker);
+            if (marker) {
+                owner.notifyMarkerTapped(marker);
+                return true;
+            }
         }
+        return false;
     }
 
     public mapViewDidTapOverlay(mapView: GMSMapView, gmsOverlay: GMSOverlay): void {
@@ -178,11 +149,13 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         }
     }
 
-    public didTapMyLocationButtonForMapView(mapView: GMSMapView): void {
-        var owner = this._owner.get();
+    public didTapMyLocationButtonForMapView(mapView: GMSMapView): boolean {
+        const owner = this._owner.get();
         if (owner) {
             owner.notifyMyLocationTapped();
+            return true;
         }
+        return false;
     }
 
     public mapViewMarkerInfoWindow(mapView: GMSMapView, gmsMarker: GMSMarker): UIView {
