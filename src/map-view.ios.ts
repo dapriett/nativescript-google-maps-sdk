@@ -9,7 +9,7 @@ import { Color } from "tns-core-modules/color";
 import * as imageSource from 'tns-core-modules/image-source';
 import { Point } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
-import { GC } from "utils/utils"
+import { GC, layout } from "utils/utils"
 
 export * from "./map-view-common";
 
@@ -175,16 +175,40 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
             if (Number.isNaN(height)) height = null;
 
             if (!height || !width) {
-                const bounds: CGRect = require("utils/utils").ios.getter(UIScreen, UIScreen.mainScreen).bounds;
+                const bounds: CGRect = UIScreen.mainScreen.bounds;
                 width = width || (bounds.size.width * .7);
                 height = height || (bounds.size.height * .4);
             }
 
-            require("ui/utils").ios._layoutRootView(content, CGRectMake(0, 0, width, height))
+            this._layoutRootView(content, CGRectMake(0, 0, width, height))
             return content.ios;
         }
 
         return null;
+    }
+
+    /*
+        Replacement for _layoutRootView method removed in NativeScript 6
+    */
+    private _layoutRootView(rootView, parentBounds) {
+        if (!rootView || !parentBounds) {
+            return;
+        }
+
+        const size = parentBounds.size;
+        const width = layout.toDevicePixels(size.width);
+        const height = layout.toDevicePixels(size.height);
+
+        const widthSpec = layout.makeMeasureSpec(width, layout.EXACTLY);
+        const heightSpec = layout.makeMeasureSpec(height, layout.EXACTLY);
+
+        rootView.measure(widthSpec, heightSpec);
+
+        const origin = parentBounds.origin;
+        const left = origin.x;
+        const top = origin.y;
+
+        rootView.layout(left, top, width, height);
     }
 }
 
