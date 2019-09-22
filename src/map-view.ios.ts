@@ -602,6 +602,17 @@ export class Marker extends MarkerBase {
     private _alpha = 1;
     private _visible = true;
 
+    private static cachedColorIcons: { [hue: number]: any } = {}
+
+    private static getIconForColor(hue: number) {
+        const hueKey = hue.toFixed(8);
+        if (!Marker.cachedColorIcons[hueKey]) {
+            const icon = GMSMarker.markerImageWithColor(UIColor.colorWithHueSaturationBrightnessAlpha(hue, 1, 1, 1));
+            Marker.cachedColorIcons[hueKey] = icon;
+        }
+        return Marker.cachedColorIcons[hueKey];
+    }
+
     constructor() {
         super();
         this._ios = GMSMarker.new();
@@ -668,7 +679,7 @@ export class Marker extends MarkerBase {
 
         this._color = value;
         if (this._color) {
-            this._ios.icon = GMSMarker.markerImageWithColor(UIColor.colorWithHueSaturationBrightnessAlpha(this._color / 360, 1, 1, 1));
+            this._ios.icon = Marker.getIconForColor(this._color / 360);
         } else {
             this._ios.icon = null;
         }
