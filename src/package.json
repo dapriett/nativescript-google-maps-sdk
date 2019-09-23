@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/dapriett/nativescript-google-maps-sdk#readme",
   "devDependencies": {
-    "commitizen": "^3.0.5",
+    "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.14.2",
     "semver": "^5.5.0",
