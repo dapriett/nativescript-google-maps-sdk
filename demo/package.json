@@ -2,22 +2,23 @@
   "nativescript": {
     "id": "org.nativescript.demo",
     "tns-ios": {
-      "version": "3.0.1"
+      "version": "6.0.1"
     },
     "tns-android": {
-      "version": "4.0.0"
+      "version": "6.0.0"
     }
   },
   "dependencies": {
     "nativescript-google-maps-sdk": "../src",
     "nativescript-permissions": "^1.2.3",
-    "tns-core-modules": "^4.0.0"
+    "tns-core-modules": "6.0.1"
   },
   "devDependencies": {
     "babel-traverse": "6.7.6",
     "babel-types": "6.7.7",
     "babylon": "6.7.0",
     "filewalker": "0.1.2",
-    "lazy": "1.0.11"
+    "lazy": "1.0.11",
+    "nativescript-dev-webpack": "1.0.1"
   }
 }

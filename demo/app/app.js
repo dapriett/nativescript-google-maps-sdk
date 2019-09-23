@@ -11,7 +11,7 @@ if(application.ios) {
   GMSServices.provideAPIKey("AIzaSyAtRVvG3Be3xXiZFR7xp-K-9hy4nZ4hMFs");
 }
 
-application.start({ moduleName: "main-page" });
+application.run({ moduleName: "main-page" });
 
 /*
  Do not place any code after the application has been started as it will not
