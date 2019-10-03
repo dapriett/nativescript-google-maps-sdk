@@ -102,7 +102,6 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
             let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             if (marker) {
                 owner.notifyMarkerTapped(marker);
-                return true;
             }
         }
         return false;
