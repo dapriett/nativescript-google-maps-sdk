@@ -301,6 +301,12 @@ export class MapExampleComponent {
     };
 }
 ```
+# Angular 8 Support
+
+If you are using Angular 8, there is a temporary change to the `@ViewChild` directive, this will not be needed in Angular 9.
+
+For now use this instead: `@ViewChild("MapView", {static: false}) mapView: ElementRef;`
+
 
 # Clustering Support (Issue [#57](https://github.com/dapriett/nativescript-google-maps-sdk/issues/57))
 
