@@ -279,6 +279,7 @@ export abstract class MapViewBase extends View implements MapView {
     public abstract clear(): void;
 
     public removeAllPolylines() {
+        if(!this._shapes) return null;
         this._shapes.forEach(shape => {
             if (shape.shape === 'polyline') {
                 this.removeShape(shape);
@@ -287,6 +288,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public removeAllPolygons() {
+        if(!this._shapes) return null;
         this._shapes.forEach(shape => {
             if (shape.shape === 'polygon') {
                 this.removeShape(shape);
@@ -295,6 +297,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public removeAllCircles() {
+        if(!this._shapes) return null;
         this._shapes.forEach(shape => {
             if (shape.shape === 'circle') {
                 this.removeShape(shape);

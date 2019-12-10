@@ -381,6 +381,7 @@ export class MapView extends MapViewBase {
     }
 
     addMarker(...markers: Marker[]) {
+        if(!markers || !this.gMap) return null;
         markers.forEach(marker => {
             marker.android = this.gMap.addMarker(marker.android);
             this._markers.push(marker);
@@ -388,6 +389,7 @@ export class MapView extends MapViewBase {
     }
 
     removeMarker(...markers: Marker[]) {
+        if(!markers || !this.gMap) return null;
         markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
             marker.android.remove();
@@ -396,6 +398,7 @@ export class MapView extends MapViewBase {
     }
 
     removeAllMarkers() {
+        if(!this._markers || !this.gMap) return null;
         this._markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
             marker.android.remove();
@@ -404,16 +407,19 @@ export class MapView extends MapViewBase {
     }
 
     findMarker(callback: (marker: Marker) => boolean): Marker {
+        if(!this._markers) return null;
         return this._markers.find(callback);
     }
 
     addPolyline(shape: Polyline) {
+        if(!this.gMap) return null;
         shape.loadPoints();
         shape.android = this.gMap.addPolyline(shape.android);
         this._shapes.push(shape);
     }
 
     addPolygon(shape: Polygon) {
+        if(!this.gMap) return null;
         shape.loadPoints();
         shape.loadHoles();
         shape.android = this.gMap.addPolygon(shape.android);
@@ -421,35 +427,40 @@ export class MapView extends MapViewBase {
     }
 
     addCircle(shape: Circle) {
+        if(!this._shapes || !this.gMap) return null;
         shape.android = this.gMap.addCircle(shape.android);
         this._shapes.push(shape);
     }
 
     removeShape(shape: ShapeBase) {
+        if(!this._shapes) return null;
         shape.android.remove();
         this._shapes.splice(this._shapes.indexOf(shape), 1);
     }
 
     removeAllShapes() {
+        if(!this._shapes) return null;
         this._shapes.forEach(shape => {
             shape.android.remove();
         });
         this._shapes = [];
     }
 
-    clear() {
-        this._markers = [];
-        this._shapes = [];
-        this.gMap.clear();
-    }
-
     setStyle(style: StyleBase): boolean {
+        if(!this.gMap) return null;
         let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
         return this.gMap.setMapStyle(styleOptions);
     }
 
     findShape(callback: (shape: ShapeBase) => boolean): ShapeBase {
+        if(!this._shapes) return null;
         return this._shapes.find(callback);
+    }
+
+    clear() {
+        this._markers = [];
+        this._shapes = [];
+        this.gMap.clear();
     }
 
 }
