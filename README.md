@@ -156,6 +156,7 @@ Event          | Description
 `markerDrag` | Fires repeatedly while a marker is being dragged
 `markerEndDragging` | Fires when a marker ends dragging
 `markerInfoWindowTapped` | Fired on tapping Marker Info Window
+`myLocationTapped` | Fired when the 'My Location' button is tapped
 `cameraChanged` | Fired after the camera has changed
 `cameraMove` | Fired while the camera is moving
 
@@ -209,7 +210,7 @@ Property       | Description
 `compassEnabled` | boolean - Whether the compass is enabled/disabled
 `indoorLevelPickerEnabled` | boolean - Whether the indoor level picker is enabled/disabled
 `mapToolbarEnabled` | boolean - Whether the indoor level picker is enabled/disabled ** ****Android only**** **
-`myLocationButtonEnabled` | boolean - Whether the my-location button is enabled/disabled
+`myLocationButtonEnabled` | boolean - Whether the 'My Location' button is enabled/disabled
 `rotateGesturesEnabled` | boolean - Whether the compass is enabled/disabled
 `scrollGesturesEnabled` | boolean - Whether scroll gestures are enabled/disabled
 `tiltGesturesEnabled` | boolean - Whether tilt gestures are enabled/disabled
