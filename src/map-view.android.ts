@@ -381,6 +381,8 @@ export class MapView extends MapViewBase {
     }
 
     addMarker(...markers: Marker[]) {
+        if(!this.gMap) 
+            return;
         markers.forEach(marker => {
             marker.android = this.gMap.addMarker(marker.android);
             this._markers.push(marker);
@@ -396,6 +398,8 @@ export class MapView extends MapViewBase {
     }
 
     removeAllMarkers() {
+        if(!this._markers || !this.markers.length) 
+            return;
         this._markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
             marker.android.remove();
