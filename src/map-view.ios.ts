@@ -15,6 +15,62 @@ export * from "./map-view-common";
 
 declare function UIEdgeInsetsMake(...params: any[]): any;
 
+class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDelegate {
+
+    public static ObjCProtocols = [GMSIndoorDisplayDelegate];
+
+    private _owner: WeakRef<MapView>;
+
+    public static initWithOwner(owner: WeakRef<MapView>): IndoorDisplayDelegateImpl {
+        let handler = <IndoorDisplayDelegateImpl>IndoorDisplayDelegateImpl.new();
+        handler._owner = owner;
+        return handler;
+    }
+
+    public didChangeActiveBuilding(indoorBuilding: GMSIndoorBuilding): void {
+        let owner = this._owner.get();
+        if (owner) {
+            let data = null;
+            if (indoorBuilding) {
+                const levels = [];
+                let count = 0;
+
+                while (count < indoorBuilding.levels.count) {
+                    levels.push(
+                        {
+                            name: indoorBuilding.levels[count].name,
+                            shortName: indoorBuilding.levels[count].shortName,
+                        }
+                    );
+                    count += 1;
+                }
+
+                data = {
+                    defaultLevelIndex: indoorBuilding.defaultLevelIndex,
+                    levels: levels,
+                    isUnderground: indoorBuilding.underground,
+                };
+            }
+            owner.notifyBuildingFocusedEvent(data);
+        }
+    }
+
+    public didChangeActiveLevel(activateLevel: GMSIndoorLevel): void {
+        let owner = this._owner.get();
+        if (owner) {
+            let data = null;
+            if (activateLevel) {
+                data = {
+                    name: activateLevel.name,
+                    shortName: activateLevel.shortName,
+                };
+            }
+            owner.notifyIndoorLevelActivatedEvent(data);
+        }
+    }
+}
+
+
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public static ObjCProtocols = [GMSMapViewDelegate];
