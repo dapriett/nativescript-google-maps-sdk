@@ -165,6 +165,7 @@ The following events are available:
 `markerBeginDragging` | Fires when a marker begins dragging
 `markerEndDragging` | Fires when a marker ends dragging
 `markerDrag` | Fires repeatedly while a marker is being dragged
+`myLocationTapped` | Fires when the 'My Location' button is tapped
 `markerInfoWindowTapped` | Fires when a marker's info window is tapped
 `cameraChanged` | Fires after the camera has changed
 `cameraMove` | Fires repeatedly while the camera is moving
@@ -176,6 +177,7 @@ The MapView's `gMap` property gives you access to the platform's native map obje
 ## UI Settings
 
 You can adjust the map's UI settings after the `mapReady` event has fired by configuring the following properties on `mapView.settings`:
+=======
 
 | Property       | Description and Data Type
 :--------------- |:---------------------------------
