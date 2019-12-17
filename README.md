@@ -129,7 +129,8 @@ Modify your view by adding the `xmlns:maps="nativescript-google-maps-sdk"` names
             markerEndDragging="onMarkerEndDragging"
             markerDrag="onMarkerDrag"
             cameraChanged="onCameraChanged" 
-            cameraMove="onCameraMove" />
+            cameraMove="onCameraMove"
+        />
     </GridLayout>
 </Page>
 ```
@@ -192,7 +193,7 @@ Use `gMap.setStyle(style);` to set the map's styling ([Google Maps Style Referen
 
 ### Angular
 
-Use `this.mapView.setStyle(<Style>JSON.parse(this.styles));` inside of the `onMapReady` function.  In this example `this.mapView` is the imported `MapView` from the plugin and `this.styles` is a reference to a json file that was created using the link below.  The `<Style>` was also imported from the plugin as `{ Style }`.
+Use `this.mapView.setStyle(<Style>JSON.parse(this.styles));` inside of the `onMapReady` event handler.  In this example, `this.mapView` is the `MapView` object and `this.styles` is a reference to a JSON file that was created using the [Styling Wizard](https://mapstyle.withgoogle.com/). The `<Style>` type was imported from the plugin as `{ Style }`.
 
 ## Basic Example
 
@@ -202,22 +203,22 @@ Use `this.mapView.setStyle(<Style>JSON.parse(this.styles));` inside of the `onMa
 var mapsModule = require("nativescript-google-maps-sdk");
 
 function onMapReady(args) {
- 	var mapView = args.object;
-
- 	console.log("Setting a marker...");
- 	var marker = new mapsModule.Marker();
- 	marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
- 	marker.title = "Sydney";
- 	marker.snippet = "Australia";
- 	marker.userData = { index : 1};
- 	mapView.addMarker(marker);
-  
- 	// Disabling zoom gestures
- 	mapView.settings.zoomGesturesEnabled = false;
+    var mapView = args.object;
+    
+    console.log("Setting a marker...");
+    var marker = new mapsModule.Marker();
+    marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
+    marker.title = "Sydney";
+    marker.snippet = "Australia";
+    marker.userData = { index : 1};
+    mapView.addMarker(marker);
+    
+    // Disabling zoom gestures
+    mapView.settings.zoomGesturesEnabled = false;
 }
 
 function onMarkerSelect(args) {
-	console.log("Clicked on " +args.marker.title);
+    console.log("Clicked on " +args.marker.title);
 }
 
 function onCameraChanged(args) {
