@@ -52,8 +52,8 @@ Finally, modify your `app/App_Resources/Android/AndroidManifest.xml` file by ins
 
 ```(xml)
 <meta-data
-	android:name="com.google.android.geo.API_KEY"
-	android:value="@string/nativescript_google_maps_api_key" />
+    android:name="com.google.android.geo.API_KEY"
+    android:value="@string/nativescript_google_maps_api_key" />
 ```
 
 ### Nativescript 4+
@@ -70,8 +70,8 @@ Finally, modify your `app/App_Resources/Android/src/main/AndroidManifest.xml` fi
 
 ```(xml)
 <meta-data
-	android:name="com.google.android.geo.API_KEY"
-	android:value="@string/nativescript_google_maps_api_key" />
+    android:name="com.google.android.geo.API_KEY"
+    android:value="@string/nativescript_google_maps_api_key" />
 ```
 
 The plugin will default to the latest available version of the Google Play Services SDK for Android.  If you need to change the version, you can add a `project.ext` property, `googlePlayServicesVersion`, like so:
@@ -90,16 +90,18 @@ In your `app.js`, use the following code to add your API key (replace `PUT_API_K
 
 ```
 if (application.ios) {
-  GMSServices.provideAPIKey("PUT_API_KEY_HERE");
+    GMSServices.provideAPIKey("PUT_API_KEY_HERE");
 }
 ```
 If you are using Angular, modify your `app.module.ts` as follows:
 ```
 import * as platform from "platform";
 declare var GMSServices: any;
+
 ....
+
 if (platform.isIOS) { 
-  GMSServices.provideAPIKey("PUT_API_KEY_HERE");
+    GMSServices.provideAPIKey("PUT_API_KEY_HERE");
 }
 ```
 
