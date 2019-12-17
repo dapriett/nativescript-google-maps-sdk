@@ -177,7 +177,6 @@ The MapView's `gMap` property gives you access to the platform's native map obje
 ## UI Settings
 
 You can adjust the map's UI settings after the `mapReady` event has fired by configuring the following properties on `mapView.settings`:
-=======
 
 | Property       | Description and Data Type
 :--------------- |:---------------------------------
