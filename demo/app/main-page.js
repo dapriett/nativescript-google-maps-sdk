@@ -245,8 +245,18 @@ function onCameraMove(args) {
     console.log("Camera moving: "+JSON.stringify(args.camera));
 }
 
+function onIndoorBuildingFocused(args) {
+    console.log("Building focus changed: " + JSON.stringify(args.indoorBuilding));
+}
+
+function onIndoorLevelActivated(args) {
+    console.log("Indoor level changed: " + JSON.stringify(args.activateLevel));
+}
+
 exports.onMapReady = onMapReady;
 exports.onCoordinateTapped = onCoordinateTapped;
 exports.onMarkerEvent = onMarkerEvent;
 exports.onCameraChanged = onCameraChanged;
 exports.onCameraMove = onCameraMove;
+exports.onIndoorBuildingFocused = onIndoorBuildingFocused;
+exports.onIndoorLevelActivated = onIndoorLevelActivated;
