@@ -1,7 +1,7 @@
-NativeScript plugin for Google Maps SDK
+NativeScript plugin for the Google Maps SDK
 ================
 
-This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Maps API](https://developers.google.com/maps/)
+This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Maps API](https://developers.google.com/maps/).
 
 [![NPM version][npm-image]][npm-url]
 [![Dependency status][david-dm-image]][david-dm-url]
@@ -15,68 +15,66 @@ This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Map
 
 Prerequisites
 ===
-*iOS* - Cocoapods is [installed](https://guides.cocoapods.org/using/getting-started.html#getting-started)
+**iOS** - [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started) must be installed.
 
-*Android* - Latest Google Play services SDK [installed](https://developer.android.com/sdk/installing/adding-packages.html)
+**Android** - The latest version of the [Google Play Services SDK](https://developer.android.com/sdk/installing/adding-packages.html) must be installed.
 
-*Google Maps API Key* - Go to the [Google Developers Console](https://console.developers.google.com), create a project, and enable the `Google Maps Android API` and `Google Maps SDK for iOS` APIs.  Then under credentials, create an API key.
+**Google Maps API Key** - Visit the [Google Developers Console](https://console.developers.google.com), create a project, and enable the `Google Maps Android API` and `Google Maps SDK for iOS` APIs.  Then, under credentials, create an API key.
 
 Installation
 ===
 
-## Install the plugin using the NativeScript CLI tooling
+Install the plugin using the NativeScript CLI tooling:
 
 ```
 tns plugin add nativescript-google-maps-sdk
 ```
 
-Setup Google Maps API
+Setup
 ===
 
 See demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/demo)
 
-Live Demo [here](https://tinyurl.com/m7ndp7u)
+See a live demo [here](https://tinyurl.com/m7ndp7u)
  
-## Setup Android API Key
-
-
+## Configure API Key for Android
 
 ### Nativescript < 4
 
-First copy over the template string resource files for Android
+Start by copying the necessary template resource files in to the Android app resources folder:
 
 ```
 cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/
 ```
-Next modify the file at `app/App_Resources/Android/values/nativescript_google_maps_api.xml`, uncomment `nativescript_google_maps_api_key` string and replace `PUT_API_KEY_HERE` with your api key.
+Next, modify your `app/App_Resources/Android/values/nativescript_google_maps_api.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
 
-Then, in your `AndroidManifest.xml` located at `app/App_Resources/Android/AndroidManifest.xml`  insert into your `<application>` tags 
+Finally, modify your `app/App_Resources/Android/AndroidManifest.xml` file by inserting the following in between the `<application>` tags:
 
 ```(xml)
 <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/nativescript_google_maps_api_key" />
+    android:name="com.google.android.geo.API_KEY"
+    android:value="@string/nativescript_google_maps_api_key" />
 ```
 
 ### Nativescript 4+
 
-First copy over the template string resource files for Android
+Start by copying the necessary template resource files in to the Android app resources folder:
 
 ```
 cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/src/main/res
 ```
 
-Next modify the file at `app/App_Resources/Android/src/main/res/values/nativescript_google_maps_api.xml`, uncomment `nativescript_google_maps_api_key` string and replace `PUT_API_KEY_HERE` with your api key.
+Next, modify your `app/App_Resources/Android/src/main/res/values/nativescript_google_maps_api.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
 
-Then, in your `AndroidManifest.xml` located at `app/App_Resources/Android/src/main/AndroidManifest.xml` insert into your `<application>` tags 
+Finally, modify your `app/App_Resources/Android/src/main/AndroidManifest.xml` file by inserting the following in between your `<application>` tags:
 
 ```(xml)
 <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/nativescript_google_maps_api_key" />
+    android:name="com.google.android.geo.API_KEY"
+    android:value="@string/nativescript_google_maps_api_key" />
 ```
 
-The plugin will default to latest available version of the Android `play-services-maps` SDK.  If you need to change the version, you can add a project ext property `googlePlayServicesVersion` like so:
+The plugin will default to the latest available version of the Google Play Services SDK for Android.  If you need to change the version, you can add a `project.ext` property, `googlePlayServicesVersion`, like so:
 
 ```
 //   /app/App_Resources/Android/app.gradle
@@ -86,82 +84,121 @@ project.ext {
 }
 ```
 
-## Setup iOS API Key
+## Configure API Key for iOS
 
-In the main script of your app `app.js`, use the following to add the API key (providing your key in place of `PUT_API_KEY_HERE`)
+In your `app.js`, use the following code to add your API key (replace `PUT_API_KEY_HERE` with the API key you created earlier):
 
 ```
-if(application.ios) {
-  GMSServices.provideAPIKey("PUT_API_KEY_HERE");
+if (application.ios) {
+    GMSServices.provideAPIKey("PUT_API_KEY_HERE");
 }
 ```
-If you are using Angular, you need to modify the `app.module.ts` as follows:
+If you are using Angular, modify your `app.module.ts` as follows:
 ```
 import * as platform from "platform";
 declare var GMSServices: any;
+
 ....
+
 if (platform.isIOS) { 
-  GMSServices.provideAPIKey("PUT_API_KEY_HERE");
+    GMSServices.provideAPIKey("PUT_API_KEY_HERE");
 }
 ```
 
 ##  Adding the MapView
 
-Modify your view by adding the namespace `xmlns:maps="nativescript-google-maps-sdk"` to your page, then using the `<maps:mapView />` tag to create the MapView.
+Modify your view by adding the `xmlns:maps="nativescript-google-maps-sdk"` namespace to your `<Page>` tag, then use the `<maps:mapView />` tag to create the MapView:
 
 ```
- <!-- /app/main-page.xml -->
- <Page 
-	xmlns="http://www.nativescript.org/tns.xsd"
-	xmlns:maps="nativescript-google-maps-sdk"
-	>
-  <GridLayout>
-    <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}" mapAnimationsEnabled="{{ mapAnimationsEnabled }}"
-    								zoom="{{ zoom }}" bearing="{{ bearing }}" 
-    								tilt="{{ tilt }}" padding="{{ padding }}" mapReady="onMapReady"  
-   								markerSelect="onMarkerSelect" markerBeginDragging="onMarkerBeginDragging"
-   								markerEndDragging="onMarkerEndDragging" markerDrag="onMarkerDrag"
-   								cameraChanged="onCameraChanged" 
-                                cameraMove="onCameraMove" />
-  </GridLayout>
+<!-- /app/main-page.xml -->
+
+<Page 
+    xmlns="http://www.nativescript.org/tns.xsd"
+    xmlns:maps="nativescript-google-maps-sdk"
+>
+    <GridLayout>
+        <maps:mapView
+            latitude="{{ latitude }}"
+            longitude="{{ longitude }}"
+            zoom="{{ zoom }}"
+            bearing="{{ bearing }}" 
+            tilt="{{ tilt }}"
+            mapAnimationsEnabled="{{ mapAnimationsEnabled }}"
+            padding="{{ padding }}"
+            mapReady="onMapReady"  
+            markerSelect="onMarkerSelect"
+            markerBeginDragging="onMarkerBeginDragging"
+            markerEndDragging="onMarkerEndDragging"
+            markerDrag="onMarkerDrag"
+            cameraChanged="onCameraChanged" 
+            cameraMove="onCameraMove"
+        />
+    </GridLayout>
 </Page>
 ```
 
 ## Properties
 
-The following properties are available to you for adjusting camera view.
+The following properties are available for adjusting the camera view:
 
-Property       | Description
--------------- |:---------------------------------
-`latitude` | number
-`longitude` | number
-`zoom` | number
-`bearing` | number
-`tilt` | number
-`padding` | array of numbers reflectig top, bottom, left and right paddings
-`mapAnimationsEnabled` | boolean of whether to animate camera changes
+| Property     | Description and Data Type
+:------------- | :---------------------------------
+`latitude` | Latitude, in degrees: `number`
+`longitude` | Longitude, in degrees: `number`
+`zoom` | Zoom level (described [here](https://developers.google.com/maps/documentation/javascript/tutorial#zoom-levels)): `number`
+`bearing` | Bearing, in degrees: `number`
+`tilt` | Tilt, in degrees: `number`
+`padding` | Top, bottom, left and right padding amounts, in Device Independent Pixels: `number[]` (array)
+`mapAnimationsEnabled` | Whether or not to animate camera changes: `Boolean`
 
 ## Events
 
 The following events are available:
 
-Event          | Description
--------------- |:---------------------------------
-`mapReady`     | Called when Google Map is ready for use
-`coordinateTapped` | Fires when coordinate is clicked on map
-`coordinateLongPress` | Fires when coordinate is "long pressed"
-`markerSelect` | Fires whenever a marker is selected
-`shapeSelect` | Fires whenever a shape (`Circle`, `Polygon`, `Polyline`) is clicked.  You must explicity configure `shape.clickable = true;` on your shapes.
+| Event        | Description
+:------------- | :---------------------------------
+`mapReady` | Fires when the MapView is ready for use
+`coordinateTapped` | Fires when a coordinate is tapped on the map
+`coordinateLongPress` | Fires when a coordinate is long-pressed on the map
+`markerSelect` | Fires when a marker is selected
+`shapeSelect` | Fires when a shape (e.g., `Circle`, `Polygon`, `Polyline`) is selected *(Note: you must explicity configure `shape.clickable = true;` for this event to fire)*
 `markerBeginDragging` | Fires when a marker begins dragging
-`markerDrag` | Fires repeatedly while a marker is being dragged
 `markerEndDragging` | Fires when a marker ends dragging
-`markerInfoWindowTapped` | Fired on tapping Marker Info Window
-`myLocationTapped` | Fired when the 'My Location' button is tapped
-`cameraChanged` | Fired after the camera has changed
-`cameraMove` | Fired while the camera is moving
+`markerDrag` | Fires repeatedly while a marker is being dragged
+`myLocationTapped` | Fires when the 'My Location' button is tapped
+`markerInfoWindowTapped` | Fires when a marker's info window is tapped
+`cameraChanged` | Fires after the camera has changed
+`cameraMove` | Fires repeatedly while the camera is moving
 
+## Native Map Object
 
-The property `gMap` gives you access to the raw platform Map Object - see their SDK references for how to use them ( [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap) )
+The MapView's `gMap` property gives you access to the platform's native map object–––consult the appropriate SDK reference on how to use it: [iOS](https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view) | [Android](https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap)
+
+## UI Settings
+
+You can adjust the map's UI settings after the `mapReady` event has fired by configuring the following properties on `mapView.settings`:
+
+| Property       | Description and Data Type
+:--------------- |:---------------------------------
+`compassEnabled` | Whether the compass is enabled or not: `Boolean`
+`indoorLevelPickerEnabled` | Whether the indoor level picker is enabled or not: `Boolean`
+`mapToolbarEnabled` | ** **Android only** ** Whether the map toolbar is enabled or not: `Boolean`
+`myLocationButtonEnabled` | Whether the 'My Location' button is enabled or not: `Boolean`
+`rotateGesturesEnabled` | Whether the compass is enabled or not: `Boolean`
+`scrollGesturesEnabled` | Whether map scroll gestures are enabled or not: `Boolean`
+`tiltGesturesEnabled` | Whether map tilt gestures are enabled or not: `Boolean`
+`zoomGesturesEnabled` | Whether map zoom gestures are enabled or not: `Boolean`
+`zoomControlsEnabled` | ** **Android only** ** Whether map zoom controls are enabled or not: `Boolean`
+
+## Styling
+
+Use `gMap.setStyle(style);` to set the map's styling ([Google Maps Style Reference](https://developers.google.com/maps/documentation/android-api/style-reference) | [Styling Wizard](https://mapstyle.withgoogle.com/)).
+
+### Angular
+
+Use `this.mapView.setStyle(<Style>JSON.parse(this.styles));` inside of the `onMapReady` event handler.  In this example, `this.mapView` is the `MapView` object and `this.styles` is a reference to a JSON file that was created using the [Styling Wizard](https://mapstyle.withgoogle.com/). The `<Style>` type was imported from the plugin as `{ Style }`.
+
+## Basic Example
 
 ```
 //  /app/main-page.js
@@ -169,22 +206,22 @@ The property `gMap` gives you access to the raw platform Map Object - see their 
 var mapsModule = require("nativescript-google-maps-sdk");
 
 function onMapReady(args) {
-  var mapView = args.object;
-
-  console.log("Setting a marker...");
-  var marker = new mapsModule.Marker();
-  marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
-  marker.title = "Sydney";
-  marker.snippet = "Australia";
-  marker.userData = { index : 1};
-  mapView.addMarker(marker);
-  
-  // Disabling zoom gestures
-  mapView.settings.zoomGesturesEnabled = false;
+    var mapView = args.object;
+    
+    console.log("Setting a marker...");
+    var marker = new mapsModule.Marker();
+    marker.position = mapsModule.Position.positionFromLatLng(-33.86, 151.20);
+    marker.title = "Sydney";
+    marker.snippet = "Australia";
+    marker.userData = { index : 1};
+    mapView.addMarker(marker);
+    
+    // Disabling zoom gestures
+    mapView.settings.zoomGesturesEnabled = false;
 }
 
 function onMarkerSelect(args) {
-   console.log("Clicked on " +args.marker.title);
+    console.log("Clicked on " +args.marker.title);
 }
 
 function onCameraChanged(args) {
@@ -201,40 +238,16 @@ exports.onCameraChanged = onCameraChanged;
 exports.onCameraMove = onCameraMove;
 ```
 
-## UI Settings
-
-You can adjust the Map UI settings after mapReady by changing the below properties on `mapView.settings`
-
-Property       | Description
--------------- |:---------------------------------
-`compassEnabled` | boolean - Whether the compass is enabled/disabled
-`indoorLevelPickerEnabled` | boolean - Whether the indoor level picker is enabled/disabled
-`mapToolbarEnabled` | boolean - Whether the indoor level picker is enabled/disabled ** ****Android only**** **
-`myLocationButtonEnabled` | boolean - Whether the 'My Location' button is enabled/disabled
-`rotateGesturesEnabled` | boolean - Whether the compass is enabled/disabled
-`scrollGesturesEnabled` | boolean - Whether scroll gestures are enabled/disabled
-`tiltGesturesEnabled` | boolean - Whether tilt gestures are enabled/disabled
-`zoomControlsEnabled` | boolean - Whether the zoom controls are enabled/disabled ** ****Android only**** **
-`zoomGesturesEnabled` | boolean - Whether zoom gestures are enabled/disabled
-
-
-## Styling
-Use `gMap.setStyle(style);` to change the map styling.
-
-For Angular map styling, use `this.mapView.setStyle(<Style>JSON.parse(this.styles));` inside of the `onMapReady` function.  In this example `this.mapView` is the imported `MapView` from the plugin and `this.styles` is a reference to a json file that was created using the link below.  The `<Style>` was also imported from the plugin as `{ Style }`.
-
-For map styles, see [Google Maps Style Reference](https://developers.google.com/maps/documentation/android-api/style-reference) and the [Styling Wizard](https://mapstyle.withgoogle.com/).
-
 ## Custom Info Windows (Beta)
 
-To customize the marker info windows, define a template in your view like so:
+To use custom marker info windows, define a template in your view like so:
 
 ```
- <!-- /app/main-page.xml -->
- <Page 
-	xmlns="http://www.nativescript.org/tns.xsd"
-	xmlns:maps="nativescript-google-maps-sdk"
-	>
+<!-- /app/main-page.xml -->
+<Page 
+    xmlns="http://www.nativescript.org/tns.xsd"
+    xmlns:maps="nativescript-google-maps-sdk"
+>
   <GridLayout>
        <maps:mapView mapReady="onMapReady">
             <!-- Default Info Window Template -->       		
@@ -260,20 +273,20 @@ To customize the marker info windows, define a template in your view like so:
 </Page>
 ```
 
-If a marker has the `infoWindowTemplate` property set like so:
+...and set the `infoWindowTemplate` property like so:
 
 ```
 var marker = new mapsModule.Marker();
 marker.infoWindowTemplate = 'testWindow';
 ```
 
-This will use the template with that key.  If it's not set then it'll use the default custom template if set, overwise the standard info window.
+This will configure the marker to use the info window template with the given key.  If no template with that key is found, then it will use the default info window template.
 
-** *Known Issue* - External Images fail to show in iOS info windows (local Images work fine)
+** *Known issue:* remote images fail to display in iOS info windows (local images work fine)
 
-## Using with Angular
+## Usage with Angular
 
-See angular demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/ng-demo)
+See Angular demo code included [here](https://github.com/dapriett/nativescript-google-maps-sdk/tree/master/ng-demo)
 
 ```
 // /app/map-example.component.ts
@@ -304,14 +317,16 @@ export class MapExampleComponent {
 ```
 # Angular 8 Support
 
-If you are using Angular 8, there is a temporary change to the `@ViewChild` directive, this will not be needed in Angular 9.
+If you are using Angular 8, there is a temporary fix needed for the `@ViewChild` directive, and will not be needed in Angular 9:
 
-For now use this instead: `@ViewChild("MapView", {static: false}) mapView: ElementRef;`
+```
+@ViewChild("MapView", {static: false}) mapView: ElementRef;
+```
 
 
 # Clustering Support (Issue [#57](https://github.com/dapriett/nativescript-google-maps-sdk/issues/57))
 
-There is a seperate plugin in development thanks to [@naderio](https://github.com/naderio) - see [nativescript-google-maps-utils](https://github.com/naderio/nativescript-google-maps-utils)
+There is a seperate plugin in development thanks to [@naderio](https://github.com/naderio): see [nativescript-google-maps-utils](https://github.com/naderio/nativescript-google-maps-utils).
 
 # Get Help
 
