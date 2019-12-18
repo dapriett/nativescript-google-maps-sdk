@@ -398,7 +398,7 @@ export class MapView extends MapViewBase {
     }
 
     removeAllMarkers() {
-        if(!this._markers || !this.markers.length) 
+        if(!this._markers || !this._markers.length)
             return;
         this._markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
