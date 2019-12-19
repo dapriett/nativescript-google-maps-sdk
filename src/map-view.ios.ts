@@ -273,29 +273,34 @@ export class MapView extends MapViewBase {
     protected _markers: Array<Marker> = new Array<Marker>();
 
     private _delegate: MapViewDelegateImpl;
+    private _indoorDelegate:IndoorDisplayDelegateImpl;
 
     constructor() {
         super();
 
         this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
         this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
+        this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
         this.updatePadding();
     }
 
     public onLoaded() {
         super.onLoaded();
         this.nativeView.delegate = this._delegate;
+        this.nativeView.indoorDisplay.delegate = this._indoorDelegate;
         this.notifyMapReady();
     }
 
     public onUnloaded() {
         this.nativeView.delegate = null;
+        this.nativeView.indoorDisplay.delegate = null;
         super.onUnloaded();
     }
 
     public disposeNativeView() {
         this._markers = null;
         this._delegate = null;
+        this._indoorDelegate=null;
         super.disposeNativeView();
         GC();
     };

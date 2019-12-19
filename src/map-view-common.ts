@@ -359,7 +359,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     notifyIndoorLevelActivatedEvent(activateLevel: IndoorLevel) {
-        let args: IndoorLevelActivatedEventData = { eventName: MapViewBase.indoorBuildingFocusedEvent, object: this, activateLevel: activateLevel };
+        let args: IndoorLevelActivatedEventData = { eventName: MapViewBase.indoorLevelActivatedEvent, object: this, activateLevel: activateLevel };
         this.notify(args);
     }
 }
