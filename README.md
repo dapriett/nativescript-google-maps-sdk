@@ -169,6 +169,8 @@ The following events are available:
 `markerInfoWindowTapped` | Fires when a marker's info window is tapped
 `cameraChanged` | Fires after the camera has changed
 `cameraMove` | Fires repeatedly while the camera is moving
+`indoorBuildingFocused` | Fired when the focused building (building currently centered, selected by user or by location provider)
+`indoorLevelActivated` | Fired when the level of the focused building change
 
 ## Native Map Object
 

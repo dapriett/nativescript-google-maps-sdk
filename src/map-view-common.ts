@@ -1,7 +1,8 @@
 import {
     MapView, Position, Marker, Shape, Polyline, Polygon, Projection,
     Circle, Camera, MarkerEventData, ShapeEventData, VisibleRegion,
-    CameraEventData, PositionEventData, Bounds, Style, UISettings
+    CameraEventData, PositionEventData, Bounds, Style, UISettings, IndoorBuilding, IndoorLevel,
+    IndoorLevelActivatedEventData, BuildingFocusedEventData
 } from "./map-view";
 import { Point, View, Template, KeyedTemplate } from "tns-core-modules/ui/core/view";
 import { Image } from "tns-core-modules/ui/image";
@@ -162,7 +163,7 @@ export abstract class MapViewBase extends View implements MapView {
             }
             return undefined;
         }
-    }
+    };
     public _infoWindowTemplates = new Array<KeyedTemplate>();
 
     public projection: Projection;
@@ -181,6 +182,8 @@ export abstract class MapViewBase extends View implements MapView {
     public static cameraChangedEvent: string = "cameraChanged";
     public static cameraMoveEvent: string = "cameraMove";
     public static myLocationTappedEvent: string = "myLocationTapped";
+    public static indoorBuildingFocusedEvent: string = "indoorBuildingFocused";
+    public static indoorLevelActivatedEvent: string = "indoorLevelActivated";
 
     public get gMap() {
         return this._gMap;
@@ -348,6 +351,16 @@ export abstract class MapViewBase extends View implements MapView {
 
     notifyMyLocationTapped() {
         this.notify({ eventName: MapViewBase.myLocationTappedEvent, object: this });
+    }
+
+    notifyBuildingFocusedEvent(indoorBuilding: IndoorBuilding) {
+        let args: BuildingFocusedEventData = { eventName: MapViewBase.indoorBuildingFocusedEvent, object: this, indoorBuilding: indoorBuilding };
+        this.notify(args);
+    }
+
+    notifyIndoorLevelActivatedEvent(activateLevel: IndoorLevel) {
+        let args: IndoorLevelActivatedEventData = { eventName: MapViewBase.indoorLevelActivatedEvent, object: this, activateLevel: activateLevel };
+        this.notify(args);
     }
 }
 
