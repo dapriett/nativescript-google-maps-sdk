@@ -4,6 +4,17 @@ import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
 import { EventData } from "tns-core-modules/data/observable";
 
+export class IndoorLevel {
+    public name: string;
+    public shortName: string;
+}
+
+export class IndoorBuilding {
+    public defaultLevelIndex: number;
+    public levels: IndoorLevel[];
+    public isUnderground: boolean;
+}
+
 export class Camera {
     public latitude: number;
     public longitude: number;
@@ -264,4 +275,12 @@ export interface CameraEventData extends EventData {
 
 export interface PositionEventData extends EventData {
     position: Position;
+}
+
+export interface BuildingFocusedEventData extends EventData {
+    indoorBuilding: IndoorBuilding;
+}
+
+export interface IndoorLevelActivatedEventData extends EventData {
+    activateLevel: IndoorLevel;
 }

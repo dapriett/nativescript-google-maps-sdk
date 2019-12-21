@@ -11,6 +11,7 @@ import { Image } from "tns-core-modules/ui/image";
 import { Color } from "tns-core-modules/color";
 import { Point } from "tns-core-modules/ui/core/view";
 import imageSource = require("tns-core-modules/image-source");
+import {IndoorLevel} from "./map-view";
 
 export * from "./map-view-common";
 
@@ -132,6 +133,44 @@ export class MapView extends MapViewBase {
                 gMap.setOnMyLocationButtonClickListener(new com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener({
                     onMyLocationButtonClick: () => {
                         owner.notifyMyLocationTapped();
+
+                        return false;
+                    },
+                }));
+
+                gMap.setOnIndoorStateChangeListener(new com.google.android.gms.maps.GoogleMap.OnIndoorStateChangeListener({
+                    onIndoorBuildingFocused: () => {
+                        const buildingFocused = gMap.getFocusedBuilding();
+                        let data = null;
+                        if (buildingFocused) {
+                            const levels = [];
+                            let count = 0;
+                            while (count < buildingFocused.getLevels().size()) {
+                                levels.push(
+                                    {
+                                        name: buildingFocused.getLevels().get(count).getName(),
+                                        shortName: buildingFocused.getLevels().get(count).getShortName(),
+                                    }
+                                );
+                                count += 1;
+                            }
+                            data = {
+                                defaultLevelIndex: buildingFocused.getDefaultLevelIndex(),
+                                levels: levels,
+                                isUnderground: buildingFocused.isUnderground(),
+                            };
+
+                        }
+                        owner.notifyBuildingFocusedEvent(data);
+
+                        return false;
+                    },
+                    onIndoorLevelActivated: (gmsIndoorBuilding) => {
+                        const level = gmsIndoorBuilding.getLevels().get(gmsIndoorBuilding.getActiveLevelIndex());
+                        owner.notifyIndoorLevelActivatedEvent({
+                            name: level.getName(),
+                            shortName: level.getShortName(),
+                        });
 
                         return false;
                     }
@@ -398,7 +437,7 @@ export class MapView extends MapViewBase {
     }
 
     removeAllMarkers() {
-        if(!this._markers || !this.gMap) return null;
+        if(!this._markers || !this.gMap || !this._markers.length) return null;
         this._markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
             marker.android.remove();

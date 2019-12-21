@@ -7,6 +7,8 @@
                       markerEndDragging="onMarkerEvent" markerDrag="onMarkerEvent"
                       markerInfoWindowTapped="onMarkerEvent" coordinateTapped="onCoordinateTapped"
                       cameraChanged="onCameraChanged"
+                      indoorBuildingFocused="onIndoorBuildingFocused"
+                      indoorLevelActivated="onIndoorLevelActivated"
                       cameraMove="onCameraMove">
             <maps:mapView.infoWindowTemplate>
                 <StackLayout orientation="vertical" width="200" height="150" >
