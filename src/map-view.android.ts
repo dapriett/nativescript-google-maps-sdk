@@ -381,7 +381,7 @@ export class MapView extends MapViewBase {
     }
 
     addMarker(...markers: Marker[]) {
-        if(!markers || !this.gMap) return null;
+        if(!markers || !this._markers || !this.gMap) return null;
         markers.forEach(marker => {
             marker.android = this.gMap.addMarker(marker.android);
             this._markers.push(marker);
@@ -389,7 +389,7 @@ export class MapView extends MapViewBase {
     }
 
     removeMarker(...markers: Marker[]) {
-        if(!markers || !this.gMap) return null;
+        if(!markers || !this._markers || !this.gMap) return null;
         markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
             marker.android.remove();
