@@ -197,10 +197,18 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 
     public mapViewDidTapInfoWindowOfMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
-        var owner = this._owner.get();
+        let owner = this._owner.get();
         if (owner) {
-            var marker = owner.findMarker(function (marker) { return marker.ios == gmsMarker; });
+            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerInfoWindowTapped(marker);
+        }
+    }
+
+    public mapViewDidCloseInfoWindowOfMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
+        let owner = this._owner.get();
+        if (owner) {
+            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+            owner.notifyMarkerInfoWindowClosed(marker);
         }
     }
 

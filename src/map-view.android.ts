@@ -130,6 +130,15 @@ export class MapView extends MapViewBase {
                     }
                 }));
 
+                gMap.setOnInfoWindowCloseListener(new com.google.android.gms.maps.GoogleMap.OnInfoWindowCloseListener({
+                    onInfoWindowClose: (gmsMarker) => {
+                        let marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        owner.notifyMarkerInfoWindowClosed(marker);
+
+                        return false;
+                    }
+                }));
+
                 gMap.setOnMyLocationButtonClickListener(new com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener({
                     onMyLocationButtonClick: () => {
                         owner.notifyMyLocationTapped();

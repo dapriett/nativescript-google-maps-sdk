@@ -173,6 +173,7 @@ export abstract class MapViewBase extends View implements MapView {
     public static mapReadyEvent: string = "mapReady";
     public static markerSelectEvent: string = "markerSelect";
     public static markerInfoWindowTappedEvent: string = "markerInfoWindowTapped";
+    public static markerInfoWindowClosedEvent: string = "markerInfoWindowClosed";
     public static shapeSelectEvent: string = "shapeSelect";
     public static markerBeginDraggingEvent: string = "markerBeginDragging";
     public static markerEndDraggingEvent: string = "markerEndDragging";
@@ -321,15 +322,23 @@ export abstract class MapViewBase extends View implements MapView {
         let args: ShapeEventData = { eventName: eventName, object: this, shape: shape };
         this.notify(args);
     }
+
     notifyMarkerTapped(marker: MarkerBase) {
         this.notifyMarkerEvent(MapViewBase.markerSelectEvent, marker);
     }
+
     notifyMarkerInfoWindowTapped(marker: MarkerBase) {
         this.notifyMarkerEvent(MapViewBase.markerInfoWindowTappedEvent, marker);
     }
+
+    notifyMarkerInfoWindowClosed(marker: MarkerBase) {
+        this.notifyMarkerEvent(MapViewBase.markerInfoWindowClosedEvent, marker);
+    }
+
     notifyShapeTapped(shape: ShapeBase) {
         this.notifyShapeEvent(MapViewBase.shapeSelectEvent, shape);
     }
+
     notifyMarkerBeginDragging(marker: MarkerBase) {
         this.notifyMarkerEvent(MapViewBase.markerBeginDraggingEvent, marker);
     }
