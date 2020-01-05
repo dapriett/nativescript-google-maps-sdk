@@ -44,16 +44,20 @@ export class MapView extends View {
     public updatePadding(): void;
 
     public static mapReadyEvent: string;
+    public static myLocationTappedEvent: string;
+    public static coordinateTappedEvent: string;
+    public static coordinateLongPressEvent: string;
     public static markerSelectEvent: string;
-    public static markerInfoWindowTappedEvent: string;
-    public static shapeSelectEvent: string;
     public static markerBeginDraggingEvent: string;
     public static markerEndDraggingEvent: string;
     public static markerDragEvent: string;
-    public static coordinateTappedEvent: string;
-    public static coordinateLongPressEvent: string;
+    public static markerInfoWindowTappedEvent: string;
+    public static markerInfoWindowClosedEvent: string;
+    public static shapeSelectEvent: string;
     public static cameraChangedEvent: string;
-    public static myLocationTappedEvent: string
+    public static cameraMoveEvent: string;
+    public static indoorBuildingFocusedEvent: string;
+    public static indoorLevelActivatedEvent: string;
 
     public nativeView: any; /* GMSMapView | com.google.android.gms.maps.MapView */
 
