@@ -560,6 +560,10 @@ export class Projection extends ProjectionBase {
         return new VisibleRegion(this.ios.visibleRegion());
     }
 
+    containsCoordinate(position: Position): Boolean {
+        return this.ios.containsCoordinate(position.ios);
+    }
+
     fromScreenLocation(point: Point) {
         var location = this.ios.coordinateForPoint(CGPointMake(point.x, point.y));
         return new Position(location);

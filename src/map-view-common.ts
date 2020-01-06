@@ -423,6 +423,7 @@ export class UISettingsBase implements UISettings {
 
 export abstract class ProjectionBase implements Projection {
     public visibleRegion: VisibleRegion;
+    public abstract containsCoordinate(position: Position): Boolean;
     public abstract fromScreenLocation(point: Point): Position;
     public abstract toScreenLocation(position: Position): Point;
     public ios: any; /* GMSProjection */

@@ -128,6 +128,7 @@ export class UISettings {
 
 export class Projection {
     public visibleRegion: VisibleRegion;
+    public containsCoordinate(position: Position): Boolean;
     public fromScreenLocation(point: Point): Position;
     public toScreenLocation(position: Position): Point;
     public ios: any; /* GMSProjection */

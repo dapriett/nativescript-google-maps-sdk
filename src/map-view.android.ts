@@ -608,6 +608,10 @@ export class Projection extends ProjectionBase {
         return new VisibleRegion(this.android.getVisibleRegion());
     }
 
+    containsCoordinate(position: Position): Boolean {
+        return this.android.getVisibleRegion().latLngBounds.contains(position.android);
+    }
+
     fromScreenLocation(point: Point) {
         var latLng = this.android.fromScreenLocation(new android.graphics.Point(point.x, point.y));
         return new Position(latLng);
