@@ -1,15 +1,21 @@
 <Page xmlns="http://www.nativescript.org/tns.xsd" xmlns:maps="nativescript-google-maps-sdk" loaded="pageLoaded">
     <GridLayout>
-        <maps:mapView latitude="{{ latitude }}" longitude="{{ longitude }}"
-                      zoom="{{ zoom }}" minZoom="{{ minZoom }}" maxZoom="{{ maxZoom }}" bearing="{{ bearing }}" mapAnimationsEnabled="{{ mapAnimationsEnabled }}"
-                      tilt="{{ tilt }}" i-padding="50,50,50,50" padding="{{ padding }}" mapReady="onMapReady"
-                      markerSelect="onMarkerEvent" markerBeginDragging="onMarkerEvent"
-                      markerEndDragging="onMarkerEvent" markerDrag="onMarkerEvent"
-                      markerInfoWindowTapped="onMarkerEvent" coordinateTapped="onCoordinateTapped"
-                      cameraChanged="onCameraChanged"
-                      indoorBuildingFocused="onIndoorBuildingFocused"
-                      indoorLevelActivated="onIndoorLevelActivated"
-                      cameraMove="onCameraMove">
+        <maps:mapView
+			latitude="{{ latitude }}" longitude="{{ longitude }}"
+			zoom="{{ zoom }}" minZoom="{{ minZoom }}" maxZoom="{{ maxZoom }}"
+			tilt="{{ tilt }}" bearing="{{ bearing }}"
+			mapAnimationsEnabled="{{ mapAnimationsEnabled }}"
+			i-padding="50,50,50,50" padding="{{ padding }}"
+			mapReady="onMapReady"
+			coordinateTapped="onCoordinateTapped"
+			markerSelect="onMarkerEvent"
+			markerBeginDragging="onMarkerEvent" markerEndDragging="onMarkerEvent" markerDrag="onMarkerEvent"
+			markerInfoWindowTapped="onMarkerEvent" markerInfoWindowClosed="onMarkerEvent"
+			cameraChanged="onCameraChanged"
+			cameraMove="onCameraMove"
+			indoorBuildingFocused="onIndoorBuildingFocused"
+			indoorLevelActivated="onIndoorLevelActivated"
+		>
             <maps:mapView.infoWindowTemplate>
                 <StackLayout orientation="vertical" width="200" height="150" >
                     <Label text="{{title}}" className="title" width="125"   />

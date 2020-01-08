@@ -158,19 +158,20 @@ The following events are available:
 | Event        | Description
 :------------- | :---------------------------------
 `mapReady` | Fires when the MapView is ready for use
+`myLocationTapped` | Fires when the 'My Location' button is tapped
 `coordinateTapped` | Fires when a coordinate is tapped on the map
 `coordinateLongPress` | Fires when a coordinate is long-pressed on the map
 `markerSelect` | Fires when a marker is selected
-`shapeSelect` | Fires when a shape (e.g., `Circle`, `Polygon`, `Polyline`) is selected *(Note: you must explicity configure `shape.clickable = true;` for this event to fire)*
 `markerBeginDragging` | Fires when a marker begins dragging
 `markerEndDragging` | Fires when a marker ends dragging
 `markerDrag` | Fires repeatedly while a marker is being dragged
-`myLocationTapped` | Fires when the 'My Location' button is tapped
 `markerInfoWindowTapped` | Fires when a marker's info window is tapped
+`markerInfoWindowClosed` | Fires when a marker's info window is closed
+`shapeSelect` | Fires when a shape (e.g., `Circle`, `Polygon`, `Polyline`) is selected *(Note: you must explicity configure `shape.clickable = true;` for this event to fire)*
 `cameraChanged` | Fires after the camera has changed
 `cameraMove` | Fires repeatedly while the camera is moving
-`indoorBuildingFocused` | Fired when the focused building (building currently centered, selected by user or by location provider)
-`indoorLevelActivated` | Fired when the level of the focused building change
+`indoorBuildingFocused` | Fires when a building is focused on (the building currently centered, selected by the user or by the location provider)
+`indoorLevelActivated` | Fires when the level of the focused building changes
 
 ## Native Map Object
 
