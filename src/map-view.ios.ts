@@ -306,16 +306,15 @@ export class MapView extends MapViewBase {
     };
 
     public createNativeView() {
-        const mapView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
-        this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
-        this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
-        this.updatePadding();
-
-        return mapView;
+        return GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
     }
 
     public initNativeView() {
         (<any>this.nativeView).owner = this;
+        this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
+        this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
+        this.updatePadding();
+
         super.initNativeView();
     }
 
