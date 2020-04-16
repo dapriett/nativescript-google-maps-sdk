@@ -216,7 +216,6 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         const owner = this._owner.get();
         if (owner) {
             owner.notifyMyLocationTapped();
-            return true;
         }
         return false;
     }
