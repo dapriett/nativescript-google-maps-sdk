@@ -439,9 +439,11 @@ export class MapView extends MapViewBase {
     removeMarker(...markers: Marker[]) {
         if(!markers || !this._markers || !this.gMap) return null;
         markers.forEach(marker => {
-            this._unloadInfoWindowContent(marker);
-            marker.android.remove();
-            this._markers.splice(this._markers.indexOf(marker), 1);
+            if (marker && marker.isMarker) {
+                this._unloadInfoWindowContent(marker);
+                marker.android.remove();
+                this._markers.splice(this._markers.indexOf(marker), 1);
+            }
         });
     }
 
@@ -733,6 +735,9 @@ export class Marker extends MarkerBase {
         this.android = new com.google.android.gms.maps.model.MarkerOptions();
     }
 
+    get isMarker() {
+        return this._isMarker;
+    }
 
     get position() {
         return new Position(this._android.getPosition());
