@@ -5,11 +5,12 @@ import {
     longitudeProperty, bearingProperty, zoomProperty,
     tiltProperty, StyleBase, UISettingsBase, getColorHue
 } from "./map-view-common";
-import { Color } from "tns-core-modules/color";
-import * as imageSource from 'tns-core-modules/image-source';
-import { Point } from "tns-core-modules/ui/core/view";
-import { Image } from "tns-core-modules/ui/image";
-import { GC, layout } from "utils/utils"
+import { Color } from "@nativescript/core/color";
+import * as imageSource from '@nativescript/core/image-source';
+import { Point } from "@nativescript/core/ui/core/view";
+import { Image } from "@nativescript/core/ui/image";
+import { GC, layout } from "@nativescript/core/utils"
+import { WeakRef } from '@nativescript/core/debugger/dom-node'
 
 export * from "./map-view-common";
 

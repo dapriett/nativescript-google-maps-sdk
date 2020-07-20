@@ -10,14 +10,11 @@
         "sourceMap": false,
         "experimentalDecorators": true,
         "noEmitHelpers": true,
-        "lib": [
-            "es6",
-            "dom"
-        ],
+        "skipLibCheck": true,
+        "lib": [ "es2017", "dom", "es6"],
         "baseUrl": ".",
         "paths": {
             "*": [
-                "./node_modules/tns-core-modules/*",
                 "./node_modules/*"
             ]
         }

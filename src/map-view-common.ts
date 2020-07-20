@@ -4,16 +4,16 @@ import {
     CameraEventData, PositionEventData, Bounds, Style, UISettings, IndoorBuilding, IndoorLevel,
     IndoorLevelActivatedEventData, BuildingFocusedEventData
 } from "./map-view";
-import { Point, View, Template, KeyedTemplate } from "tns-core-modules/ui/core/view";
-import { Image } from "tns-core-modules/ui/image";
-import { LayoutBase } from "tns-core-modules/ui/layouts/layout-base";
+import { Point, View, Template, KeyedTemplate } from "@nativescript/core/ui/core/view";
+import { Image } from "@nativescript/core/ui/image";
+import { LayoutBase } from "@nativescript/core/ui/layouts/layout-base";
 
-import { Property } from "tns-core-modules/ui/core/properties";
-import { Color } from "tns-core-modules/color";
-import { parseMultipleTemplates, parse } from "tns-core-modules/ui/builder";
-import { eachDescendant } from "tns-core-modules/ui/core/view-base";
-import { ProxyViewContainer } from "tns-core-modules/ui/proxy-view-container";
-import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
+import { Property } from "@nativescript/core/ui/core/properties";
+import { Color } from "@nativescript/core/color";
+import { parseMultipleTemplates, parse } from "@nativescript/core/ui/builder";
+import { eachDescendant } from "@nativescript/core/ui/core/view-base";
+import { ProxyViewContainer } from "@nativescript/core/ui/proxy-view-container";
+import { StackLayout } from "@nativescript/core/ui/layouts/stack-layout";
 
 function onInfoWindowTemplatesChanged(mapView: MapViewBase) {
     let _infoWindowTemplates = new Array<KeyedTemplate>();
