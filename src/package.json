@@ -1,13 +1,13 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "2.9.1",
+  "version": "3.0.0",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view",
   "typings": "map-view.d.ts",
   "nativescript": {
     "platforms": {
-      "android": "4.0.0",
-      "ios": "4.0.0"
+      "android": "6.0.0",
+      "ios": "6.0.0"
     }
   },
   "scripts": {
@@ -51,7 +51,7 @@
     "semver": "^5.5.0",
     "tns-core-modules": "^4.0.0",
     "tns-platform-declarations": "^4.0.0",
-    "typescript": "^2.3.2",
+    "typescript": "^3.9.7",
     "validate-commit-msg": "^2.12.2"
   },
   "config": {
