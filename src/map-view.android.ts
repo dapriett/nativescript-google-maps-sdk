@@ -12,7 +12,6 @@ import { Color } from "@nativescript/core/color";
 import { Point } from "@nativescript/core/ui/core/view";
 import imageSource = require("@nativescript/core/image-source");
 import {IndoorLevel} from "./map-view";
-import { WeakRef } from '@nativescript/core/debugger/dom-node'
 
 
 export * from "./map-view-common";
