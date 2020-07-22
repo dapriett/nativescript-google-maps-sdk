@@ -10,8 +10,10 @@
         "sourceMap": false,
         "experimentalDecorators": true,
         "noEmitHelpers": true,
-        "skipLibCheck": true,
         "lib": [ "es2017", "dom", "es6"],
+        "types": [
+            "@nativescript/core"
+        ],
         "baseUrl": ".",
         "paths": {
             "*": [
