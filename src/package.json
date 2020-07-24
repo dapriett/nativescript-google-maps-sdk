@@ -10,6 +10,16 @@
       "ios": "6.0.0"
     }
   },
+  "husky": {
+      "hooks": {
+          "pre-commit": "lint-staged"
+      }
+  },
+  "lint-staged": {
+      "*.{js,ts}": [
+          "eslint --fix"
+      ]
+  },
   "scripts": {
     "tsc": "tsc",
     "cm": "git-cz",
@@ -57,6 +67,7 @@
     "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.5.0",
     "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
     "semver": "^7.3.2",
     "typescript": "~3.9.7",
     "validate-commit-msg": "2.14.0"
