@@ -10,7 +10,7 @@ import { LayoutBase } from "@nativescript/core/ui/layouts/layout-base";
 
 import { Property } from "@nativescript/core/ui/core/properties";
 import { Color } from "@nativescript/core/color";
-import { parseMultipleTemplates, parse } from "@nativescript/core/ui/builder";
+import { Builder } from "@nativescript/core/ui/builder";
 import { eachDescendant } from "@nativescript/core/ui/core/view-base";
 import { ProxyViewContainer } from "@nativescript/core/ui/proxy-view-container";
 import { StackLayout } from "@nativescript/core/ui/layouts/stack-layout";
@@ -19,7 +19,7 @@ function onInfoWindowTemplatesChanged(mapView: MapViewBase) {
     let _infoWindowTemplates = new Array<KeyedTemplate>();
 
     if (mapView.infoWindowTemplates && typeof mapView.infoWindowTemplates === "string") {
-        _infoWindowTemplates = _infoWindowTemplates.concat(parseMultipleTemplates(mapView.infoWindowTemplates));
+        _infoWindowTemplates = _infoWindowTemplates.concat(Builder.parseMultipleTemplates(mapView.infoWindowTemplates));
     } else if (mapView.infoWindowTemplates) {
         _infoWindowTemplates = _infoWindowTemplates.concat(<KeyedTemplate[]>mapView.infoWindowTemplates);
     }
@@ -159,7 +159,7 @@ export abstract class MapViewBase extends View implements MapView {
         key: "",
         createView: () => {
             if (this.infoWindowTemplate) {
-                return parse(this.infoWindowTemplate, this);
+                return Builder.parse(this.infoWindowTemplate, this);
             }
             return undefined;
         }
