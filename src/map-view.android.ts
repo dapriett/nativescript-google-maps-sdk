@@ -1,18 +1,16 @@
-import application = require("@nativescript/core/application");
+import { Application, AndroidApplication, Image, Color } from "@nativescript/core";
+import { Point } from "@nativescript/core/ui/core/view";
+import { ImageSource } from "@nativescript/core/image-source";
 
 import {
-    MapViewBase, BoundsBase, CircleBase,
-    MarkerBase, PolygonBase, PolylineBase, ProjectionBase,
-    PositionBase, ShapeBase, latitudeProperty, VisibleRegionBase,
-    longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase, UISettingsBase, getColorHue
+    MapViewBase, BoundsBase, CircleBase, MarkerBase,
+    PolygonBase, PolylineBase, ProjectionBase, PositionBase,
+    ShapeBase, VisibleRegionBase, StyleBase, UISettingsBase,
+    latitudeProperty, getColorHue, longitudeProperty,
+    bearingProperty, zoomProperty, tiltProperty,
 } from "./map-view-common";
-import { Image } from "@nativescript/core/ui/image";
-import { Color } from "@nativescript/core/color";
-import { Point } from "@nativescript/core/ui/core/view";
-import imageSource = require("@nativescript/core/image-source");
-import {IndoorLevel} from "./map-view";
 
+import {IndoorLevel} from "./map-view"; // TODO to be implemented
 
 export * from "./map-view-common";
 
@@ -25,61 +23,83 @@ export class MapView extends MapViewBase {
     public _context: any;
     private _pendingCameraUpdate: boolean;
 
-    onLoaded() {
+    onLoaded(): void {
+
         super.onLoaded();
-
-        application.android.on(application.AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
-        application.android.on(application.AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
-        application.android.on(application.AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
-        application.android.on(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
+        Application.android.on(AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
+        Application.android.on(AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
+        Application.android.on(AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
+        Application.android.on(AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
     }
 
-    onUnloaded() {
+    onUnloaded(): void {
+
         super.onUnloaded();
-
-        application.android.off(application.AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
-        application.android.off(application.AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
-        application.android.off(application.AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
-        application.android.off(application.AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
+        Application.android.off(AndroidApplication.activityPausedEvent, this.onActivityPaused, this);
+        Application.android.off(AndroidApplication.activityResumedEvent, this.onActivityResumed, this);
+        Application.android.off(AndroidApplication.saveActivityStateEvent, this.onActivitySaveInstanceState, this);
+        Application.android.off(AndroidApplication.activityDestroyedEvent, this.onActivityDestroyed, this);
     }
 
-    public disposeNativeView() {
+    public disposeNativeView(): void {
+
         if(this.nativeView){
             this.nativeView.onDestroy();
         }
         if(this._gMap){
             this._gMap.setMyLocationEnabled(false);
             this._gMap.clear();
-        }
-        this._context = undefined;
-        this._gMap = undefined;
-        this._markers = undefined;
-        this._shapes = undefined;
-        super.disposeNativeView();
-    };
 
-    private onActivityPaused(args) {
+            // Check if this is can be an alternative position for the removed code
+        }
+
+        /*
+         * Temporary fix for issue #422
+         * Problem: Markers are not showing after view load
+         * Caused by: this._markers === undefined due to this method being called when the view is loaded
+         * Hypotesis: recent updates in nativescript core libraries may have changed the view lifecycle sequence.
+         * Possible long term fix:
+         *  1) identify the caller of this.disposeNativeView();
+         *  2) identify any change in the view lifecycle sequence - view was disposed prior of being loaded up, in the past version?
+         *  3) once previous points have been clarified, check if the commented code is still required;
+         *  4) if point 3 is affirmative, then adapt the commented logic to the new view lifecycle
+         *
+         * Note: probably this code is releasing the objects from memory. It's needed after view disposal, but not when
+         *       loading the view for sure. In the iOS counterpart a GC() is called.
+
+         this._context = undefined;
+         this._gMap    = undefined;
+         this._markers = undefined;
+         this._shapes  = undefined;
+
+         */
+
+        super.disposeNativeView();
+    }
+
+    private onActivityPaused(args: any) {
         if (!this.nativeView || this._context != args.activity) return;
         this.nativeView.onPause();
     }
 
-    private onActivityResumed(args) {
+    private onActivityResumed(args: any) {
         if (!this.nativeView || this._context != args.activity) return;
         this.nativeView.onResume();
     }
 
-    private onActivitySaveInstanceState(args) {
+    private onActivitySaveInstanceState(args: any) {
         if (!this.nativeView || this._context != args.activity) return;
         this.nativeView.onSaveInstanceState(args.bundle);
     }
 
-    private onActivityDestroyed(args) {
+    private onActivityDestroyed(args: any) {
         if (!this.nativeView || this._context != args.activity) return;
         this.nativeView.onDestroy();
     }
 
-    public createNativeView() {
-        var cameraPosition = this._createCameraPosition();
+    public createNativeView(): any {
+
+        const cameraPosition = this._createCameraPosition();
 
         let options = new com.google.android.gms.maps.GoogleMapOptions();
         if (cameraPosition) options = options.camera(cameraPosition);
@@ -87,10 +107,11 @@ export class MapView extends MapViewBase {
         this.nativeView.onCreate(null);
         this.nativeView.onResume();
 
-        let that = new WeakRef(this);
-        var mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
+        const that = new WeakRef(this);
+
+        const mapReadyCallback = new com.google.android.gms.maps.OnMapReadyCallback({
             onMapReady: (gMap) => {
-                var owner = that.get();
+                const owner = that.get();
                 owner._gMap = gMap;
                 owner.setMinZoomMaxZoom();
                 owner.updatePadding();
@@ -101,21 +122,21 @@ export class MapView extends MapViewBase {
                 gMap.setOnMapClickListener(new com.google.android.gms.maps.GoogleMap.OnMapClickListener({
                     onMapClick: (gmsPoint) => {
 
-                        let position: Position = new Position(gmsPoint);
+                        const position: Position = new Position(gmsPoint);
                         owner.notifyPositionEvent(MapViewBase.coordinateTappedEvent, position);
                     }
                 }));
 
                 gMap.setOnMapLongClickListener(new com.google.android.gms.maps.GoogleMap.OnMapLongClickListener({
                     onMapLongClick: (gmsPoint) => {
-                        let position: Position = new Position(gmsPoint);
+                        const position: Position = new Position(gmsPoint);
                         owner.notifyPositionEvent(MapViewBase.coordinateLongPressEvent, position);
                     }
                 }));
 
                 gMap.setOnMarkerClickListener(new com.google.android.gms.maps.GoogleMap.OnMarkerClickListener({
                     onMarkerClick: (gmsMarker) => {
-                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        const marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerTapped(marker);
 
                         return false;
@@ -124,7 +145,7 @@ export class MapView extends MapViewBase {
 
                 gMap.setOnInfoWindowClickListener(new com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener({
                     onInfoWindowClick: (gmsMarker) => {
-                        let marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        const marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerInfoWindowTapped(marker);
 
                         return false;
@@ -133,7 +154,7 @@ export class MapView extends MapViewBase {
 
                 gMap.setOnInfoWindowCloseListener(new com.google.android.gms.maps.GoogleMap.OnInfoWindowCloseListener({
                     onInfoWindowClose: (gmsMarker) => {
-                        let marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        const marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerInfoWindowClosed(marker);
 
                         return false;
@@ -190,7 +211,7 @@ export class MapView extends MapViewBase {
                 if (gMap.setOnCircleClickListener) {
                     gMap.setOnCircleClickListener(new com.google.android.gms.maps.GoogleMap.OnCircleClickListener({
                         onCircleClick: (gmsCircle) => {
-                            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsCircle.getId());
+                            const shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsCircle.getId());
                             if (shape) {
                                 owner.notifyShapeTapped(shape);
                             }
@@ -202,7 +223,7 @@ export class MapView extends MapViewBase {
                 if (gMap.setOnPolylineClickListener) {
                     gMap.setOnPolylineClickListener(new com.google.android.gms.maps.GoogleMap.OnPolylineClickListener({
                         onPolylineClick: (gmsPolyline) => {
-                            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolyline.getId());
+                            const shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolyline.getId());
                             if (shape) {
                                 owner.notifyShapeTapped(shape);
                             }
@@ -214,7 +235,7 @@ export class MapView extends MapViewBase {
                 if (gMap.setOnPolygonClickListener) {
                     gMap.setOnPolygonClickListener(new com.google.android.gms.maps.GoogleMap.OnPolygonClickListener({
                         onPolygonClick: (gmsPolygon) => {
-                            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolygon.getId());
+                            const shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.android.getId() === gmsPolygon.getId());
                             if (shape) {
                                 owner.notifyShapeTapped(shape);
                             }
@@ -225,23 +246,23 @@ export class MapView extends MapViewBase {
 
                 gMap.setOnMarkerDragListener(new com.google.android.gms.maps.GoogleMap.OnMarkerDragListener({
                     onMarkerDrag: (gmsMarker) => {
-                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        const marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerDrag(marker);
                     },
                     onMarkerDragEnd: (gmsMarker) => {
-                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        const marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerEndDragging(marker);
                     },
                     onMarkerDragStart: (gmsMarker) => {
-                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        const marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
                         owner.notifyMarkerBeginDragging(marker);
                     }
                 }));
 
-                let cameraChangeHandler = (cameraPosition) => {
+                const cameraChangeHandler = (cameraPosition) => {
                     owner._processingCameraEvent = true;
 
-                    let cameraChanged: boolean = false;
+                    let cameraChanged = false;
                     if (owner.latitude != cameraPosition.target.latitude) {
                         cameraChanged = true;
                         latitudeProperty.nativeValueChange(owner, cameraPosition.target.latitude);
@@ -310,8 +331,8 @@ export class MapView extends MapViewBase {
                     },
 
                     getInfoContents: function (gmsMarker) {
-                        let marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
-                        var content = owner._getMarkerInfoWindowContent(marker);
+                        const marker: Marker = owner.findMarker((marker: Marker) => marker.android.getId() === gmsMarker.getId());
+                        const content = owner._getMarkerInfoWindowContent(marker);
                         return (content) ? content.android : null;
                     }
                 }));
@@ -326,8 +347,8 @@ export class MapView extends MapViewBase {
     }
 
     private _createCameraPosition() {
-        var cpBuilder = new com.google.android.gms.maps.model.CameraPosition.Builder();
-        var update = false;
+        const cpBuilder = new com.google.android.gms.maps.model.CameraPosition.Builder();
+        let update = false;
 
         if (!isNaN(this.latitude) && !isNaN(this.longitude)) {
             update = true;
@@ -353,7 +374,7 @@ export class MapView extends MapViewBase {
     }
 
     updateCamera() {
-        var cameraPosition = this._createCameraPosition();
+        const cameraPosition = this._createCameraPosition();
         if (!cameraPosition) return;
 
         if (!this.gMap) {
@@ -363,7 +384,7 @@ export class MapView extends MapViewBase {
 
         this._pendingCameraUpdate = false;
 
-        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
+        const cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newCameraPosition(cameraPosition);
         if (this.mapAnimationsEnabled) {
             this.gMap.animateCamera(cameraUpdate);
         } else {
@@ -372,8 +393,8 @@ export class MapView extends MapViewBase {
     }
 
     setViewport(bounds: Bounds, padding?: number) {
-        var p = padding || 0;
-        var cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds(bounds.android, p);
+        const p = padding || 0;
+        const cameraUpdate = com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds(bounds.android, p);
         if (!this.gMap) {
             this._pendingCameraUpdate = true
             return;
@@ -497,7 +518,7 @@ export class MapView extends MapViewBase {
 
     setStyle(style: StyleBase): boolean {
         if(!this.gMap) return null;
-        let styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
+        const styleOptions = new com.google.android.gms.maps.model.MapStyleOptions(JSON.stringify(style));
         return this.gMap.setMapStyle(styleOptions);
     }
 
@@ -610,12 +631,12 @@ export class Projection extends ProjectionBase {
     }
 
     fromScreenLocation(point: Point) {
-        var latLng = this.android.fromScreenLocation(new android.graphics.Point(point.x, point.y));
+        const latLng = this.android.fromScreenLocation(new android.graphics.Point(point.x, point.y));
         return new Position(latLng);
     }
 
     toScreenLocation(position: Position) {
-        var point = this.android.toScreenLocation(position.android);
+        const point = this.android.toScreenLocation(position.android);
         return {
             x: point.x,
             y: point.y
@@ -690,7 +711,7 @@ export class Position extends PositionBase {
     }
 
     public static positionFromLatLng(latitude: number, longitude: number): Position {
-        let position: Position = new Position();
+        const position: Position = new Position();
         position.latitude = latitude;
         position.longitude = longitude;
         return position;
@@ -721,11 +742,14 @@ export class Bounds extends BoundsBase {
     }
 }
 
+    type ImageOrString = Image | string;
+
 export class Marker extends MarkerBase {
+
     private _android: any;
     private _color: number;
     private _icon: Image;
-    private _isMarker: boolean = false;
+    private _isMarker = false;
 
     static CLASS = 'com.google.android.gms.maps.model.Marker';
 
@@ -820,7 +844,7 @@ export class Marker extends MarkerBase {
 
         this._color = value;
 
-        var androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(value) : null;
+        const androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(value) : null;
         if (this._isMarker) {
             this._android.setIcon(androidIcon);
         } else {
@@ -832,20 +856,39 @@ export class Marker extends MarkerBase {
         return this._icon;
     }
 
+    /**
+     * Set the Marker icon
+     * @param value string(resource name), or an Image.
+     * @default if null, the default marker will be used.
+     */
     set icon(value: Image | string) {
+
         if (typeof value === 'string') {
-            var tempIcon = new Image();
-            tempIcon.imageSource = imageSource.fromResource(String(value));
-            value = tempIcon;
+
+            ImageSource.fromResource(String(value)).then((imgResource) => {
+
+                const tmpIcon       = new Image();
+                tmpIcon.imageSource = imgResource;
+                this._icon          = tmpIcon;
+
+            }).catch(err => {
+                console.error(`Couldn't load the image resource, using the default one. (${err})`);
+            });
         }
-        this._icon = value;
-        var androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(value.imageSource.android) : null;
+        else if (value instanceof Image) {
+
+            this._icon = value;
+        }
+
+        const androidIcon = (value) ? com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap(this._icon.imageSource.android) : null;
+
         if (this._isMarker) {
             this._android.setIcon(androidIcon);
         } else {
             this._android.icon(androidIcon);
         }
     }
+
 
     get alpha() {
         return this._android.getAlpha();
@@ -921,7 +964,7 @@ export class Marker extends MarkerBase {
 export class Polyline extends PolylineBase {
     private _android: any;
     private _color: Color;
-    private _isReal: boolean = false;
+    private _isReal = false;
 
     static CLASS = 'com.google.android.gms.maps.model.Polyline';
 
@@ -977,7 +1020,7 @@ export class Polyline extends PolylineBase {
 
     reloadPoints(): void {
         if (this._isReal) {
-            var points = new java.util.ArrayList();
+            const points = new java.util.ArrayList();
             this._points.forEach((point: Position) => {
                 points.add(point.android);
             });
@@ -1036,7 +1079,7 @@ export class Polygon extends PolygonBase {
     private _android: any;
     private _strokeColor: Color;
     private _fillColor: Color;
-    private _isReal: boolean = false;
+    private _isReal = false;
 
     static CLASS = 'com.google.android.gms.maps.model.Polygon';
 
@@ -1094,7 +1137,7 @@ export class Polygon extends PolygonBase {
     loadHoles(): void {
         if (!this._isReal) {
             this._holes.forEach((hole: Position[]) => {
-                var points = new java.util.ArrayList();
+                const points = new java.util.ArrayList();
                 hole.forEach((point: Position) => {
                     points.add(point.android);
                 });
@@ -1105,7 +1148,7 @@ export class Polygon extends PolygonBase {
 
     reloadPoints(): void {
         if (this._isReal) {
-            var points = new java.util.ArrayList();
+            const points = new java.util.ArrayList();
             this._points.forEach((point: Position) => {
                 points.add(point.android);
             });
@@ -1115,9 +1158,9 @@ export class Polygon extends PolygonBase {
 
     reloadHoles(): void {
         if (this._isReal) {
-            var holes = new java.util.ArrayList();
+            const holes = new java.util.ArrayList();
             this._holes.forEach((hole) => {
-                var points = new java.util.ArrayList();
+                const points = new java.util.ArrayList();
                 hole.forEach((point) => {
                     points.add(point.android);
                 });
@@ -1180,7 +1223,7 @@ export class Circle extends CircleBase {
     private _center: Position;
     private _strokeColor: Color;
     private _fillColor: Color;
-    private _isReal: boolean = false;
+    private _isReal = false;
 
     static CLASS = 'com.google.android.gms.maps.model.Circle';
 
