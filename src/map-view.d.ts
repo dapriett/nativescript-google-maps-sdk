@@ -79,7 +79,7 @@ export class MapView extends View {
 
     public findMarker(callback: (marker: Marker) => boolean): Marker;
 
-    public notifyMarkerEvent(eventName: string, marker: Marker);
+    public notifyMarkerEvent(eventName: string, marker: Marker): void;
 
     public addPolyline(shape: Polyline): void;
 
@@ -242,7 +242,7 @@ export class StyleElement {
 }
 
 export type StyleElementType = "all" | "administrative" | "administrative.country" | "administrative.land_parcel" |
-    "administrative.locality" | "administrative.neighborhoodadministrative.province" | "landscape" |
+    "administrative.locality" | "administrative.neighborhood" | "administrative.province" | "landscape" |
     "landscape.man_made" | "landscape.natural" | "landscape.natural.landcover" | "landscape.natural.terrain" |
     "poi" | "poi.attraction" | "poi.business" | "poi.government" | "poi.medical" | "poi.park" |
     "poi.place_of_worship" | "poi.school" | "poi.sports_complex" | "road" | "road.arterial" | "road.highway" |
