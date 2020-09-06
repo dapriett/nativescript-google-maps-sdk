@@ -1,37 +1,39 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es2015",
-        "declaration": false,
-        "noImplicitAny": false,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "sourceMap": false,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noEmitHelpers": true,
-        "noEmitOnError": true,
-        "lib": [
-            "es2018", "es2017", "dom", "es6"
-        ],
-        "types": [
-            "@nativescript/core"
-        ],
-        "baseUrl": ".",
-        "paths": {
-            "*": [
-                "./node_modules/*"
-            ]
-        }
-    },
-    "include": [
-        "./"
+  "compilerOptions": {
+    "target"                        : "ES2017",
+    "module"                        : "esnext",
+    "moduleResolution"              : "node",
+    "declaration"                   : false,
+    "noImplicitAny"                 : false,
+    "removeComments"                : true,
+    "preserveConstEnums"            : true,
+    "suppressImplicitAnyIndexErrors": true,
+    "sourceMap"                     : false,
+    "pretty"                        : true,
+    "experimentalDecorators"        : true,
+    "emitDecoratorMetadata"         : true,
+    "noEmitHelpers"                 : true,
+    "noEmitOnError"                 : true,
+    "lib"                           : [
+      "es2018", "es2017", "dom", "es6"
     ],
-    "exclude": [
-        "node_modules",
-        "platforms",
-        "demo",
-        "ng-demo"
-    ]
+    "types"                         : [
+      "@nativescript/core"
+    ],
+    "baseUrl"                       : ".",
+    "paths"                         : {
+      "*": [
+        "./node_modules/*"
+      ]
+    }
+  },
+  "include"        : [
+    "./"
+  ],
+  "exclude"        : [
+    "node_modules",
+    "platforms",
+    "demo",
+    "ng-demo"
+  ]
 }

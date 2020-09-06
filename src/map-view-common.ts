@@ -1,26 +1,20 @@
 import {
-    MapView, Position, Marker, Shape, Polyline, Polygon, Projection,
-    Circle, Camera, MarkerEventData, ShapeEventData, VisibleRegion,
-    CameraEventData, PositionEventData, Bounds, Style, UISettings, IndoorBuilding, IndoorLevel,
-    IndoorLevelActivatedEventData, BuildingFocusedEventData
-} from "./map-view";
-import { Point, View, Template, KeyedTemplate } from "@nativescript/core/ui/core/view";
-import { Image } from "@nativescript/core/ui/image";
-import { LayoutBase } from "@nativescript/core/ui/layouts/layout-base";
-
-import { Property } from "@nativescript/core/ui/core/properties";
-import { Color } from "@nativescript/core/color";
-import { Builder } from "@nativescript/core/ui/builder";
-import { eachDescendant } from "@nativescript/core/ui/core/view-base";
-import { ProxyViewContainer } from "@nativescript/core/ui/proxy-view-container";
-import { StackLayout } from "@nativescript/core/ui/layouts/stack-layout";
+    Builder, Color, eachDescendant, Image, LayoutBase, Property, ProxyViewContainer, StackLayout, View
+}                                         from '@nativescript/core';
+import { KeyedTemplate, Point, Template } from '@nativescript/core/ui/core/view';
+import {
+    Bounds, BuildingFocusedEventData, Camera, CameraEventData, Circle, IndoorBuilding, IndoorLevel,
+    IndoorLevelActivatedEventData, MapView, Marker, MarkerEventData, Polygon, Polyline, Position, PositionEventData,
+    Projection, Shape, ShapeEventData, Style, UISettings, VisibleRegion
+}                                         from './map-view';
 
 function onInfoWindowTemplatesChanged(mapView: MapViewBase) {
     let _infoWindowTemplates = new Array<KeyedTemplate>();
 
-    if (mapView.infoWindowTemplates && typeof mapView.infoWindowTemplates === "string") {
+    if (mapView.infoWindowTemplates && typeof mapView.infoWindowTemplates === 'string') {
         _infoWindowTemplates = _infoWindowTemplates.concat(Builder.parseMultipleTemplates(mapView.infoWindowTemplates));
-    } else if (mapView.infoWindowTemplates) {
+    }
+    else if (mapView.infoWindowTemplates) {
         _infoWindowTemplates = _infoWindowTemplates.concat(<KeyedTemplate[]>mapView.infoWindowTemplates);
     }
 
@@ -48,14 +42,18 @@ function paddingValueConverter(value: any) {
 
     if (value.length >= 4) {
         return value;
-    } else if (value.length === 3) {
-        return [value[0], value[1], value[2], value[2]];
-    } else if (value.length === 2) {
-        return [value[0], value[0], value[1], value[1]];
-    } else if (value.length === 1) {
-        return [value[0], value[0], value[0], value[0]];
-    } else {
-        return [0, 0, 0, 0];
+    }
+    else if (value.length === 3) {
+        return [ value[0], value[1], value[2], value[2] ];
+    }
+    else if (value.length === 2) {
+        return [ value[0], value[0], value[1], value[1] ];
+    }
+    else if (value.length === 1) {
+        return [ value[0], value[0], value[0], value[0] ];
+    }
+    else {
+        return [ 0, 0, 0, 0 ];
     }
 }
 
@@ -63,7 +61,7 @@ function onDescendantsLoaded(view: View, callback: () => void) {
     if (!view) return callback();
 
     let loadingCount = 1;
-    let loadedCount = 0;
+    let loadedCount  = 0;
 
     const watchLoaded = (view, event) => {
         const onLoaded = () => {
@@ -95,40 +93,45 @@ function onDescendantsLoaded(view: View, callback: () => void) {
 
 export { Style as StyleBase };
 
-export module knownTemplates {
-    export const infoWindowTemplate = "infoWindowTemplate";
+export namespace knownTemplates {
+    export const infoWindowTemplate = 'infoWindowTemplate';
 }
 
-export module knownMultiTemplates {
-    export const infoWindowTemplates = "infoWindowTemplates";
+export namespace knownMultiTemplates {
+    export const infoWindowTemplates = 'infoWindowTemplates';
 }
 
 export function getColorHue(color: Color | string | number): number {
     if (typeof color === 'number') {
-        while (color < 0) { color += 360; }
+        while (color < 0) {
+            color += 360;
+        }
         return color % 360;
     }
     if (typeof color === 'string') color = new Color(color);
     if (!(color instanceof Color)) return color;
 
-    let min, max, delta, hue;
-
     const r = Math.max(0, Math.min(1, color.r / 255));
     const g = Math.max(0, Math.min(1, color.g / 255));
     const b = Math.max(0, Math.min(1, color.b / 255));
 
-    min = Math.min(r, g, b);
-    max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const max = Math.max(r, g, b);
 
-    delta = max - min;
+    const delta = max - min;
+
+    let hue: number;
 
     if (delta == 0) { // white, grey, black
         hue = 0;
-    } else if (r == max) {
+    }
+    else if (r == max) {
         hue = (g - b) / delta; // between yellow & magenta
-    } else if (g == max) {
+    }
+    else if (g == max) {
         hue = 2 + (b - r) / delta; // between cyan & yellow
-    } else {
+    }
+    else {
         hue = 4 + (r - g) / delta; // between magenta & cyan
     }
 
@@ -141,7 +144,7 @@ export abstract class MapViewBase extends View implements MapView {
 
     protected _gMap: any;
     protected _markers: Array<MarkerBase> = new Array<MarkerBase>();
-    protected _shapes: Array<ShapeBase> = new Array<ShapeBase>();
+    protected _shapes: Array<ShapeBase>   = new Array<ShapeBase>();
     public _processingCameraEvent: boolean;
     public latitude: number;
     public longitude: number;
@@ -156,7 +159,7 @@ export abstract class MapViewBase extends View implements MapView {
     public infoWindowTemplate: string | Template;
     public infoWindowTemplates: string | Array<KeyedTemplate>;
     public _defaultInfoWindowTemplate: KeyedTemplate = {
-        key: "",
+        key       : '',
         createView: () => {
             if (this.infoWindowTemplate) {
                 return Builder.parse(this.infoWindowTemplate, this);
@@ -164,27 +167,27 @@ export abstract class MapViewBase extends View implements MapView {
             return undefined;
         }
     };
-    public _infoWindowTemplates = new Array<KeyedTemplate>();
+    public _infoWindowTemplates                      = new Array<KeyedTemplate>();
 
     public projection: Projection;
     public settings: UISettingsBase;
     public myLocationEnabled: boolean;
 
-    public static mapReadyEvent: string = "mapReady";
-    public static markerSelectEvent: string = "markerSelect";
-    public static markerInfoWindowTappedEvent: string = "markerInfoWindowTapped";
-    public static markerInfoWindowClosedEvent: string = "markerInfoWindowClosed";
-    public static shapeSelectEvent: string = "shapeSelect";
-    public static markerBeginDraggingEvent: string = "markerBeginDragging";
-    public static markerEndDraggingEvent: string = "markerEndDragging";
-    public static markerDragEvent: string = "markerDrag";
-    public static coordinateTappedEvent: string = "coordinateTapped";
-    public static coordinateLongPressEvent: string = "coordinateLongPress";
-    public static cameraChangedEvent: string = "cameraChanged";
-    public static cameraMoveEvent: string = "cameraMove";
-    public static myLocationTappedEvent: string = "myLocationTapped";
-    public static indoorBuildingFocusedEvent: string = "indoorBuildingFocused";
-    public static indoorLevelActivatedEvent: string = "indoorLevelActivated";
+    public static mapReadyEvent               = 'mapReady';
+    public static markerSelectEvent           = 'markerSelect';
+    public static markerInfoWindowTappedEvent = 'markerInfoWindowTapped';
+    public static markerInfoWindowClosedEvent = 'markerInfoWindowClosed';
+    public static shapeSelectEvent            = 'shapeSelect';
+    public static markerBeginDraggingEvent    = 'markerBeginDragging';
+    public static markerEndDraggingEvent      = 'markerEndDragging';
+    public static markerDragEvent             = 'markerDrag';
+    public static coordinateTappedEvent       = 'coordinateTapped';
+    public static coordinateLongPressEvent    = 'coordinateLongPress';
+    public static cameraChangedEvent          = 'cameraChanged';
+    public static cameraMoveEvent             = 'cameraMove';
+    public static myLocationTappedEvent       = 'myLocationTapped';
+    public static indoorBuildingFocusedEvent  = 'indoorBuildingFocused';
+    public static indoorLevelActivatedEvent   = 'indoorLevelActivated';
 
     public get gMap() {
         return this._gMap;
@@ -195,7 +198,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public _getMarkerInfoWindowContent(marker: MarkerBase) {
-        var view;
+        let view;
 
         if (marker && marker._infoWindowView) {
             view = marker._infoWindowView;
@@ -208,9 +211,8 @@ export abstract class MapViewBase extends View implements MapView {
 
         if (!view) return null;
 
-        if (!(view instanceof LayoutBase) ||
-            view instanceof ProxyViewContainer) {
-            let sp = new StackLayout();
+        if (!(view instanceof LayoutBase) || view instanceof ProxyViewContainer) {
+            const sp = new StackLayout();
             sp.addChild(view);
             view = sp;
         }
@@ -239,7 +241,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public _getInfoWindowTemplate(marker: MarkerBase): KeyedTemplate {
-        if(marker){
+        if (marker) {
             const templateKey = marker.infoWindowTemplate;
             for (let i = 0, length = this._infoWindowTemplates.length; i < length; i++) {
                 if (this._infoWindowTemplates[i].key === templateKey) {
@@ -283,7 +285,7 @@ export abstract class MapViewBase extends View implements MapView {
     public abstract clear(): void;
 
     public removeAllPolylines() {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         this._shapes.forEach(shape => {
             if (shape.shape === 'polyline') {
                 this.removeShape(shape);
@@ -292,7 +294,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public removeAllPolygons() {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         this._shapes.forEach(shape => {
             if (shape.shape === 'polygon') {
                 this.removeShape(shape);
@@ -301,7 +303,7 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public removeAllCircles() {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         this._shapes.forEach(shape => {
             if (shape.shape === 'circle') {
                 this.removeShape(shape);
@@ -314,12 +316,12 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     notifyMarkerEvent(eventName: string, marker: Marker) {
-        let args: MarkerEventData = { eventName: eventName, object: this, marker: marker };
+        const args: MarkerEventData = { eventName: eventName, object: this, marker: marker };
         this.notify(args);
     }
 
     notifyShapeEvent(eventName: string, shape: Shape) {
-        let args: ShapeEventData = { eventName: eventName, object: this, shape: shape };
+        const args: ShapeEventData = { eventName: eventName, object: this, shape: shape };
         this.notify(args);
     }
 
@@ -352,12 +354,12 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     notifyPositionEvent(eventName: string, position: Position) {
-        let args: PositionEventData = { eventName: eventName, object: this, position: position };
+        const args: PositionEventData = { eventName: eventName, object: this, position: position };
         this.notify(args);
     }
 
     notifyCameraEvent(eventName: string, camera: Camera) {
-        let args: CameraEventData = { eventName: eventName, object: this, camera: camera };
+        const args: CameraEventData = { eventName: eventName, object: this, camera: camera };
         this.notify(args);
     }
 
@@ -366,47 +368,93 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     notifyBuildingFocusedEvent(indoorBuilding: IndoorBuilding) {
-        let args: BuildingFocusedEventData = { eventName: MapViewBase.indoorBuildingFocusedEvent, object: this, indoorBuilding: indoorBuilding };
+        const args: BuildingFocusedEventData = {
+            eventName     : MapViewBase.indoorBuildingFocusedEvent,
+            object        : this,
+            indoorBuilding: indoorBuilding
+        };
         this.notify(args);
     }
 
     notifyIndoorLevelActivatedEvent(activateLevel: IndoorLevel) {
-        let args: IndoorLevelActivatedEventData = { eventName: MapViewBase.indoorLevelActivatedEvent, object: this, activateLevel: activateLevel };
+        const args: IndoorLevelActivatedEventData = {
+            eventName    : MapViewBase.indoorLevelActivatedEvent,
+            object       : this,
+            activateLevel: activateLevel
+        };
         this.notify(args);
     }
 }
 
-export const infoWindowTemplateProperty = new Property<MapViewBase, string | Template>({ name: "infoWindowTemplate" });
+export const infoWindowTemplateProperty = new Property<MapViewBase, string | Template>({ name: 'infoWindowTemplate' });
 infoWindowTemplateProperty.register(MapViewBase);
 
-export const infoWindowTemplatesProperty = new Property<MapViewBase, string | Array<KeyedTemplate>>({ name: "infoWindowTemplates", valueChanged: onInfoWindowTemplatesChanged })
+export const infoWindowTemplatesProperty = new Property<MapViewBase, string | Array<KeyedTemplate>>({
+    name        : 'infoWindowTemplates',
+    valueChanged: onInfoWindowTemplatesChanged
+})
 infoWindowTemplatesProperty.register(MapViewBase);
 
-export const latitudeProperty = new Property<MapViewBase, number>({ name: 'latitude', defaultValue: 0, valueChanged: onMapPropertyChanged });
+export const latitudeProperty = new Property<MapViewBase, number>({
+    name        : 'latitude',
+    defaultValue: 0,
+    valueChanged: onMapPropertyChanged
+});
 latitudeProperty.register(MapViewBase);
 
-export const longitudeProperty = new Property<MapViewBase, number>({ name: 'longitude', defaultValue: 0, valueChanged: onMapPropertyChanged });
+export const longitudeProperty = new Property<MapViewBase, number>({
+    name        : 'longitude',
+    defaultValue: 0,
+    valueChanged: onMapPropertyChanged
+});
 longitudeProperty.register(MapViewBase);
 
-export const bearingProperty = new Property<MapViewBase, number>({ name: 'bearing', defaultValue: 0, valueChanged: onMapPropertyChanged });
+export const bearingProperty = new Property<MapViewBase, number>({
+    name        : 'bearing',
+    defaultValue: 0,
+    valueChanged: onMapPropertyChanged
+});
 bearingProperty.register(MapViewBase);
 
-export const zoomProperty = new Property<MapViewBase, number>({ name: 'zoom', defaultValue: 0, valueChanged: onMapPropertyChanged });
+export const zoomProperty = new Property<MapViewBase, number>({
+    name        : 'zoom',
+    defaultValue: 0,
+    valueChanged: onMapPropertyChanged
+});
 zoomProperty.register(MapViewBase);
 
-export const minZoomProperty = new Property<MapViewBase, number>({ name: 'minZoom', defaultValue: 0, valueChanged: onSetMinZoomMaxZoom });
+export const minZoomProperty = new Property<MapViewBase, number>({
+    name        : 'minZoom',
+    defaultValue: 0,
+    valueChanged: onSetMinZoomMaxZoom
+});
 minZoomProperty.register(MapViewBase);
 
-export const maxZoomProperty = new Property<MapViewBase, number>({ name: 'maxZoom', defaultValue: 22, valueChanged: onSetMinZoomMaxZoom });
+export const maxZoomProperty = new Property<MapViewBase, number>({
+    name        : 'maxZoom',
+    defaultValue: 22,
+    valueChanged: onSetMinZoomMaxZoom
+});
 maxZoomProperty.register(MapViewBase);
 
-export const tiltProperty = new Property<MapViewBase, number>({ name: 'tilt', defaultValue: 0, valueChanged: onMapPropertyChanged });
+export const tiltProperty = new Property<MapViewBase, number>({
+    name        : 'tilt',
+    defaultValue: 0,
+    valueChanged: onMapPropertyChanged
+});
 tiltProperty.register(MapViewBase);
 
-export const paddingProperty = new Property<MapViewBase, number[]>({ name: 'padding', valueChanged: onPaddingPropertyChanged, valueConverter: paddingValueConverter });
+export const paddingProperty = new Property<MapViewBase, number[]>({
+    name          : 'padding',
+    valueChanged  : onPaddingPropertyChanged,
+    valueConverter: paddingValueConverter
+});
 paddingProperty.register(MapViewBase);
 
-export const mapAnimationsEnabledProperty = new Property<MapViewBase, boolean>({ name: 'mapAnimationsEnabled', defaultValue: true });
+export const mapAnimationsEnabledProperty = new Property<MapViewBase, boolean>({
+    name        : 'mapAnimationsEnabled',
+    defaultValue: true
+});
 mapAnimationsEnabledProperty.register(MapViewBase);
 
 export class UISettingsBase implements UISettings {
@@ -423,8 +471,11 @@ export class UISettingsBase implements UISettings {
 
 export abstract class ProjectionBase implements Projection {
     public visibleRegion: VisibleRegion;
+
     public abstract fromScreenLocation(point: Point): Position;
+
     public abstract toScreenLocation(position: Position): Point;
+
     public ios: any; /* GMSProjection */
     public android: any;
 }
@@ -465,10 +516,15 @@ export abstract class MarkerBase implements Marker {
     public draggable: boolean;
     public visible: boolean;
     public zIndex: number;
+
     public abstract showInfoWindow(): void;
+
     public abstract isInfoWindowShown(): boolean;
+
     public infoWindowTemplate: string;
+
     public abstract hideInfoWindow(): void;
+
     public userData: any;
     public _map: any;
     public ios: any;
@@ -487,7 +543,7 @@ export class ShapeBase implements Shape {
 }
 
 export abstract class PolylineBase extends ShapeBase implements Polyline {
-    public shape: string = 'polyline';
+    public shape = 'polyline';
     public _map: any;
     public _points: Array<PositionBase>;
     public width: number;
@@ -505,7 +561,7 @@ export abstract class PolylineBase extends ShapeBase implements Polyline {
     }
 
     removePoint(point: PositionBase): void {
-        var index = this._points.indexOf(point);
+        const index = this._points.indexOf(point);
         if (index > -1) {
             this._points.splice(index, 1);
             this.reloadPoints();
@@ -525,7 +581,7 @@ export abstract class PolylineBase extends ShapeBase implements Polyline {
 }
 
 export abstract class PolygonBase extends ShapeBase implements Polygon {
-    public shape: string = 'polygon';
+    public shape = 'polygon';
     public _map: any;
     public _points: Array<PositionBase>;
     public _holes: Array<Array<PositionBase>>;
@@ -544,7 +600,7 @@ export abstract class PolygonBase extends ShapeBase implements Polygon {
     }
 
     removePoint(point: PositionBase): void {
-        var index = this._points.indexOf(point);
+        const index = this._points.indexOf(point);
         if (index > -1) {
             this._points.splice(index, 1);
             this.reloadPoints();
@@ -571,7 +627,7 @@ export abstract class PolygonBase extends ShapeBase implements Polygon {
     }
 
     removeHole(hole: PositionBase[]): void {
-        var index = this._holes.indexOf(hole);
+        const index = this._holes.indexOf(hole);
         if (index > -1) {
             this._holes.splice(index, 1);
             this.reloadHoles();
@@ -593,7 +649,7 @@ export abstract class PolygonBase extends ShapeBase implements Polygon {
 }
 
 export class CircleBase extends ShapeBase implements Circle {
-    public shape: string = 'circle';
+    public shape = 'circle';
     public center: Position;
     public _map: any;
     public radius: number;

@@ -1,45 +1,44 @@
-import {
-    MapViewBase, BoundsBase, CircleBase,
-    MarkerBase, PolygonBase, PolylineBase, ProjectionBase,
-    PositionBase, ShapeBase, latitudeProperty, VisibleRegionBase,
-    longitudeProperty, bearingProperty, zoomProperty,
-    tiltProperty, StyleBase, UISettingsBase, getColorHue
-} from "./map-view-common";
-import { Color } from "@nativescript/core/color";
+import { Color }        from '@nativescript/core/color';
 import * as imageSource from '@nativescript/core/image-source';
-import { Point } from "@nativescript/core/ui/core/view";
-import { Image } from "@nativescript/core/ui/image";
-import { GC, layout } from "@nativescript/core/utils"
-import { WeakRef } from '@nativescript/core/debugger/dom-node'
+import { Point }        from '@nativescript/core/ui/core/view';
+import { Image }        from '@nativescript/core/ui/image';
+import { GC, layout }   from '@nativescript/core/utils';
+import { WeakRef }      from '@nativescript/core/debugger/dom-node';
 
-export * from "./map-view-common";
+import {
+    bearingProperty, BoundsBase, CircleBase, getColorHue, latitudeProperty, longitudeProperty, MapViewBase, MarkerBase,
+    PolygonBase, PolylineBase, PositionBase, ProjectionBase, ShapeBase, StyleBase, tiltProperty, UISettingsBase,
+    VisibleRegionBase, zoomProperty
+} from './map-view-common';
+
+export * from './map-view-common';
 
 declare function UIEdgeInsetsMake(...params: any[]): any;
 
 class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDelegate {
 
-    public static ObjCProtocols = [GMSIndoorDisplayDelegate];
+    public static ObjCProtocols = [ GMSIndoorDisplayDelegate ];
 
     private _owner: WeakRef<MapView>;
 
     public static initWithOwner(owner: WeakRef<MapView>): IndoorDisplayDelegateImpl {
-        let handler = <IndoorDisplayDelegateImpl>IndoorDisplayDelegateImpl.new();
+        const handler  = <IndoorDisplayDelegateImpl>IndoorDisplayDelegateImpl.new();
         handler._owner = owner;
         return handler;
     }
 
     public didChangeActiveBuilding(indoorBuilding: GMSIndoorBuilding): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
             let data = null;
             if (indoorBuilding) {
                 const levels = [];
-                let count = 0;
+                let count    = 0;
 
                 while (count < indoorBuilding.levels.count) {
                     levels.push(
                         {
-                            name: indoorBuilding.levels[count].name,
+                            name:      indoorBuilding.levels[count].name,
                             shortName: indoorBuilding.levels[count].shortName,
                         }
                     );
@@ -48,8 +47,8 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
 
                 data = {
                     defaultLevelIndex: indoorBuilding.defaultLevelIndex,
-                    levels: levels,
-                    isUnderground: indoorBuilding.underground,
+                    levels:            levels,
+                    isUnderground:     indoorBuilding.underground,
                 };
             }
             owner.notifyBuildingFocusedEvent(data);
@@ -57,12 +56,12 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
     }
 
     public didChangeActiveLevel(activateLevel: GMSIndoorLevel): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
             let data = null;
             if (activateLevel) {
                 data = {
-                    name: activateLevel.name,
+                    name:      activateLevel.name,
                     shortName: activateLevel.shortName,
                 };
             }
@@ -71,26 +70,25 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
     }
 }
 
-
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
-    public static ObjCProtocols = [GMSMapViewDelegate];
+    public static ObjCProtocols = [ GMSMapViewDelegate ];
 
     private _owner: WeakRef<MapView>;
 
     public static initWithOwner(owner: WeakRef<MapView>): MapViewDelegateImpl {
-        let handler = <MapViewDelegateImpl>MapViewDelegateImpl.new();
+        const handler  = <MapViewDelegateImpl>MapViewDelegateImpl.new();
         handler._owner = owner;
         return handler;
     }
 
     public mapViewIdleAtCameraPosition(mapView: GMSMapView, cameraPosition: GMSCameraPosition): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
 
             owner._processingCameraEvent = true;
 
-            let cameraChanged: boolean = false;
+            let cameraChanged = false;
             if (owner.latitude != cameraPosition.target.latitude) {
                 cameraChanged = true;
                 latitudeProperty.nativeValueChange(owner, cameraPosition.target.latitude);
@@ -114,11 +112,11 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
             if (cameraChanged) {
                 owner.notifyCameraEvent(MapViewBase.cameraChangedEvent, {
-                    latitude: cameraPosition.target.latitude,
+                    latitude:  cameraPosition.target.latitude,
                     longitude: cameraPosition.target.longitude,
-                    zoom: cameraPosition.zoom,
-                    bearing: cameraPosition.bearing,
-                    tilt: cameraPosition.viewingAngle
+                    zoom:      cameraPosition.zoom,
+                    bearing:   cameraPosition.bearing,
+                    tilt:      cameraPosition.viewingAngle
                 });
             }
 
@@ -127,28 +125,28 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 
     public mapViewDidChangeCameraPosition(mapView: GMSMapView, cameraPosition: GMSCameraPosition) {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         owner.notifyCameraEvent(MapViewBase.cameraMoveEvent, {
-            latitude: cameraPosition.target.latitude,
+            latitude:  cameraPosition.target.latitude,
             longitude: cameraPosition.target.longitude,
-            zoom: cameraPosition.zoom,
-            bearing: cameraPosition.bearing,
-            tilt: cameraPosition.viewingAngle
+            zoom:      cameraPosition.zoom,
+            bearing:   cameraPosition.bearing,
+            tilt:      cameraPosition.viewingAngle
         });
     }
 
     public mapViewDidTapAtCoordinate(mapView: GMSMapView, coordinate: CLLocationCoordinate2D): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let position: Position = Position.positionFromLatLng(coordinate.latitude, coordinate.longitude);
+            const position: Position = Position.positionFromLatLng(coordinate.latitude, coordinate.longitude);
             owner.notifyPositionEvent(MapViewBase.coordinateTappedEvent, position);
         }
     }
 
     public mapViewDidLongPressAtCoordinate(mapView: GMSMapView, coordinate: CLLocationCoordinate2D): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let position: Position = Position.positionFromLatLng(coordinate.latitude, coordinate.longitude);
+            const position: Position = Position.positionFromLatLng(coordinate.latitude, coordinate.longitude);
             owner.notifyPositionEvent(MapViewBase.coordinateLongPressEvent, position);
         }
     }
@@ -156,7 +154,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker): boolean {
         const owner = this._owner.get();
         if (owner) {
-            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+            const marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             if (marker) {
                 owner.notifyMarkerTapped(marker);
             }
@@ -165,50 +163,51 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 
     public mapViewDidTapOverlay(mapView: GMSMapView, gmsOverlay: GMSOverlay): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.ios == gmsOverlay);
+            const shape: ShapeBase = owner.findShape((shape: ShapeBase) => shape.ios == gmsOverlay);
             if (shape) {
                 owner.notifyShapeTapped(shape);
             }
         }
     }
+
     public mapViewDidBeginDraggingMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+            const marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerBeginDragging(marker);
         }
     }
 
     public mapViewDidEndDraggingMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+            const marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerEndDragging(marker);
         }
     }
 
     public mapViewDidDragMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+            const marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerDrag(marker);
         }
     }
 
     public mapViewDidTapInfoWindowOfMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+            const marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerInfoWindowTapped(marker);
         }
     }
 
     public mapViewDidCloseInfoWindowOfMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (owner) {
-            let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+            const marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerInfoWindowClosed(marker);
         }
     }
@@ -227,10 +226,10 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 
     public mapViewMarkerInfoContents(mapView: GMSMapView, gmsMarker: GMSMarker): UIView {
-        let owner = this._owner.get();
+        const owner = this._owner.get();
         if (!owner) return null;
-        let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
-        var content = owner._getMarkerInfoWindowContent(marker);
+        const marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
+        const content        = owner._getMarkerInfoWindowContent(marker);
 
         if (content) {
             let width = Number(content.width);
@@ -240,8 +239,8 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
             if (!height || !width) {
                 const bounds: CGRect = UIScreen.mainScreen.bounds;
-                width = width || (bounds.size.width * .7);
-                height = height || (bounds.size.height * .4);
+                width                = width || (bounds.size.width * .7);
+                height               = height || (bounds.size.height * .4);
             }
 
             this._layoutRootView(content, CGRectMake(0, 0, width, height))
@@ -252,25 +251,25 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 
     /*
-        Replacement for _layoutRootView method removed in NativeScript 6
-    */
+     Replacement for _layoutRootView method removed in NativeScript 6
+     */
     private _layoutRootView(rootView, parentBounds) {
         if (!rootView || !parentBounds) {
             return;
         }
 
-        const size = parentBounds.size;
-        const width = layout.toDevicePixels(size.width);
+        const size   = parentBounds.size;
+        const width  = layout.toDevicePixels(size.width);
         const height = layout.toDevicePixels(size.height);
 
-        const widthSpec = layout.makeMeasureSpec(width, layout.EXACTLY);
+        const widthSpec  = layout.makeMeasureSpec(width, layout.EXACTLY);
         const heightSpec = layout.makeMeasureSpec(height, layout.EXACTLY);
 
         rootView.measure(widthSpec, heightSpec);
 
         const origin = parentBounds.origin;
-        const left = origin.x;
-        const top = origin.y;
+        const left   = origin.x;
+        const top    = origin.y;
 
         rootView.layout(left, top, width, height);
     }
@@ -282,37 +281,37 @@ export class MapView extends MapViewBase {
     protected _markers: Array<Marker> = new Array<Marker>();
 
     private _delegate: MapViewDelegateImpl;
-    private _indoorDelegate:IndoorDisplayDelegateImpl;
+    private _indoorDelegate: IndoorDisplayDelegateImpl;
 
     constructor() {
         super();
 
-        this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
-        this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
+        this.nativeView      = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
+        this._delegate       = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
         this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
         this.updatePadding();
     }
 
     public onLoaded() {
         super.onLoaded();
-        this.nativeView.delegate = this._delegate;
+        this.nativeView.delegate               = this._delegate;
         this.nativeView.indoorDisplay.delegate = this._indoorDelegate;
         this.notifyMapReady();
     }
 
     public onUnloaded() {
-        this.nativeView.delegate = null;
+        this.nativeView.delegate               = null;
         this.nativeView.indoorDisplay.delegate = null;
         super.onUnloaded();
     }
 
     public disposeNativeView() {
-        this._markers = null;
-        this._delegate = null;
-        this._indoorDelegate=null;
+        this._markers        = null;
+        this._delegate       = null;
+        this._indoorDelegate = null;
         super.disposeNativeView();
         GC();
-    };
+    }
 
     private _createCameraPosition() {
         return GMSCameraPosition.cameraWithLatitudeLongitudeZoomBearingViewingAngle(
@@ -333,8 +332,8 @@ export class MapView extends MapViewBase {
     }
 
     setViewport(bounds: Bounds, padding?: number) {
-        var p = UIEdgeInsetsMake(padding, padding, padding, padding) || this.gMap.padding;
-        let cameraPosition = this.nativeView.cameraForBoundsInsets(bounds.ios, p);
+        const p              = UIEdgeInsetsMake(padding, padding, padding, padding) || this.gMap.padding;
+        const cameraPosition = this.nativeView.cameraForBoundsInsets(bounds.ios, p);
 
         if (this.mapAnimationsEnabled) {
             this.nativeView.animateToCameraPosition(cameraPosition);
@@ -383,7 +382,7 @@ export class MapView extends MapViewBase {
     }
 
     addMarker(...markers: Marker[]) {
-        if(!markers || !this._markers || !this.gMap) return null;
+        if (!markers || !this._markers || !this.gMap) return null;
         markers.forEach(marker => {
             marker.ios.map = this.gMap;
             this._markers.push(marker);
@@ -391,7 +390,7 @@ export class MapView extends MapViewBase {
     }
 
     removeMarker(...markers: Marker[]) {
-        if(!markers || !this._markers || !this.gMap) return null;
+        if (!markers || !this._markers || !this.gMap) return null;
         markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
             marker.ios.map = null;
@@ -400,7 +399,7 @@ export class MapView extends MapViewBase {
     }
 
     removeAllMarkers() {
-        if(!this._markers) return null;
+        if (!this._markers) return null;
         this._markers.forEach(marker => {
             this._unloadInfoWindowContent(marker);
             marker.ios.map = null;
@@ -409,37 +408,37 @@ export class MapView extends MapViewBase {
     }
 
     findMarker(callback: (marker: Marker) => boolean): Marker {
-        if(!this._markers) return null;
+        if (!this._markers) return null;
         return this._markers.find(callback);
     }
 
     addPolyline(shape: Polyline) {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         shape.loadPoints();
         shape.ios.map = this.gMap;
         this._shapes.push(shape);
     }
 
     addPolygon(shape: Polygon) {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         shape.ios.map = this.gMap;
         this._shapes.push(shape);
     }
 
     addCircle(shape: Circle) {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         shape.ios.map = this.gMap;
         this._shapes.push(shape);
     }
 
     removeShape(shape: ShapeBase) {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         shape.ios.map = null;
         this._shapes.splice(this._shapes.indexOf(shape), 1);
     }
 
     removeAllShapes() {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         this._shapes.forEach(shape => {
             shape.ios.map = null;
         });
@@ -447,7 +446,7 @@ export class MapView extends MapViewBase {
     }
 
     findShape(callback: (shape: ShapeBase) => boolean): ShapeBase {
-        if(!this._shapes) return null;
+        if (!this._shapes) return null;
         return this._shapes.find(callback);
     }
 
@@ -499,7 +498,7 @@ export class UISettings extends UISettingsBase {
     }
 
     set mapToolbarEnabled(value: boolean) {
-        if (value) console.warn("Map toolbar not available on iOS");
+        if (value) console.warn('Map toolbar not available on iOS');
     }
 
     get myLocationButtonEnabled(): boolean {
@@ -539,7 +538,7 @@ export class UISettings extends UISettingsBase {
     }
 
     set zoomControlsEnabled(value: boolean) {
-        if (value) console.warn("Zoom controls not available on iOS");
+        if (value) console.warn('Zoom controls not available on iOS');
     }
 
     get zoomGesturesEnabled(): boolean {
@@ -562,12 +561,12 @@ export class Projection extends ProjectionBase {
     }
 
     fromScreenLocation(point: Point) {
-        var location = this.ios.coordinateForPoint(CGPointMake(point.x, point.y));
+        const location = this.ios.coordinateForPoint(CGPointMake(point.x, point.y));
         return new Position(location);
     }
 
     toScreenLocation(position: Position) {
-        var cgPoint = this.ios.pointForCoordinate(position.ios);
+        const cgPoint = this.ios.pointForCoordinate(position.ios);
         return {
             x: cgPoint.x,
             y: cgPoint.y
@@ -664,9 +663,9 @@ export class Position extends PositionBase {
     }
 
     public static positionFromLatLng(latitude: number, longitude: number): Position {
-        let position: Position = new Position();
-        position.latitude = latitude;
-        position.longitude = longitude;
+        const position: Position = new Position();
+        position.latitude        = latitude;
+        position.longitude       = longitude;
         return position;
     }
 }
@@ -675,7 +674,7 @@ export class Marker extends MarkerBase {
     private _ios: any;
     private _color: number;
     private _icon: Image;
-    private _alpha = 1;
+    private _alpha   = 1;
     private _visible = true;
 
     private static cachedColorIcons: { [hue: number]: any } = {}
@@ -683,7 +682,7 @@ export class Marker extends MarkerBase {
     private static getIconForColor(hue: number) {
         const hueKey = hue.toFixed(8);
         if (!Marker.cachedColorIcons[hueKey]) {
-            const icon = GMSMarker.markerImageWithColor(UIColor.colorWithHueSaturationBrightnessAlpha(hue, 1, 1, 1));
+            const icon                      = GMSMarker.markerImageWithColor(UIColor.colorWithHueSaturationBrightnessAlpha(hue, 1, 1, 1));
             Marker.cachedColorIcons[hueKey] = icon;
         }
         return Marker.cachedColorIcons[hueKey];
@@ -767,11 +766,11 @@ export class Marker extends MarkerBase {
 
     set icon(value: Image | string) {
         if (typeof value === 'string') {
-            var tempIcon = new Image();
+            const tempIcon         = new Image();
             tempIcon.imageSource = imageSource.fromResource(String(value));
-            value = tempIcon;
+            value                = tempIcon;
         }
-        this._icon = value;
+        this._icon     = value;
         this._ios.icon = (value) ? this._icon.imageSource.ios : null;
     }
 
@@ -789,7 +788,7 @@ export class Marker extends MarkerBase {
     }
 
     set visible(value: boolean) {
-        this._visible = value;
+        this._visible     = value;
         this._ios.opacity = (this._visible) ? this._alpha : 0;
     }
 
@@ -802,7 +801,7 @@ export class Marker extends MarkerBase {
     }
 
     get anchor() {
-        return [this._ios.groundAnchor.x, this._ios.groundAnchor.y];
+        return [ this._ios.groundAnchor.x, this._ios.groundAnchor.y ];
     }
 
     set anchor(value: Array<number>) {
@@ -828,7 +827,7 @@ export class Polyline extends PolylineBase {
 
     constructor() {
         super();
-        this._ios = GMSPolyline.new();
+        this._ios    = GMSPolyline.new();
         this._points = [];
     }
 
@@ -849,7 +848,7 @@ export class Polyline extends PolylineBase {
     }
 
     loadPoints(): void {
-        var points = GMSMutablePath.new();
+        const points = GMSMutablePath.new();
         this._points.forEach(function (point) {
             points.addCoordinate(point.ios);
         }.bind(this));
@@ -873,7 +872,7 @@ export class Polyline extends PolylineBase {
     }
 
     set color(value: Color) {
-        this._color = value;
+        this._color           = value;
         this._ios.strokeColor = value.ios;
     }
 
@@ -897,9 +896,9 @@ export class Polygon extends PolygonBase {
 
     constructor() {
         super();
-        this._ios = GMSPolygon.new();
+        this._ios    = GMSPolygon.new();
         this._points = [];
-        this._holes = [];
+        this._holes  = [];
     }
 
     get clickable() {
@@ -919,7 +918,7 @@ export class Polygon extends PolygonBase {
     }
 
     loadPoints(): void {
-        var points = GMSMutablePath.new();
+        const points = GMSMutablePath.new();
         this._points.forEach((point: Position) => {
             points.addCoordinate(point.ios);
         });
@@ -927,9 +926,9 @@ export class Polygon extends PolygonBase {
     }
 
     loadHoles(): void {
-        var holes = [];
+        const holes = [];
         this._holes.forEach((hole: Position[]) => {
-            var points = GMSMutablePath.new();
+            const points = GMSMutablePath.new();
             hole.forEach((point: Position) => {
                 points.addCoordinate(point.ios);
             });
@@ -959,7 +958,7 @@ export class Polygon extends PolygonBase {
     }
 
     set strokeColor(value: Color) {
-        this._strokeColor = value;
+        this._strokeColor     = value;
         this._ios.strokeColor = value.ios;
     }
 
@@ -968,7 +967,7 @@ export class Polygon extends PolygonBase {
     }
 
     set fillColor(value: Color) {
-        this._fillColor = value;
+        this._fillColor     = value;
         this._ios.fillColor = value.ios;
     }
 
@@ -1009,7 +1008,7 @@ export class Circle extends CircleBase {
     }
 
     set center(value: Position) {
-        this._center = value;
+        this._center       = value;
         this._ios.position = value.ios;
     }
 
@@ -1034,7 +1033,7 @@ export class Circle extends CircleBase {
     }
 
     set strokeColor(value: Color) {
-        this._strokeColor = value;
+        this._strokeColor     = value;
         this._ios.strokeColor = value.ios;
     }
 
@@ -1043,7 +1042,7 @@ export class Circle extends CircleBase {
     }
 
     set fillColor(value: Color) {
-        this._fillColor = value;
+        this._fillColor     = value;
         this._ios.fillColor = value.ios;
     }
 

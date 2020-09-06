@@ -1,8 +1,6 @@
-import { Point, View } from "@nativescript/core/ui/core/view";
-import { Property } from "@nativescript/core/ui/core/properties";
-import { Image } from "@nativescript/core//ui/image";
-import { Color } from "@nativescript/core/color";
-import { EventData } from "@nativescript/core/data/observable";
+import { Color, Image, Property, View } from '@nativescript/core';
+import { EventData }                    from '@nativescript/core/data/observable';
+import { Point }                        from '@nativescript/core/ui/core/view';
 
 export class IndoorLevel {
     public name: string;
@@ -128,8 +126,11 @@ export class UISettings {
 
 export class Projection {
     public visibleRegion: VisibleRegion;
+
     public fromScreenLocation(point: Point): Position;
+
     public toScreenLocation(position: Position): Point;
+
     public ios: any; /* GMSProjection */
     public android: any;
 }
@@ -145,7 +146,9 @@ export class VisibleRegion {
 export class Position {
     public latitude: number;
     public longitude: number;
+
     public static positionFromLatLng(latitude: number, longitude: number): Position;
+
     public ios: any; /* CLLocationCoordinate2D */
     public android: any;
 }
@@ -155,6 +158,7 @@ export class Bounds {
     public southwest: Position;
     public ios: any; /* GMSCoordinateBounds */
     public android: any;
+
     public static fromCoordinates(southwest: Position, northeast: Position): Bounds;
 }
 
@@ -171,10 +175,15 @@ export class Marker {
     public draggable: boolean;
     public visible: boolean;
     public zIndex: number;
+
     public showInfoWindow(): void;
+
     public isInfoWindowShown(): boolean;
+
     public infoWindowTemplate: string;
+
     public hideInfoWindow(): void;
+
     public userData: any;
     public _map: any;
     public ios: any;
@@ -196,10 +205,15 @@ export class Polyline extends Shape {
     public width: number;
     public color: Color;
     public geodesic: boolean;
+
     public addPoint(shape: Position): void;
+
     public addPoints(shapes: Position[]): void;
+
     public removePoint(shape: Position): void;
+
     public removeAllPoints(): void;
+
     public getPoints(): Array<Position>;
 }
 
@@ -207,15 +221,25 @@ export class Polygon extends Shape {
     public strokeWidth: number;
     public strokeColor: Color;
     public fillColor: Color;
+
     public addPoint(shape: Position): void;
+
     public addPoints(shapes: Position[]): void;
+
     public removePoint(shape: Position): void;
+
     public removeAllPoints(): void;
+
     public addHole(hole: Position[]): void;
+
     public addHoles(hole: Position[][]): void;
+
     public removeHole(hole: Position[]): void;
+
     public removeAllHoles(): void;
+
     public getPoints(): Array<Position>;
+
     public getHoles(): Array<Array<Position>>;
 }
 
@@ -241,18 +265,50 @@ export class StyleElement {
     public stylers: Array<StyleStylers>;
 }
 
-export type StyleElementType = "all" | "administrative" | "administrative.country" | "administrative.land_parcel" |
-    "administrative.locality" | "administrative.neighborhood" | "administrative.province" | "landscape" |
-    "landscape.man_made" | "landscape.natural" | "landscape.natural.landcover" | "landscape.natural.terrain" |
-    "poi" | "poi.attraction" | "poi.business" | "poi.government" | "poi.medical" | "poi.park" |
-    "poi.place_of_worship" | "poi.school" | "poi.sports_complex" | "road" | "road.arterial" | "road.highway" |
-    "road.highway.controlled_access" | "road.local" | "transit" | "transit.line" | "transit.station" |
-    "transit.station.airport" | "transit.station.bus" | "transit.station.rail" | "water";
+export type StyleElementType =
+    'all'
+    | 'administrative'
+    | 'administrative.country'
+    | 'administrative.land_parcel'
+    | 'administrative.locality'
+    | 'administrative.neighborhood'
+    | 'administrative.province'
+    |
+    'landscape'
+    | 'landscape.man_made'
+    | 'landscape.natural'
+    | 'landscape.natural.landcover'
+    | 'landscape.natural.terrain'
+    |
+    'poi'
+    | 'poi.attraction'
+    | 'poi.business'
+    | 'poi.government'
+    | 'poi.medical'
+    | 'poi.park'
+    | 'poi.place_of_worship'
+    | 'poi.school'
+    | 'poi.sports_complex'
+    |
+    'road'
+    | 'road.arterial'
+    | 'road.highway'
+    | 'road.highway.controlled_access'
+    | 'road.local'
+    |
+    'transit'
+    | 'transit.line'
+    | 'transit.station'
+    | 'transit.station.airport'
+    | 'transit.station.bus'
+    | 'transit.station.rail'
+    |
+    'water';
 
-export type StyleFeatureType = "all" | "geometry" | "geometry.fill" | "geometry.stroke" | "labels" | "labels.icon" |
-    "labels.text" | "labels.text.fill" | "labels.text.stroke";
+export type StyleFeatureType = 'all' | 'geometry' | 'geometry.fill' | 'geometry.stroke' | 'labels' | 'labels.icon' |
+                               'labels.text' | 'labels.text.fill' | 'labels.text.stroke';
 
-export type StyleVisibility = "on" | "off" | "simplified";
+export type StyleVisibility = 'on' | 'off' | 'simplified';
 
 export class StyleStylers {
     public hue?: string;
