@@ -1,9 +1,7 @@
-import { Color }        from '@nativescript/core/color';
-import * as imageSource from '@nativescript/core/image-source';
-import { Point }        from '@nativescript/core/ui/core/view';
-import { Image }        from '@nativescript/core/ui/image';
-import { GC, layout }   from '@nativescript/core/utils';
-import { WeakRef }      from '@nativescript/core/debugger/dom-node';
+import { Color, Image, ImageSource } from '@nativescript/core';
+import { Point }                     from '@nativescript/core/ui/core/view';
+import { GC, layout }                from '@nativescript/core/utils';
+import { WeakRef }                   from '@nativescript/core/debugger/dom-node';
 
 import {
     bearingProperty, BoundsBase, CircleBase, getColorHue, latitudeProperty, longitudeProperty, MapViewBase, MarkerBase,
@@ -38,7 +36,7 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
                 while (count < indoorBuilding.levels.count) {
                     levels.push(
                         {
-                            name:      indoorBuilding.levels[count].name,
+                            name     : indoorBuilding.levels[count].name,
                             shortName: indoorBuilding.levels[count].shortName,
                         }
                     );
@@ -47,8 +45,8 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
 
                 data = {
                     defaultLevelIndex: indoorBuilding.defaultLevelIndex,
-                    levels:            levels,
-                    isUnderground:     indoorBuilding.underground,
+                    levels           : levels,
+                    isUnderground    : indoorBuilding.underground,
                 };
             }
             owner.notifyBuildingFocusedEvent(data);
@@ -61,7 +59,7 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
             let data = null;
             if (activateLevel) {
                 data = {
-                    name:      activateLevel.name,
+                    name     : activateLevel.name,
                     shortName: activateLevel.shortName,
                 };
             }
@@ -112,11 +110,11 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
             if (cameraChanged) {
                 owner.notifyCameraEvent(MapViewBase.cameraChangedEvent, {
-                    latitude:  cameraPosition.target.latitude,
+                    latitude : cameraPosition.target.latitude,
                     longitude: cameraPosition.target.longitude,
-                    zoom:      cameraPosition.zoom,
-                    bearing:   cameraPosition.bearing,
-                    tilt:      cameraPosition.viewingAngle
+                    zoom     : cameraPosition.zoom,
+                    bearing  : cameraPosition.bearing,
+                    tilt     : cameraPosition.viewingAngle
                 });
             }
 
@@ -127,11 +125,11 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     public mapViewDidChangeCameraPosition(mapView: GMSMapView, cameraPosition: GMSCameraPosition) {
         const owner = this._owner.get();
         owner.notifyCameraEvent(MapViewBase.cameraMoveEvent, {
-            latitude:  cameraPosition.target.latitude,
+            latitude : cameraPosition.target.latitude,
             longitude: cameraPosition.target.longitude,
-            zoom:      cameraPosition.zoom,
-            bearing:   cameraPosition.bearing,
-            tilt:      cameraPosition.viewingAngle
+            zoom     : cameraPosition.zoom,
+            bearing  : cameraPosition.bearing,
+            tilt     : cameraPosition.viewingAngle
         });
     }
 
@@ -326,7 +324,8 @@ export class MapView extends MapViewBase {
     updateCamera() {
         if (this.mapAnimationsEnabled) {
             this.nativeView.animateToCameraPosition(this._createCameraPosition());
-        } else {
+        }
+        else {
             this.nativeView.camera = this._createCameraPosition();
         }
     }
@@ -337,7 +336,8 @@ export class MapView extends MapViewBase {
 
         if (this.mapAnimationsEnabled) {
             this.nativeView.animateToCameraPosition(cameraPosition);
-        } else {
+        }
+        else {
             this.nativeView.camera = cameraPosition;
         }
     }
@@ -755,7 +755,8 @@ export class Marker extends MarkerBase {
         this._color = value;
         if (this._color) {
             this._ios.icon = Marker.getIconForColor(this._color / 360);
-        } else {
+        }
+        else {
             this._ios.icon = null;
         }
     }
@@ -766,8 +767,8 @@ export class Marker extends MarkerBase {
 
     set icon(value: Image | string) {
         if (typeof value === 'string') {
-            const tempIcon         = new Image();
-            tempIcon.imageSource = imageSource.fromResource(String(value));
+            const tempIcon       = new Image();
+            tempIcon.imageSource = ImageSource.fromResourceSync(String(value));
             value                = tempIcon;
         }
         this._icon     = value;
