@@ -56,7 +56,7 @@ Start by copying the necessary template resource files in to the Android app res
 cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/src/main/res
 ```
 
-Next, modify your `app/App_Resources/Android/src/main/res/values/nativescript_google_maps_api.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
+Next, modify your `app/App_Resources/Android/src/main/res/values/google_maps_api_key.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
 
 Finally, modify your `app/App_Resources/Android/src/main/AndroidManifest.xml` file by inserting the following in between your `<application>` tags:
 
@@ -83,7 +83,7 @@ Start by copying the necessary template resource files in to the Android app res
 ```
 cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/
 ```
-Next, modify your `app/App_Resources/Android/values/nativescript_google_maps_api.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
+Next, modify your `app/App_Resources/Android/values/google_maps_api_key.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
 
 Finally, modify your `app/App_Resources/Android/AndroidManifest.xml` file by inserting the following in between the `<application>` tags:
 

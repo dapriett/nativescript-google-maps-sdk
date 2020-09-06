@@ -1,0 +1,11 @@
+// NS-GoogleMaps-SDK Plugin defaults to latest GPlay Services version. In case of problems, specify
+// which version to use by uncommenting the following lines:
+
+/*
+ android {
+
+     project.ext {
+         googlePlayServicesVersion = "16.+"
+     }
+}
+*/

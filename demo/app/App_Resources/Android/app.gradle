@@ -1,4 +1,0 @@
-project.ext {
-    // Uncomment below to change Google Play Services Version
-    //googlePlayServicesVersion = "+"
-}
