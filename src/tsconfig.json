@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target"                        : "ES2017",
-    "module"                        : "esnext",
-    "moduleResolution"              : "node",
+    "module"                        : "ESNext",
+    "moduleResolution"              : "Node",
     "declaration"                   : false,
     "noImplicitAny"                 : false,
     "removeComments"                : true,
@@ -14,26 +14,15 @@
     "emitDecoratorMetadata"         : true,
     "noEmitHelpers"                 : true,
     "noEmitOnError"                 : true,
-    "lib"                           : [
-      "es2018", "es2017", "dom", "es6"
-    ],
-    "types"                         : [
-      "@nativescript/core"
-    ],
+    "lib"                           : [ "es2018", "es2017", "dom", "es6" ],
     "baseUrl"                       : ".",
     "paths"                         : {
-      "*": [
-        "./node_modules/*"
-      ]
-    }
+      "*": [ "./node_modules/*" ]
+    },
+    "plugins"                       : [
+      { "transform": "@nativescript/webpack/transformers/ns-transform-native-classes", "type": "raw" }
+    ]
   },
-  "include"        : [
-    "./"
-  ],
-  "exclude"        : [
-    "node_modules",
-    "platforms",
-    "demo",
-    "ng-demo"
-  ]
+  "include"        : [ "./" ],
+  "exclude"        : [ "node_modules", "platforms" ]
 }
