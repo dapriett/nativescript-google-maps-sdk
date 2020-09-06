@@ -15,6 +15,9 @@ This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Map
 
 Prerequisites
 ===
+
+**NativeScript** - The latest [nativescript-cli@7](https://www.npmjs.com/package/nativescript) is highly recommended.
+
 **iOS** - [Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started) must be installed.
 
 **Android** - The latest version of the [Google Play Services SDK](https://developer.android.com/sdk/installing/adding-packages.html) must be installed.
@@ -25,6 +28,12 @@ Installation
 ===
 
 Install the plugin using the NativeScript CLI tooling:
+
+```
+ns plugin add nativescript-google-maps-sdk
+```
+
+or in case of nativescript < 7, proceed with the old command:
 
 ```
 tns plugin add nativescript-google-maps-sdk
@@ -38,23 +47,6 @@ See demo code included [here](https://github.com/dapriett/nativescript-google-ma
 See a live demo [here](https://tinyurl.com/m7ndp7u)
  
 ## Configure API Key for Android
-
-### Nativescript < 4
-
-Start by copying the necessary template resource files in to the Android app resources folder:
-
-```
-cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/
-```
-Next, modify your `app/App_Resources/Android/values/nativescript_google_maps_api.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
-
-Finally, modify your `app/App_Resources/Android/AndroidManifest.xml` file by inserting the following in between the `<application>` tags:
-
-```(xml)
-<meta-data
-    android:name="com.google.android.geo.API_KEY"
-    android:value="@string/nativescript_google_maps_api_key" />
-```
 
 ### Nativescript 4+
 
@@ -82,6 +74,23 @@ The plugin will default to the latest available version of the Google Play Servi
 project.ext {
     googlePlayServicesVersion = "+"
 }
+```
+
+### Nativescript < 4
+
+Start by copying the necessary template resource files in to the Android app resources folder:
+
+```
+cp -r node_modules/nativescript-google-maps-sdk/platforms/android/res/values app/App_Resources/Android/
+```
+Next, modify your `app/App_Resources/Android/values/nativescript_google_maps_api.xml` file by uncommenting the `nativescript_google_maps_api_key` string, and replace `PUT_API_KEY_HERE` with the API key you created earlier.
+
+Finally, modify your `app/App_Resources/Android/AndroidManifest.xml` file by inserting the following in between the `<application>` tags:
+
+```(xml)
+<meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="@string/nativescript_google_maps_api_key" />
 ```
 
 ## Configure API Key for iOS
@@ -325,6 +334,10 @@ If you are using Angular 8, there is a temporary fix needed for the `@ViewChild`
 ```
 @ViewChild("MapView", {static: false}) mapView: ElementRef;
 ```
+
+# Angular 10 Support
+
+Full Angular 10 (with Ivy Compiler) support is under development and will be released in the next two weeks, starting from today (09/06/2020).
 
 
 # Clustering Support (Issue [#57](https://github.com/dapriett/nativescript-google-maps-sdk/issues/57))
