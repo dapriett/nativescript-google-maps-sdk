@@ -5,16 +5,15 @@ import {
     longitudeProperty, bearingProperty, zoomProperty,
     tiltProperty, StyleBase, UISettingsBase, getColorHue
 } from "./map-view-common";
-import { Color } from "tns-core-modules/color";
-import * as imageSource from 'tns-core-modules/image-source';
-import { Point } from "tns-core-modules/ui/core/view";
-import { Image } from "tns-core-modules/ui/image";
-import { GC, layout } from "utils/utils"
+import { GC, layout } from "@nativescript/core/utils"
+import { Image, Color, ImageSource } from "@nativescript/core";
+import { Point } from "@nativescript/core/ui/core/view";
 
 export * from "./map-view-common";
 
 declare function UIEdgeInsetsMake(...params: any[]): any;
 
+@NativeClass
 class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDelegate {
 
     public static ObjCProtocols = [GMSIndoorDisplayDelegate];
@@ -70,8 +69,8 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
     }
 }
 
-
-class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
+@NativeClass
+class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate, CLLocationManagerDelegate {
 
     public static ObjCProtocols = [GMSMapViewDelegate];
 
@@ -79,8 +78,53 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public static initWithOwner(owner: WeakRef<MapView>): MapViewDelegateImpl {
         let handler = <MapViewDelegateImpl>MapViewDelegateImpl.new();
+        MapViewDelegateImpl.ObjCProtocols = [CLLocationManagerDelegate, GMSMapViewDelegate];
         handler._owner = owner;
         return handler;
+    }
+
+    public locationManagerDidChangeAuthorizationStatus(manager: CLLocationManager, status: CLAuthorizationStatus)
+    {
+        let owner = this._owner.get();
+        let lm = new CLLocationManager();
+        switch (status)
+        {
+        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedAlways:
+            console.log("Location AuthorizedAlways")
+            owner.myLocationEnabled = true
+            lm.startUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedWhenInUse:
+            console.log("Location AuthorizedWhenInUse")
+            owner.myLocationEnabled = true
+            lm.startUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusDenied:
+            console.log("Location Denied")
+            owner.myLocationEnabled = false
+            lm.stopUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusNotDetermined:
+            console.log("Location NotDetermined")
+            owner.myLocationEnabled = false
+            lm.stopUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusRestricted:
+            console.log("Location Restricted")
+            owner.myLocationEnabled = false
+            lm.stopUpdatingLocation()
+        }
+    }
+
+    public locationManagerDidUpdateLocations(manager: CLLocationManager, locations: NSArray<CLLocation> | CLLocation[])
+    {
+        let owner = this._owner.get();
+        console.log(locations)
+        /*if (locations.length > 0)
+        {
+            owner.gMap.camera = GMSCameraPosition.cameraWithTargetZoom(locations.coordinate, 10.0)
+            owner.settings.myLocationButton = true
+        }*/
     }
 
     public mapViewIdleAtCameraPosition(mapView: GMSMapView, cameraPosition: GMSCameraPosition): void {
@@ -154,6 +198,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker): boolean {
         const owner = this._owner.get();
+        console.log("marker taped")
         if (owner) {
             let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             if (marker) {
@@ -198,6 +243,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public mapViewDidTapInfoWindowOfMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
         let owner = this._owner.get();
+        console.log("infowindow taped")
         if (owner) {
             let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerInfoWindowTapped(marker);
@@ -214,6 +260,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public didTapMyLocationButtonForMapView(mapView: GMSMapView): boolean {
         const owner = this._owner.get();
+        console.log("TAPED")
         if (owner) {
             owner.notifyMyLocationTapped();
             return true;
@@ -275,13 +322,71 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 }
 
+@NativeClass
+class MapVCDelegateImpl extends NSObject implements CLLocationManagerDelegate
+{
+    public static ObjCProtocols = [CLLocationManagerDelegate];
+
+    private _owner: WeakRef<MapView>;
+    public lm: CLLocationManager = new CLLocationManager();
+
+    public static initWithOwner(owner: WeakRef<MapView>): MapVCDelegateImpl {
+        let handler = <MapVCDelegateImpl>MapVCDelegateImpl.new();
+        handler._owner = owner;
+        return handler;
+    }
+
+    public locationManagerDidChangeAuthorizationStatus(manager: CLLocationManager, status: CLAuthorizationStatus)
+    {
+        let owner = this._owner.get();
+        switch (status)
+        {
+        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedAlways:
+            console.log("Location AuthorizedAlways")
+            owner.myLocationEnabled = true
+            this.lm.startUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedWhenInUse:
+            console.log("Location AuthorizedWhenInUse")
+            owner.myLocationEnabled = true
+            this.lm.startUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusDenied:
+            console.log("Location Denied")
+            owner.myLocationEnabled = false
+            this.lm.stopUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusNotDetermined:
+            console.log("Location NotDetermined")
+            owner.myLocationEnabled = false
+            this.lm.stopUpdatingLocation()
+
+        case CLAuthorizationStatus.kCLAuthorizationStatusRestricted:
+            console.log("Location Restricted")
+            owner.myLocationEnabled = false
+            this.lm.stopUpdatingLocation()
+        }
+    }
+
+    public locationManagerDidUpdateLocations(manager: CLLocationManager, locations: NSArray<CLLocation> | CLLocation[])
+    {
+        let owner = this._owner.get();
+        console.log(locations)
+        /*if (locations.length > 0)
+        {
+            owner.gMap.camera = GMSCameraPosition.cameraWithTargetZoom(locations.coordinate, 10.0)
+            owner.settings.myLocationButton = true
+        }*/
+    }
+}
 
 export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();
 
-    private _delegate: MapViewDelegateImpl;
+    public _delegate: MapViewDelegateImpl;
     private _indoorDelegate:IndoorDisplayDelegateImpl;
+    private _mapVCDelegate:MapVCDelegateImpl;
 
     constructor() {
         super();
@@ -289,6 +394,7 @@ export class MapView extends MapViewBase {
         this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
         this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
         this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
+        //this._mapVCDelegate = MapVCDelegateImpl.initWithOwner(new WeakRef(this));
         this.updatePadding();
     }
 
@@ -309,6 +415,7 @@ export class MapView extends MapViewBase {
         this._markers = null;
         this._delegate = null;
         this._indoorDelegate=null;
+        this._mapVCDelegate = null;
         super.disposeNativeView();
         GC();
     };
@@ -767,7 +874,7 @@ export class Marker extends MarkerBase {
     set icon(value: Image | string) {
         if (typeof value === 'string') {
             var tempIcon = new Image();
-            tempIcon.imageSource = imageSource.fromResource(String(value));
+            tempIcon.imageSource = ImageSource.fromResourceSync(String(value));
             value = tempIcon;
         }
         this._icon = value;
