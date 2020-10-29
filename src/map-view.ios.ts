@@ -70,7 +70,7 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
 }
 
 @NativeClass
-class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate, CLLocationManagerDelegate {
+class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public static ObjCProtocols = [GMSMapViewDelegate];
 
@@ -78,53 +78,8 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate, CLLoca
 
     public static initWithOwner(owner: WeakRef<MapView>): MapViewDelegateImpl {
         let handler = <MapViewDelegateImpl>MapViewDelegateImpl.new();
-        MapViewDelegateImpl.ObjCProtocols = [CLLocationManagerDelegate, GMSMapViewDelegate];
         handler._owner = owner;
         return handler;
-    }
-
-    public locationManagerDidChangeAuthorizationStatus(manager: CLLocationManager, status: CLAuthorizationStatus)
-    {
-        let owner = this._owner.get();
-        let lm = new CLLocationManager();
-        switch (status)
-        {
-        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedAlways:
-            console.log("Location AuthorizedAlways")
-            owner.myLocationEnabled = true
-            lm.startUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedWhenInUse:
-            console.log("Location AuthorizedWhenInUse")
-            owner.myLocationEnabled = true
-            lm.startUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusDenied:
-            console.log("Location Denied")
-            owner.myLocationEnabled = false
-            lm.stopUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusNotDetermined:
-            console.log("Location NotDetermined")
-            owner.myLocationEnabled = false
-            lm.stopUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusRestricted:
-            console.log("Location Restricted")
-            owner.myLocationEnabled = false
-            lm.stopUpdatingLocation()
-        }
-    }
-
-    public locationManagerDidUpdateLocations(manager: CLLocationManager, locations: NSArray<CLLocation> | CLLocation[])
-    {
-        let owner = this._owner.get();
-        console.log(locations)
-        /*if (locations.length > 0)
-        {
-            owner.gMap.camera = GMSCameraPosition.cameraWithTargetZoom(locations.coordinate, 10.0)
-            owner.settings.myLocationButton = true
-        }*/
     }
 
     public mapViewIdleAtCameraPosition(mapView: GMSMapView, cameraPosition: GMSCameraPosition): void {
@@ -243,7 +198,6 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate, CLLoca
 
     public mapViewDidTapInfoWindowOfMarker(mapView: GMSMapView, gmsMarker: GMSMarker): void {
         let owner = this._owner.get();
-        console.log("infowindow taped")
         if (owner) {
             let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             owner.notifyMarkerInfoWindowTapped(marker);
@@ -260,7 +214,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate, CLLoca
 
     public didTapMyLocationButtonForMapView(mapView: GMSMapView): boolean {
         const owner = this._owner.get();
-        console.log("TAPED")
+        owner.setDelegate()
         if (owner) {
             owner.notifyMyLocationTapped();
             return true;
@@ -386,7 +340,7 @@ export class MapView extends MapViewBase {
 
     public _delegate: MapViewDelegateImpl;
     private _indoorDelegate:IndoorDisplayDelegateImpl;
-    private _mapVCDelegate:MapVCDelegateImpl;
+    //private _mapVCDelegate:MapVCDelegateImpl;
 
     constructor() {
         super();
@@ -415,7 +369,6 @@ export class MapView extends MapViewBase {
         this._markers = null;
         this._delegate = null;
         this._indoorDelegate=null;
-        this._mapVCDelegate = null;
         super.disposeNativeView();
         GC();
     };
