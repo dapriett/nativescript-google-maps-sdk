@@ -13,7 +13,7 @@ export * from "./map-view-common";
 
 declare function UIEdgeInsetsMake(...params: any[]): any;
 
-@NativeClass
+@NativeClass()
 class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDelegate {
 
     public static ObjCProtocols = [GMSIndoorDisplayDelegate];
@@ -69,7 +69,7 @@ class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDele
     }
 }
 
-@NativeClass
+@NativeClass()
 class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public static ObjCProtocols = [GMSMapViewDelegate];
@@ -275,7 +275,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 }
 
-@NativeClass
+@NativeClass()
 class MapVCDelegateImpl extends NSObject implements CLLocationManagerDelegate
 {
     public static ObjCProtocols = [CLLocationManagerDelegate];

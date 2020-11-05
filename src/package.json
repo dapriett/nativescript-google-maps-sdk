@@ -15,7 +15,7 @@
     "commitmsg": "validate-commit-msg",
     "github-release": "conventional-github-releaser -p angular -n ./.github-release.json",
     "clean": "rm -f *.js",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && ts-patch install && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "./node_modules/.bin/tsc",
     "plugin.link": "npm link && cd ../demo && npm link nativescript-google-maps-sdk && cd ../src",
