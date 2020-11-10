@@ -512,7 +512,7 @@ export class MapView extends MapViewBase {
 
 }
 
-export class UISettings extends UISettingsBase {
+export class UISettings implements UISettingsBase {
     private _android: any;
 
     get android() {
@@ -520,7 +520,6 @@ export class UISettings extends UISettingsBase {
     }
 
     constructor(android: any) {
-        super();
         this._android = android;
     }
 

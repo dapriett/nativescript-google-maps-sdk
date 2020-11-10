@@ -104,7 +104,8 @@ export const paddingProperty: Property<MapView, number | number[]>;
 
 export class UISettings {
     // Whether the compass is enabled/disabled.
-    compassEnabled: boolean;
+    compassEnabled(): boolean;
+    compassEnabled(value: boolean): boolean;
     // Whether the indoor level picker is enabled/disabled.
     indoorLevelPickerEnabled: boolean;
     // Whether the indoor level picker is enabled/disabled.

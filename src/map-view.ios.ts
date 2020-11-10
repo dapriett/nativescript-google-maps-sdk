@@ -153,7 +153,6 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public mapViewDidTapMarker(mapView: GMSMapView, gmsMarker: GMSMarker): boolean {
         const owner = this._owner.get();
-        console.log("marker taped")
         if (owner) {
             let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
             if (marker) {
@@ -214,6 +213,7 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
     public didTapMyLocationButtonForMapView(mapView: GMSMapView): boolean {
         const owner = this._owner.get();
+        
         if (owner) {
             owner.notifyMyLocationTapped();
             return true;
@@ -230,7 +230,6 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         if (!owner) return null;
         let marker: Marker = owner.findMarker((marker: Marker) => marker.ios == gmsMarker);
         var content = owner._getMarkerInfoWindowContent(marker);
-
         if (content) {
             let width = Number(content.width);
             if (Number.isNaN(width)) width = null;
@@ -280,7 +279,7 @@ class MapVCDelegateImpl extends NSObject implements CLLocationManagerDelegate
 {
     public static ObjCProtocols = [CLLocationManagerDelegate];
 
-    private _owner: WeakRef<MapView>;
+    protected _owner: WeakRef<MapView>;
     public lm: CLLocationManager = new CLLocationManager();
 
     public static initWithOwner(owner: WeakRef<MapView>): MapVCDelegateImpl {
@@ -288,6 +287,75 @@ class MapVCDelegateImpl extends NSObject implements CLLocationManagerDelegate
         handler._owner = owner;
         return handler;
     }
+
+	locationManagerDidDetermineStateForRegion?(manager: CLLocationManager, state: CLRegionState, region: CLRegion): void {
+
+    }
+
+	locationManagerDidEnterRegion?(manager: CLLocationManager, region: CLRegion): void {
+
+    }
+
+	locationManagerDidExitRegion?(manager: CLLocationManager, region: CLRegion): void {
+        
+    }
+
+	locationManagerDidFailRangingBeaconsForConstraintError?(manager: CLLocationManager, beaconConstraint: CLBeaconIdentityConstraint, error: NSError): void {
+        
+    }
+
+	locationManagerDidFailWithError?(manager: CLLocationManager, error: NSError): void {
+        
+    }
+
+	locationManagerDidFinishDeferredUpdatesWithError?(manager: CLLocationManager, error: NSError): void {
+        
+    }
+
+	locationManagerDidPauseLocationUpdates?(manager: CLLocationManager): void {
+        
+    }
+
+	locationManagerDidRangeBeaconsInRegion?(manager: CLLocationManager, beacons: NSArray<CLBeacon> | CLBeacon[], region: CLBeaconRegion): void {
+        
+    }
+
+	locationManagerDidRangeBeaconsSatisfyingConstraint?(manager: CLLocationManager, beacons: NSArray<CLBeacon> | CLBeacon[], beaconConstraint: CLBeaconIdentityConstraint): void {
+        
+    }
+
+	locationManagerDidResumeLocationUpdates?(manager: CLLocationManager): void {
+        
+    }
+
+	locationManagerDidStartMonitoringForRegion?(manager: CLLocationManager, region: CLRegion): void {
+        
+    }
+
+	locationManagerDidUpdateHeading?(manager: CLLocationManager, newHeading: CLHeading): void {
+        
+    }
+
+	locationManagerDidUpdateToLocationFromLocation?(manager: CLLocationManager, newLocation: CLLocation, oldLocation: CLLocation): void {
+        
+    }
+
+	locationManagerDidVisit?(manager: CLLocationManager, visit: CLVisit): void {
+        
+    }
+
+	locationManagerMonitoringDidFailForRegionWithError?(manager: CLLocationManager, region: CLRegion, error: NSError): void {
+        
+    }
+
+	locationManagerRangingBeaconsDidFailForRegionWithError?(manager: CLLocationManager, region: CLBeaconRegion, error: NSError): void {
+        
+    }
+
+	locationManagerShouldDisplayHeadingCalibration?(manager: CLLocationManager): boolean {
+        return false;
+    }
+
 
     public locationManagerDidChangeAuthorizationStatus(manager: CLLocationManager, status: CLAuthorizationStatus)
     {
@@ -332,6 +400,8 @@ class MapVCDelegateImpl extends NSObject implements CLLocationManagerDelegate
         }*/
     }
 }
+
+
 
 export class MapView extends MapViewBase {
 
@@ -524,7 +594,7 @@ export class MapView extends MapViewBase {
     }
 }
 
-export class UISettings extends UISettingsBase {
+export class UISettings implements UISettingsBase {
     private _ios: any;
 
     get ios() {
@@ -532,7 +602,6 @@ export class UISettings extends UISettingsBase {
     }
 
     constructor(ios: any) {
-        super();
         this._ios = ios;
     }
 

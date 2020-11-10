@@ -21,7 +21,8 @@
     "plugin.link": "npm link && cd ../demo && npm link nativescript-google-maps-sdk && cd ../src",
     "prepare": "node ./scripts/prepare.js",
     "demo.ios": "npm i && npm run build && cd ../demo && tns run ios --no-hmr",
-    "demo.android": "npm i && npm run build && cd ../demo && tns run android --no-hmr",
+    "demo.debug.ios": "npm i && npm run build && cd ../demo && tns debug ios --no-hmr",
+    "demo.android": "npm i && npm run build && cd ../demo && tns run android --device --no-hmr",
     "demo-vue.ios": "npm i && npm run build && cd ../demo-vue && tns run ios --bundle --syncAllFiles",
     "demo-vue.android": "npm i && npm run build && cd ../demo-vue && tns run android --bundle --syncAllFiles",
     "generate.typings.ios": "cd ../demo && TNS_DEBUG_METADATA_PATH=\"$(pwd)/metadata\" tns build ios && TNS_TYPESCRIPT_DECLARATIONS_PATH=\"$(pwd)/typings\" tns build ios && echo 'Now look for your library typings in demo/typings!'"
