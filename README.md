@@ -242,6 +242,22 @@ exports.onCameraMove = onCameraMove;
 ```
 
 ## Custom Info Windows (Beta)
+>[!WARNING]
+> if you are using NS7 `infoWindow Template` won't work from a xml file! a temporary solution will be declaring infoWindow Template from the code behind like this :
+
+```ts
+var mapView = null;
+
+export function onMapReady(args) {
+    mapView = args.object;
+    mapView.infoWindowTemplate = `<StackLayout orientation="vertical" width="200" height="150" >
+        <Label text="{{title}}" className="title" width="125"   />
+        <Label text="{{snippet}}" className="snippet" width="125"   />
+        <Label text="{{'LAT: ' + position.latitude}}" className="infoWindowCoordinates"  />
+        <Label text="{{'LON: ' + position.longitude}}" className="infoWindowCoordinates"  />
+    </StackLayout>`;
+}
+```
 
 To use custom marker info windows, define a template in your view like so:
 
