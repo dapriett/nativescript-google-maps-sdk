@@ -243,7 +243,7 @@ exports.onCameraMove = onCameraMove;
 
 ## Custom Info Windows (Beta)
 >[!WARNING]
-> if you are using NS7 `infoWindow Template` won't work from a xml file! a temporary solution will be declaring infoWindow Template from the code behind like this :
+> if you are using NS7 `infoWindowTemplate` won't work from a xml file! a temporary solution will be declaring infoWindow Template from the code behind like this :
 
 ```ts
 var mapView = null;
