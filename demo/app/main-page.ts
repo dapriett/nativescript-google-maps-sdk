@@ -1,10 +1,18 @@
-var vmModule = require("./main-view-model");
-var builder = require("ui/builder");
-var mapsModule = require("nativescript-google-maps-sdk");
-var permissions = require("nativescript-permissions");
-var application = require("application");
-var Color = require("color").Color;
+import { HelloWorldModel } from "./main-view-model";
+import * as mapsModule from "nativescript-google-maps-sdk";
+import * as permissions from "nativescript-permissions";
+import {Application, Color} from "@nativescript/core";
 var style = require('./map-style.json');
+
+declare var android: any;
+let vmModule: HelloWorldModel = null;
+const delay = 1000;
+
+export function pageLoaded(args) {
+    var page = args.object;
+    vmModule = new HelloWorldModel();
+    page.bindingContext = vmModule;
+}
 
 function wait(milliSeconds) {
     return new Promise(function(resolve, reject) {
@@ -16,7 +24,7 @@ function wait(milliSeconds) {
 
 function requestPermissions() {
   return new Promise(function(resolve, reject) {
-    if (!application.android) return resolve(true);
+    if (!Application.android) return resolve(true);
     permissions.requestPermission([
           android.Manifest.permission.ACCESS_FINE_LOCATION,
           android.Manifest.permission.ACCESS_COARSE_LOCATION],
@@ -47,15 +55,9 @@ function printUISettings(settings) {
   }, undefined, 2));
 }
 
-function pageLoaded(args) {
-    var page = args.object;
-    page.bindingContext = vmModule.mainViewModel;
-}
-exports.pageLoaded = pageLoaded;
-
 var mapView = null;
 
-function onMapReady(args) {
+export function onMapReady(args) {
     mapView = args.object;
 
     console.log("onMapReady");
@@ -123,11 +125,11 @@ function onMapReady(args) {
     mapView.addMarker(marker);
 
     // Custom Info Window Marker
-    marker = new mapsModule.Marker();
+    /*marker = new mapsModule.Marker();
     marker.position = mapsModule.Position.positionFromLatLng(-33.22, 151.20);
     marker.infoWindowTemplate = 'testWindow';
     mapView.addMarker(marker);
-    marker.showInfoWindow();
+    marker.showInfoWindow();*/
 
     requestPermissions().then(function(granted) {
         if(granted) {
@@ -146,27 +148,27 @@ function onMapReady(args) {
         marker.rotation = 45;
         console.log("Removing Point from polyline...", polyline, point);
         polyline.removePoint(point);
-        return wait(3000);
+        return wait(delay);
     }).then(function () {
-        vmModule.mainViewModel.set("mapAnimationsEnabled", false);
-        vmModule.mainViewModel.set("zoom", 9);
-        console.log("Zooming in (no animation)...", vmModule.mainViewModel);
-        return wait(3000);
+        vmModule.set("mapAnimationsEnabled", false);
+        vmModule.set("zoom", 9);
+        console.log("Zooming in (no animation)...", vmModule);
+        return wait(delay);
     }).then(function () {
         polyline.addPoint(mapsModule.Position.positionFromLatLng(-33.33, 151.08));
         console.log("Adding point to Polyline...", polyline);
-        vmModule.mainViewModel.set("padding", [30, 60, 40, 40]);
-        return wait(3000);
+        vmModule.set("padding", [30, 60, 40, 40]);
+        return wait(delay);
     }).then(function () {
         polygon.addPoint(mapsModule.Position.positionFromLatLng(-34.22, 151.20));
         console.log("Adding point to Polygon...", polygon);
-        return wait(3000);
+        return wait(delay);
     }).then(function () {
         var marker = mapView.findMarker(function (marker) {
             return marker.userData.index === 2;
         });
         marker.visible = true;
-        return wait(3000);
+        return wait(delay);
     }).then(function () {
         var marker = mapView.findMarker(function (marker) {
             return marker.userData.index === 2;
@@ -174,31 +176,35 @@ function onMapReady(args) {
         // marker.position = mapsModule.Position.positionFromLatLng(-32.89,151.44);
         marker.anchor = [1, 1];
         marker.alpha = 0.8;
-        return wait(3000);
+        return wait(delay);
     }).then(function () {
         console.log("Changing to dark mode...");
         mapView.setStyle(style);
-        return wait(3000);
-    }).then(function () {
+        return wait(delay);
+    })
+    /*.then(function () {
         var marker = mapView.findMarker(function (marker) {
+            console.log("marker.userData")
+            console.log(marker)
             return marker.userData.index === 1;
         });
         console.log("Removing marker...", marker.userData);
         mapView.removeMarker(marker);
-        return wait(3000);
-    }).then(function () {
+        return wait(delay);
+    })*/
+    .then(function () {
         console.log("Removing all circles...");
         mapView.removeAllCircles();
         console.log("Removing all polylines...");
         mapView.removeAllPolylines();
         console.log("Removing all polygons...");
         mapView.removeAllPolygons();
-      return wait(3000);
+      return wait(delay);
     }).then(function () {
         console.log("Hiding compass...");
         mapView.settings.compassEnabled = false;
         printUISettings(mapView.settings);
-      return wait(3000);
+      return wait(delay);
     }).then(function () {
         console.log("Changing bounds...");
         var bounds = mapsModule.Bounds.fromCoordinates(
@@ -206,7 +212,7 @@ function onMapReady(args) {
             mapsModule.Position.positionFromLatLng(-33.78, 151.24)
         );
         mapView.setViewport(bounds);
-        return wait(3000);
+        return wait(delay);
     }).then(function () {
         var marker = new mapsModule.Marker();
         marker.position = mapsModule.Position.positionFromLatLng(mapView.latitude, mapView.longitude);
@@ -220,18 +226,18 @@ function onMapReady(args) {
     });
 }
 
-function onCoordinateTapped(args) {
+export function onCoordinateTapped(args) {
     console.log("Coordinate Tapped, Lat: " + args.position.latitude + ", Lon: " + args.position.longitude, args);
 }
 
-function onMarkerEvent(args) {
+export function onMarkerEvent(args) {
    console.log("Marker Event: '" + args.eventName
                 + "' triggered on: " + args.marker.title
                 + ", Lat: " + args.marker.position.latitude + ", Lon: " + args.marker.position.longitude, args);
 }
 
 var lastCamera = null;
-function onCameraChanged(args) {
+export function onCameraChanged(args) {
     console.log("Camera changed: "+JSON.stringify(args.camera), JSON.stringify(args.camera) === lastCamera);
     lastCamera = JSON.stringify(args.camera);
     var bounds = mapView.projection.visibleRegion.bounds;
@@ -241,22 +247,14 @@ function onCameraChanged(args) {
         }));
 }
 
-function onCameraMove(args) {
+export function onCameraMove(args) {
     console.log("Camera moving: "+JSON.stringify(args.camera));
 }
 
-function onIndoorBuildingFocused(args) {
+export function onIndoorBuildingFocused(args) {
     console.log("Building focus changed: " + JSON.stringify(args.indoorBuilding));
 }
 
-function onIndoorLevelActivated(args) {
+export function onIndoorLevelActivated(args) {
     console.log("Indoor level changed: " + JSON.stringify(args.activateLevel));
 }
-
-exports.onMapReady = onMapReady;
-exports.onCoordinateTapped = onCoordinateTapped;
-exports.onMarkerEvent = onMarkerEvent;
-exports.onCameraChanged = onCameraChanged;
-exports.onCameraMove = onCameraMove;
-exports.onIndoorBuildingFocused = onIndoorBuildingFocused;
-exports.onIndoorLevelActivated = onIndoorLevelActivated;

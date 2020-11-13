@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
+        "target": "ES2017",
+        "module": "esnext",
+        "moduleResolution": "node",
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
@@ -10,6 +11,10 @@
         "sourceMap": false,
         "experimentalDecorators": true,
         "noEmitHelpers": true,
+        "plugins": [{
+            "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
+            "type": "raw"
+        }],
         "lib": [
             "es6",
             "dom"
@@ -17,7 +22,6 @@
         "baseUrl": ".",
         "paths": {
             "*": [
-                "./node_modules/tns-core-modules/*",
                 "./node_modules/*"
             ]
         }

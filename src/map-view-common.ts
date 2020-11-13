@@ -4,22 +4,13 @@ import {
     CameraEventData, PositionEventData, Bounds, Style, UISettings, IndoorBuilding, IndoorLevel,
     IndoorLevelActivatedEventData, BuildingFocusedEventData
 } from "./map-view";
-import { Point, View, Template, KeyedTemplate } from "tns-core-modules/ui/core/view";
-import { Image } from "tns-core-modules/ui/image";
-import { LayoutBase } from "tns-core-modules/ui/layouts/layout-base";
-
-import { Property } from "tns-core-modules/ui/core/properties";
-import { Color } from "tns-core-modules/color";
-import { parseMultipleTemplates, parse } from "tns-core-modules/ui/builder";
-import { eachDescendant } from "tns-core-modules/ui/core/view-base";
-import { ProxyViewContainer } from "tns-core-modules/ui/proxy-view-container";
-import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
+import { Point } from "@nativescript/core/ui/core/view";
+import { View, Template, KeyedTemplate, Image, LayoutBase, Property, Color, Builder, eachDescendant, ProxyViewContainer, StackLayout } from "@nativescript/core";
 
 function onInfoWindowTemplatesChanged(mapView: MapViewBase) {
     let _infoWindowTemplates = new Array<KeyedTemplate>();
-
     if (mapView.infoWindowTemplates && typeof mapView.infoWindowTemplates === "string") {
-        _infoWindowTemplates = _infoWindowTemplates.concat(parseMultipleTemplates(mapView.infoWindowTemplates));
+        _infoWindowTemplates = _infoWindowTemplates.concat(Builder.parseMultipleTemplates(mapView.infoWindowTemplates));
     } else if (mapView.infoWindowTemplates) {
         _infoWindowTemplates = _infoWindowTemplates.concat(<KeyedTemplate[]>mapView.infoWindowTemplates);
     }
@@ -61,7 +52,6 @@ function paddingValueConverter(value: any) {
 
 function onDescendantsLoaded(view: View, callback: () => void) {
     if (!view) return callback();
-
     let loadingCount = 1;
     let loadedCount = 0;
 
@@ -159,7 +149,8 @@ export abstract class MapViewBase extends View implements MapView {
         key: "",
         createView: () => {
             if (this.infoWindowTemplate) {
-                return parse(this.infoWindowTemplate, this);
+                let v = Builder.parse(this.infoWindowTemplate, this);
+                return v;
             }
             return undefined;
         }
@@ -196,7 +187,6 @@ export abstract class MapViewBase extends View implements MapView {
 
     public _getMarkerInfoWindowContent(marker: MarkerBase) {
         var view;
-
         if (marker && marker._infoWindowView) {
             view = marker._infoWindowView;
             return view;
@@ -239,7 +229,8 @@ export abstract class MapViewBase extends View implements MapView {
     }
 
     public _getInfoWindowTemplate(marker: MarkerBase): KeyedTemplate {
-        if(marker){
+        if(marker)
+        {
             const templateKey = marker.infoWindowTemplate;
             for (let i = 0, length = this._infoWindowTemplates.length; i < length; i++) {
                 if (this._infoWindowTemplates[i].key === templateKey) {
@@ -409,16 +400,16 @@ paddingProperty.register(MapViewBase);
 export const mapAnimationsEnabledProperty = new Property<MapViewBase, boolean>({ name: 'mapAnimationsEnabled', defaultValue: true });
 mapAnimationsEnabledProperty.register(MapViewBase);
 
-export class UISettingsBase implements UISettings {
-    compassEnabled: boolean;
-    indoorLevelPickerEnabled: boolean;
-    mapToolbarEnabled: boolean;
-    myLocationButtonEnabled: boolean;
-    rotateGesturesEnabled: boolean;
-    scrollGesturesEnabled: boolean;
-    tiltGesturesEnabled: boolean;
-    zoomControlsEnabled: boolean;
-    zoomGesturesEnabled: boolean;
+export interface UISettingsBase {
+    readonly compassEnabled;
+    readonly indoorLevelPickerEnabled: boolean;
+    readonly mapToolbarEnabled: boolean;
+    readonly myLocationButtonEnabled: boolean;
+    readonly rotateGesturesEnabled: boolean;
+    readonly scrollGesturesEnabled: boolean;
+    readonly tiltGesturesEnabled: boolean;
+    readonly zoomControlsEnabled: boolean;
+    readonly zoomGesturesEnabled: boolean;
 }
 
 export abstract class ProjectionBase implements Projection {

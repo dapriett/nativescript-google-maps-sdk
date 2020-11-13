@@ -1,8 +1,9 @@
-var observable = require("data/observable");
-var HelloWorldModel = (function (_super) {
-    __extends(HelloWorldModel, _super);
-    function HelloWorldModel() {
-        _super.call(this);
+import { Observable } from "@nativescript/core";
+
+
+export class HelloWorldModel extends Observable {
+    constructor() {
+        super();
         this.set("latitude", -33.86);
         this.set("longitude", 151.20);
         this.set("zoom", 8);
@@ -13,8 +14,4 @@ var HelloWorldModel = (function (_super) {
         this.set("padding", [80, 40, 40, 40]);
         this.set("mapAnimationsEnabled", true);
     }
-
-    return HelloWorldModel;
-})(observable.Observable);
-exports.HelloWorldModel = HelloWorldModel;
-exports.mainViewModel = new HelloWorldModel();
+}
