@@ -1,13 +1,13 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view",
   "typings": "map-view.d.ts",
   "nativescript": {
     "platforms": {
-      "android": "4.0.0",
-      "ios": "4.0.0"
+      "android": "7.0.0",
+      "ios": "7.0.0"
     }
   },
   "scripts": {

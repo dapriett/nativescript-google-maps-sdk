@@ -26,8 +26,16 @@ Installation
 
 Install the plugin using the NativeScript CLI tooling:
 
+### Nativescript 7+
+
 ```
 tns plugin add nativescript-google-maps-sdk
+```
+
+### Nativescript < 7
+
+```
+tns plugin add nativescript-google-maps-sdk@2.9.1
 ```
 
 Setup
