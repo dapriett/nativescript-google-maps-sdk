@@ -216,9 +216,10 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
         
         if (owner) {
             owner.notifyMyLocationTapped();
-            return true;
+            // Should return false in order to center the map on user position
+            return false;
         }
-        return false;
+        return true;
     }
 
     public mapViewMarkerInfoWindow(mapView: GMSMapView, gmsMarker: GMSMarker): UIView {
@@ -274,133 +275,6 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
     }
 }
 
-@NativeClass()
-class MapVCDelegateImpl extends NSObject implements CLLocationManagerDelegate
-{
-    public static ObjCProtocols = [CLLocationManagerDelegate];
-
-    protected _owner: WeakRef<MapView>;
-    public lm: CLLocationManager = new CLLocationManager();
-
-    public static initWithOwner(owner: WeakRef<MapView>): MapVCDelegateImpl {
-        let handler = <MapVCDelegateImpl>MapVCDelegateImpl.new();
-        handler._owner = owner;
-        return handler;
-    }
-
-	locationManagerDidDetermineStateForRegion?(manager: CLLocationManager, state: CLRegionState, region: CLRegion): void {
-
-    }
-
-	locationManagerDidEnterRegion?(manager: CLLocationManager, region: CLRegion): void {
-
-    }
-
-	locationManagerDidExitRegion?(manager: CLLocationManager, region: CLRegion): void {
-        
-    }
-
-	locationManagerDidFailRangingBeaconsForConstraintError?(manager: CLLocationManager, beaconConstraint: CLBeaconIdentityConstraint, error: NSError): void {
-        
-    }
-
-	locationManagerDidFailWithError?(manager: CLLocationManager, error: NSError): void {
-        
-    }
-
-	locationManagerDidFinishDeferredUpdatesWithError?(manager: CLLocationManager, error: NSError): void {
-        
-    }
-
-	locationManagerDidPauseLocationUpdates?(manager: CLLocationManager): void {
-        
-    }
-
-	locationManagerDidRangeBeaconsInRegion?(manager: CLLocationManager, beacons: NSArray<CLBeacon> | CLBeacon[], region: CLBeaconRegion): void {
-        
-    }
-
-	locationManagerDidRangeBeaconsSatisfyingConstraint?(manager: CLLocationManager, beacons: NSArray<CLBeacon> | CLBeacon[], beaconConstraint: CLBeaconIdentityConstraint): void {
-        
-    }
-
-	locationManagerDidResumeLocationUpdates?(manager: CLLocationManager): void {
-        
-    }
-
-	locationManagerDidStartMonitoringForRegion?(manager: CLLocationManager, region: CLRegion): void {
-        
-    }
-
-	locationManagerDidUpdateHeading?(manager: CLLocationManager, newHeading: CLHeading): void {
-        
-    }
-
-	locationManagerDidUpdateToLocationFromLocation?(manager: CLLocationManager, newLocation: CLLocation, oldLocation: CLLocation): void {
-        
-    }
-
-	locationManagerDidVisit?(manager: CLLocationManager, visit: CLVisit): void {
-        
-    }
-
-	locationManagerMonitoringDidFailForRegionWithError?(manager: CLLocationManager, region: CLRegion, error: NSError): void {
-        
-    }
-
-	locationManagerRangingBeaconsDidFailForRegionWithError?(manager: CLLocationManager, region: CLBeaconRegion, error: NSError): void {
-        
-    }
-
-	locationManagerShouldDisplayHeadingCalibration?(manager: CLLocationManager): boolean {
-        return false;
-    }
-
-
-    public locationManagerDidChangeAuthorizationStatus(manager: CLLocationManager, status: CLAuthorizationStatus)
-    {
-        let owner = this._owner.get();
-        switch (status)
-        {
-        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedAlways:
-            console.log("Location AuthorizedAlways")
-            owner.myLocationEnabled = true
-            this.lm.startUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedWhenInUse:
-            console.log("Location AuthorizedWhenInUse")
-            owner.myLocationEnabled = true
-            this.lm.startUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusDenied:
-            console.log("Location Denied")
-            owner.myLocationEnabled = false
-            this.lm.stopUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusNotDetermined:
-            console.log("Location NotDetermined")
-            owner.myLocationEnabled = false
-            this.lm.stopUpdatingLocation()
-
-        case CLAuthorizationStatus.kCLAuthorizationStatusRestricted:
-            console.log("Location Restricted")
-            owner.myLocationEnabled = false
-            this.lm.stopUpdatingLocation()
-        }
-    }
-
-    public locationManagerDidUpdateLocations(manager: CLLocationManager, locations: NSArray<CLLocation> | CLLocation[])
-    {
-        let owner = this._owner.get();
-        console.log(locations)
-        /*if (locations.length > 0)
-        {
-            owner.gMap.camera = GMSCameraPosition.cameraWithTargetZoom(locations.coordinate, 10.0)
-            owner.settings.myLocationButton = true
-        }*/
-    }
-}
-
 
 
 export class MapView extends MapViewBase {
@@ -409,7 +283,6 @@ export class MapView extends MapViewBase {
 
     public _delegate: MapViewDelegateImpl;
     private _indoorDelegate:IndoorDisplayDelegateImpl;
-    //private _mapVCDelegate:MapVCDelegateImpl;
 
     constructor() {
         super();
@@ -417,7 +290,6 @@ export class MapView extends MapViewBase {
         this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
         this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
         this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
-        //this._mapVCDelegate = MapVCDelegateImpl.initWithOwner(new WeakRef(this));
         this.updatePadding();
     }
 
