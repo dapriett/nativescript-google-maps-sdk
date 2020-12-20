@@ -459,7 +459,7 @@ export class MapView extends MapViewBase {
     }
 
     addPolyline(shape: Polyline) {
-        if(!this.gMap) return null;
+        if(!this._shapes || !this.gMap) return null;
         shape.loadPoints();
         shape.android = this.gMap.addPolyline(shape.android);
         this._shapes.push(shape);
