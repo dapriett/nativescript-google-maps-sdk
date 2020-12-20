@@ -1,6 +1,6 @@
 {
   "name": "nativescript-google-maps-sdk",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Google Maps SDK plugin for Nativescript",
   "main": "map-view",
   "typings": "map-view.d.ts",
