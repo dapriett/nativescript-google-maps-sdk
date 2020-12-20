@@ -279,19 +279,11 @@ class MapViewDelegateImpl extends NSObject implements GMSMapViewDelegate {
 
 export class MapView extends MapViewBase {
 
+    public nativeView: GMSMapView;
     protected _markers: Array<Marker> = new Array<Marker>();
 
     public _delegate: MapViewDelegateImpl;
     private _indoorDelegate:IndoorDisplayDelegateImpl;
-
-    constructor() {
-        super();
-
-        this.nativeView = GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
-        this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
-        this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
-        this.updatePadding();
-    }
 
     public onLoaded() {
         super.onLoaded();
@@ -314,6 +306,19 @@ export class MapView extends MapViewBase {
         GC();
     };
 
+    public createNativeView() {
+        return GMSMapView.mapWithFrameCamera(CGRectZero, this._createCameraPosition());
+    }
+
+    public initNativeView() {
+        (<any>this.nativeView).owner = this;
+        this._delegate = MapViewDelegateImpl.initWithOwner(new WeakRef(this));
+        this._indoorDelegate = IndoorDisplayDelegateImpl.initWithOwner(new WeakRef(this));
+        this.updatePadding();
+
+        super.initNativeView();
+    }
+
     private _createCameraPosition() {
         return GMSCameraPosition.cameraWithLatitudeLongitudeZoomBearingViewingAngle(
             this.latitude,
@@ -325,10 +330,12 @@ export class MapView extends MapViewBase {
     }
 
     updateCamera() {
-        if (this.mapAnimationsEnabled) {
-            this.nativeView.animateToCameraPosition(this._createCameraPosition());
-        } else {
-            this.nativeView.camera = this._createCameraPosition();
+        if (this.nativeView) {
+            if (this.mapAnimationsEnabled) {
+                this.nativeView.animateToCameraPosition(this._createCameraPosition());
+            } else {
+                this.nativeView.camera = this._createCameraPosition();
+            }
         }
     }
 
