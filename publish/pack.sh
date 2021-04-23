@@ -27,7 +27,9 @@ pack() {
 
     # compile package and copy files required by npm
     echo 'Building /src...'
-    node_modules/.bin/tsc -p "$TO_SOURCE_DIR/tsconfig.json"
+    cd "$TO_SOURCE_DIR"
+    node_modules/.bin/tsc
+    cd ..
 
     echo 'Creating package...'
     # create package dir

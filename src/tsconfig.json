@@ -1,38 +1,30 @@
 {
     "compilerOptions": {
-        "target": "ES2017",
+        "target": "es2017",
         "module": "esnext",
         "moduleResolution": "node",
-        "declaration": false,
-        "noImplicitAny": false,
         "removeComments": true,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "sourceMap": false,
+        "declaration": false,
         "experimentalDecorators": true,
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "noLib": false,
         "noEmitHelpers": true,
-        "plugins": [{
-            "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
-            "type": "raw"
-        }],
-        "lib": [
-            "es6",
-            "dom"
-        ],
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "noEmitOnError": false,
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "noImplicitUseStrict": false,
+        "noFallthroughCasesInSwitch": true,
+        "lib": ["es2017", "dom", "es6"],
         "baseUrl": ".",
-        "paths": {
-            "*": [
-                "./node_modules/*"
-            ]
-        }
+        "plugins": [{
+          "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
+          "type": "raw"
+        }]
     },
-    "include": [
-        "./"
-    ],
     "exclude": [
-        "node_modules",
-        "platforms",
-        "demo",
-        "ng-demo"
-    ]
+        "node_modules", "platforms", "typings/android.d.ts", "typings/objc!GoogleMaps.d.ts", "typings/objc!GoogleMapsBase.d.ts"
+    ],
 }

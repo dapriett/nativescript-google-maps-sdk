@@ -13,6 +13,7 @@ export * from "./map-view-common";
 
 declare function UIEdgeInsetsMake(...params: any[]): any;
 
+
 @NativeClass()
 class IndoorDisplayDelegateImpl extends NSObject implements GMSIndoorDisplayDelegate {
 
@@ -354,8 +355,8 @@ export class MapView extends MapViewBase {
         }
     }
 
-    get ios(): never {
-        throw new Error('Now use instance.nativeView instead of instance.ios');
+    get ios(): any {
+        return this.nativeView;
     }
 
     get gMap() {
