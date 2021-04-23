@@ -17,6 +17,7 @@ export * from "./map-view-common";
 declare const com: any;
 declare const android: any;
 
+
 export class MapView extends MapViewBase {
 
     protected _markers: Array<Marker> = new Array<Marker>();

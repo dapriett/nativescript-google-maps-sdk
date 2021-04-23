@@ -2,7 +2,7 @@ import {
     MapView, Position, Marker, Shape, Polyline, Polygon, Projection,
     Circle, Camera, MarkerEventData, ShapeEventData, VisibleRegion,
     CameraEventData, PositionEventData, Bounds, Style, UISettings, IndoorBuilding, IndoorLevel,
-    IndoorLevelActivatedEventData, BuildingFocusedEventData
+    IndoorLevelActivatedEventData, BuildingFocusedEventData, StyleElement, StyleFeatureType, StyleElementType, StyleStylers
 } from "./map-view";
 import { Point } from "@nativescript/core/ui/core/view";
 import { View, Template, KeyedTemplate, Image, LayoutBase, Property, Color, Builder, eachDescendant, ProxyViewContainer, StackLayout } from "@nativescript/core";
@@ -82,8 +82,6 @@ function onDescendantsLoaded(view: View, callback: () => void) {
 
     watchLoaded(view, View.loadedEvent);
 }
-
-export { Style as StyleBase };
 
 export module knownTemplates {
     export const infoWindowTemplate = "infoWindowTemplate";
@@ -410,6 +408,20 @@ export interface UISettingsBase {
     readonly tiltGesturesEnabled: boolean;
     readonly zoomControlsEnabled: boolean;
     readonly zoomGesturesEnabled: boolean;
+}
+
+export class StyleElementBase implements StyleElement {
+    public featureType?: StyleFeatureType;
+    public elementType?: StyleElementType;
+    public stylers: Array<StyleStylers>;
+}
+
+export class StyleBase extends Array<StyleElementBase> implements Style {
+    public center: Position;
+    public radius: number;
+    public strokeWidth: number;
+    public strokeColor: Color;
+    public fillColor: Color;
 }
 
 export abstract class ProjectionBase implements Projection {
