@@ -16,7 +16,7 @@
     "@angular/animations": "~4.1.0",
     "@angular/common": "~4.1.0",
     "@angular/compiler": "~4.1.0",
-    "@angular/core": "~4.1.0",
+    "@angular/core": "~11.0.5",
     "@angular/forms": "~4.1.0",
     "@angular/http": "~4.1.0",
     "@angular/platform-browser": "~4.1.0",
