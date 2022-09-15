@@ -1,5 +1,12 @@
+
+> ⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠  
+> **This project is no longer maintained.  
+> For new project it's recommended to use the [official Google Maps plugin, maintained by the NativeScript team](https://github.com/NativeScript/plugins/blob/main/packages/google-maps/README.md).**  
+> ⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠
+
 NativeScript plugin for the Google Maps SDK
 ================
+
 
 This is a cross-platform (iOS & Android) Nativescript plugin for the [Google Maps API](https://developers.google.com/maps/).
 
